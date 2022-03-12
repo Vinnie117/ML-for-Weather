@@ -1,5 +1,6 @@
-#### Python libs in Visual Studio COde
+######## Python libs in Visual Studio COde
 #
+#### In Powershell Terminal
 # create venv
 # py -3 -m venv .venv
 
