@@ -1,9 +1,13 @@
+from numpy import dtype
+from sympy import false
 from wetterdienst import Wetterdienst, Resolution, Period
 from wetterdienst.provider.dwd.observation import DwdObservationDataset
 from wetterdienst.provider.dwd.observation import DwdObservationRequest
 import pandas as pd
+from wetterdienst import Settings
 
-pd.options.display.max_columns = 8
+# Changing temperature units to Celsius
+Settings.si_units = false
 
 API = Wetterdienst(provider="dwd", network="observation")
 
@@ -33,8 +37,18 @@ print(stations.all().df.head())
 
 #### Get data for one specific weather station
 
+# ALl historical data
+hist = DwdObservationRequest(parameter=["TEMPERATURE_AIR_MEAN_200"],
+                            resolution="hourly",
+                            period=Period.HISTORICAL,
+                            ).filter_by_station_id(station_id=(1766))
+
+
+df_hist = hist.values.all().df
+
+
 # https://github.com/earthobservations/wetterdienst
-request = DwdObservationRequest(parameter=["TEMPERATURE_AIR"],
+request = DwdObservationRequest(parameter=["TEMPERATURE_AIR_MEAN_200"],
                                 resolution="hourly",
                                 start_date="1990-01-01",  # if not given timezone defaulted to UTC
                                 end_date="2020-01-01",  # if not given timezone defaulted to UTC
@@ -46,37 +60,6 @@ print(df1)
 # the data
 df2 = request.values.all().df
 print(df2)
+print(type(df2))
 
-'''
-Im Data Viewer
-
-parameter=["TEMPERATURE_AIR"]
-- Spalte "dataset" hat nur Werte "temperature air"
-- Spalte "parameter" hat 2 verschiedene Werte "humidity" und "temperature_mean_200" 
-- aber NaN-Werte für Münster (3404) -> für 1766 gibt es alle Werte!!
-
-
-parameter=["PRECIPITATION_MORE"]
-
-'''
-
-
-
-# https://wetterdienst.readthedocs.io/en/latest/usage/python-examples.html
-# -> Alle stations laden und dann nach stations id filtern?
-
-stations2 = API(parameter=DwdObservationDataset.PRECIPITATION_MORE,
-               resolution=Resolution.DAILY,
-               period=Period.HISTORICAL)
-
-print('\n', next(stations2.all().values.query()))
-
-
-
-
-
-
-
-
-
-
+#df3 = df2.loc[df2['parameter'] == 'temperature_air_mean_200']
