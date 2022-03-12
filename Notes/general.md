@@ -25,10 +25,9 @@ Notes on Data
 
 
 Tests:
-parameter = ["TEMPERATURE_AIR"] + df2.loc[df2["parameter"] == 'temperature_air_mean_200']
-vs.
-parameter = ["TEMPERATURE_AIR_MEAN_200"]
--> sorted by highest values -> same data
+- parameter = ["TEMPERATURE_AIR"] + df2.loc[df2["parameter"] == 'temperature_air_mean_200']
+- parameter = ["TEMPERATURE_AIR_MEAN_200"]
+- -> sorted by highest values -> same data
 
 - You can indicate multiple variables
     - parameter = ["TEMPERATURE_AIR", "HUMIDITY"]
