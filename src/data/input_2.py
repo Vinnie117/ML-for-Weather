@@ -1,9 +1,8 @@
-from numpy import dtype
+import pandas as pd
 from sympy import false
 from wetterdienst import Wetterdienst, Resolution, Period
 from wetterdienst.provider.dwd.observation import DwdObservationDataset
 from wetterdienst.provider.dwd.observation import DwdObservationRequest
-import pandas as pd
 from wetterdienst import Settings
 
 # Changing temperature units to Celsius
@@ -37,6 +36,8 @@ print(stations.all().df.head())
 
 #### Get data for one specific weather station
 
+# https://github.com/earthobservations/wetterdienst
+
 # ALl historical data
 hist = DwdObservationRequest(parameter=["TEMPERATURE_AIR_MEAN_200"],
                             resolution="hourly",
@@ -47,7 +48,7 @@ hist = DwdObservationRequest(parameter=["TEMPERATURE_AIR_MEAN_200"],
 df_hist = hist.values.all().df
 
 
-# https://github.com/earthobservations/wetterdienst
+# for specific time window
 request = DwdObservationRequest(parameter=["TEMPERATURE_AIR_MEAN_200"],
                                 resolution="hourly",
                                 start_date="1990-01-01",  # if not given timezone defaulted to UTC
