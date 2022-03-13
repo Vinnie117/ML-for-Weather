@@ -22,6 +22,10 @@ Notes on Data
         - has all values
     - parameter=["PRECIPITATION_MORE"]
         - resolution = ["daily"]
+- parameter=["SUNSHINE_DURATION"]
+    - error "'SOLAR' object is not subscriptable"
+    - -> not informative in context of hourly data!? (-> https://en.wikipedia.org/wiki/Sunshine_duration)
+    - -> use cloud coverage: correlates with sunshine duration (https://en.wikipedia.org/wiki/Cloud_cover)
 
 
 Tests:
