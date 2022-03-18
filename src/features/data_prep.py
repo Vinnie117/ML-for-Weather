@@ -9,33 +9,19 @@ df = df_raw.drop(columns=["station_id", "dataset"])
 
 df = df.pivot(index="date", columns="parameter", values="value").reset_index()
 
-#####################################################################
-# get time (UTC) and convert to local (UTC +1 hour = CET)
-df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
-
-df['date_cet'] = pd.to_datetime(df['date']).dt.tz_convert('Europe/Berlin')
-
-# remove timezone
-df['test'] = pd.to_datetime(df['date']).dt.tz_localize(None)
-
-# convert to CET, then remove tz
-df['test2'] = pd.to_datetime(df['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
-
-df["test3"]= pd.to_datetime(df["test2"])
-
+# convert to CET (UTC +1), then remove tz
+df['timestamp'] = pd.to_datetime(df['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
+df = df.drop('date', 1)
 
 # extract informative variables
-#df['month'] =  df['date'].dt.month
-#df['day'] =  df['date'].dt.day
-#df['hour'] =  df['date'].dt.hour
-
-
-
-
-
-
+df['month'] =  df['timestamp'].dt.month
+df['day'] =  df['timestamp'].dt.day # is this informative? Does it connect to "month"?
+df['hour'] =  df['timestamp'].dt.hour
 
 print(df.dtypes)
+
+df = df[['timestamp', 'month', 'day', 'hour', 
+'temperature_air_mean_200', 'cloud_cover_total', 'wind_speed']]
 
 # Save processed data
 df.to_csv(r'A:\Projects\ML-for-Weather\data\processed\df.csv', header=True, index=False)
