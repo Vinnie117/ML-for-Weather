@@ -4,10 +4,17 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 import numpy as np
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import NMF
+from sklearn.pipeline import Pipeline
+import pandas as pd
+from sklearn.base import TransformerMixin, BaseEstimator
 # Can use dataframe from another python file like this
-#from test_lags import result
-#print(result)
+from test_lags import result
+print(result)
 
+from test_lags import InsertLags
+from test_lags import df
 
 #################################################
 # Debug Pipeline
@@ -40,12 +47,6 @@ class Debugger(BaseEstimator, TransformerMixin):
         return data
 
 
-
-
-
-
-
-
 #pipeline2 = Pipeline(steps = [('debugger', Debugger())])
 
 #b = pipeline2.fit(train["wind_speed"])
@@ -61,12 +62,6 @@ class Debugger(BaseEstimator, TransformerMixin):
 # https://stackoverflow.com/questions/48743032/get-intermediate-data-state-in-scikit-learn-pipeline
 
 ################################################
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import NMF
-from sklearn.pipeline import Pipeline
-import pandas as pd
-from sklearn.base import TransformerMixin, BaseEstimator
-
 
 # class Debug(BaseEstimator, TransformerMixin):
 
@@ -89,6 +84,14 @@ data = pd.DataFrame([["Salut comment tu vas", "Hey how are you today", "I am oka
 data.columns = ["test"]
 
 pipe.fit_transform(data.test)
+
+####
+pipe2 = Pipeline([
+    ("lags", InsertLags([1,2,3])),
+    ("debug", Debugger())
+])
+
+pipe2.fit_transform(df)
 
 
 
