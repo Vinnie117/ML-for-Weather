@@ -91,6 +91,7 @@ pipe2 = Pipeline([
     ("debug", Debugger())
 ])
 
+# Pipeline creates lags and prints the data
 pipe2.fit_transform(df)
 
 
