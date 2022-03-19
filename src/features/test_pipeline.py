@@ -2,35 +2,9 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
-import numpy as np
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import NMF
-from sklearn.pipeline import Pipeline
-import pandas as pd
-from sklearn.base import TransformerMixin, BaseEstimator
-# Can use dataframe from another python file like this
-from test_lags import result
-print(result)
 
 from test_lags import InsertLags
 from test_lags import df
-
-#################################################
-# Debug Pipeline
-
-# class Debug(BaseEstimator, TransformerMixin):
-#     """
-#     View pipeline data
-#     """
-#     def transform(self, X):
-#         print(X.shape)
-#         self.shape = shape
-#         # what other output you want
-#         return X
-
-#     def fit(self, X, y=None, **fit_params):
-#         return self
 
 class Debugger(BaseEstimator, TransformerMixin):
     """
@@ -46,45 +20,6 @@ class Debugger(BaseEstimator, TransformerMixin):
         print(pd.DataFrame(data).head())
         return data
 
-
-#pipeline2 = Pipeline(steps = [('debugger', Debugger())])
-
-#b = pipeline2.fit(train["wind_speed"])
-#print(b)
-#c = pipeline2.fit_transform(train["wind_speed"])
-#print(c)
-#d = pipeline2.named_steps["debug"].shape
-#print(d)
-
-#############################################
-
-# https://nishalsach.github.io/posts/2021-08-17-debugging-sklearn-pipelines/
-# https://stackoverflow.com/questions/48743032/get-intermediate-data-state-in-scikit-learn-pipeline
-
-################################################
-
-# class Debug(BaseEstimator, TransformerMixin):
-
-#     def transform(self, X):
-#         print(X.shape)
-#         self.shape = shape
-#         # what other output you want
-#         return X
-
-#     def fit(self, X, y=None, **fit_params):
-#         return self
-
-pipe = Pipeline([
-    ("tf_idf", TfidfVectorizer()),
-    ("debug", Debugger()),
-    ("nmf", NMF())
-])
-
-data = pd.DataFrame([["Salut comment tu vas", "Hey how are you today", "I am okay and you ?"]]).T
-data.columns = ["test"]
-
-pipe.fit_transform(data.test)
-
 ####
 pipe2 = Pipeline([
     ("lags", InsertLags([1,2,3])),
@@ -93,7 +28,7 @@ pipe2 = Pipeline([
 
 # Pipeline creates lags and prints the data
 pipe2.fit_transform(df)
-
+data = pipe2.fit_transform(df)
 
 
 print("END")
