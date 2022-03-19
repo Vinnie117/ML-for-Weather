@@ -30,6 +30,7 @@ class InsertLags(BaseEstimator, TransformerMixin):
         X = X.to_numpy()
         # indices of 'np array columns', e.g. array with 3 columns -> [0,1,2]
         col_indices=list(range(len(X[0,:])))
+        col_indices = col_indices[1:]
         for lag in self.lags:
             X_lagged=pd.DataFrame(X[:,col_indices]).shift(lag)
             X=np.concatenate((X,X_lagged), axis=1)
