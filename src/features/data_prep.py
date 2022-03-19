@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 # load data
 df_raw = pd.read_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv') 
@@ -31,6 +32,10 @@ df['wind_speed_lag_2'] = df['wind_speed'].shift(2)
 
 # build variable of previous day (With 50%, tomorrow's weather will be the same as today's weather)
 
+
+# Naming
+
+# Ordering
 df = df[['timestamp', 'month', 'day', 'hour', 
 'temperature_air_mean_200', 'temperature_air_mean_200_lag_1', 'temperature_air_mean_200_lag_2',
 'cloud_cover_total', 'cloud_cover_total_lag_1', 'cloud_cover_total_lag_2', 
