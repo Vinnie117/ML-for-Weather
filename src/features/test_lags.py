@@ -29,18 +29,8 @@ class InsertLags(BaseEstimator, TransformerMixin):
     def transform(self, X):
         X = X.to_numpy()
         # indices of 'np array columns', e.g. array with 3 columns -> [0,1,2]
-        original_cols=list(range(len(X[0,:])))
+        col_indices=list(range(len(X[0,:])))
         for lag in self.lags:
-            X_lagged=pd.DataFrame(X[:,original_cols]).shift(lag)
+            X_lagged=pd.DataFrame(X[:,col_indices]).shift(lag)
             X=np.concatenate((X,X_lagged), axis=1)
         return pd.DataFrame(X)
-
-# Lags definieren
-add_lags = InsertLags([1,2,3])
-result = add_lags.fit_transform(df)
-#print(result)
-
-result2 = add_lags.fit_transform(train)
-result3= add_lags.fit_transform(test)
-
-#print("END")
