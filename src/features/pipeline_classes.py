@@ -14,11 +14,25 @@ df = df.pivot(index="date", columns="parameter", values="value").reset_index()
 train, test = train_test_split(df, test_size=0.2, shuffle = False)
 
 ######################################################
-# Define a transformer that creates lags
+# Define transformers to edit raw input data
+
+class Debugger(BaseEstimator, TransformerMixin):
+    """
+    View pipeline data for debugging
+    """
+    def fit(self, data, y=None, **fit_params):
+        # No need to fit anything, because this is not an actual  transformation. 
+        return self
+    
+    def transform(self, data):
+        # Here you just print what you need + return the actual data. You're not transforming anything. 
+        print("Shape of Pre-processed Data:", data.shape)
+        print(pd.DataFrame(data).head())
+        return data
 
 class InsertLags(BaseEstimator, TransformerMixin):
     """
-    Automatically Insert Lags
+    Automatically insert lags
     """
     def __init__(self, lags):
         self.lags = lags

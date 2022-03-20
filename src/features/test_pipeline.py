@@ -1,34 +1,15 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
+from pipeline_classes import InsertLags
+from pipeline_classes import df
+from pipeline_classes import Debugger
 
-from test_lags import InsertLags
-from test_lags import df
-
-class Debugger(BaseEstimator, TransformerMixin):
-    """
-    View pipeline data - another class
-    """
-    def fit(self, data, y=None, **fit_params):
-        # No need to fit anything, because this is not an actual  transformation. 
-        return self
-    
-    def transform(self, data):
-        # Here you just print what you need + return the actual data. You're not transforming anything. 
-        print("Shape of Pre-processed Data:", data.shape)
-        print(pd.DataFrame(data).head())
-        return data
-
-####
-pipe2 = Pipeline([
-    ("lags", InsertLags([1,2,3])),
+pipe = Pipeline([
+    ("lags", InsertLags([1,2,3,24])),
     ("debug", Debugger())
 ])
 
 # Pipeline creates lags and prints the data
-pipe2.fit_transform(df)
-data = pipe2.fit_transform(df)
+data = pipe.fit_transform(df)
 
-
+data.to_csv(r'A:\Projects\ML-for-Weather\data\processed\df.csv', header=True, index=False)
 print("END")
