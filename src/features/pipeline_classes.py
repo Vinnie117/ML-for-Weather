@@ -1,20 +1,16 @@
 import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
 
-# load data
-df_raw = pd.read_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv') 
 
-# Cleaning
-df = df_raw.drop(columns=["station_id", "dataset"])
-df = df.pivot(index="date", columns="parameter", values="value").reset_index()
-df = df.rename(columns={'temperature_air_mean_200': 'temperature', 'cloud_cover_total': 'cloud_cover',
+def clean(data):
+    data = data.drop(columns=["station_id", "dataset"])
+    data = data.pivot(index="date", columns="parameter", values="value").reset_index()
+    data = data.rename(columns={'temperature_air_mean_200': 'temperature', 'cloud_cover_total': 'cloud_cover',
                         'wind_speed': 'wind_speed'})
+    return data
 
-
-# Split
-train, test = train_test_split(df, test_size=0.2, shuffle = False)
 
 ######################################################
 # Define transformers to edit raw input data
@@ -33,21 +29,21 @@ class Debugger(BaseEstimator, TransformerMixin):
         print(pd.DataFrame(data).head())
         return data
 
-class Cleaner(BaseEstimator, TransformerMixin):
-    """
-    Basic cleaning of raw data from API
-    """
+# class Cleaner(BaseEstimator, TransformerMixin):
+#     """
+#     Basic cleaning of raw data from API
+#     """
 
-    def fit(self, dummy):
-        return self
+#     def fit(self, dummy):
+#         return self
 
-    def transform(self, input_data):
-        input_data = input_data.drop(columns=["station_id", "dataset"])
-        input_data = input_data.pivot(index="date", columns="parameter", values="value").reset_index()
-        self.input_data = input_data.rename(columns={'temperature_air_mean_200': 'temperature', 
-                                                'cloud_cover_total': 'cloud_cover',
-                                                'wind_speed': 'wind_speed'})
-        return self.input_data
+#     def transform(self, input_data):
+#         input_data = input_data.drop(columns=["station_id", "dataset"])
+#         input_data = input_data.pivot(index="date", columns="parameter", values="value").reset_index()
+#         self.input_data = input_data.rename(columns={'temperature_air_mean_200': 'temperature', 
+#                                                 'cloud_cover_total': 'cloud_cover',
+#                                                 'wind_speed': 'wind_speed'})
+#         return self.input_data
 
 
 class InsertLags(BaseEstimator, TransformerMixin):
@@ -70,7 +66,7 @@ class InsertLags(BaseEstimator, TransformerMixin):
             X_lagged=pd.DataFrame(X[:,col_indices]).shift(lag)
             X=np.concatenate((X,X_lagged), axis=1)
         # create column names (= normal columns + lagged columns)
-        cols = df.columns.tolist()  # df befindet sich außerhalb dieser Klasse! -> reinpacken? Bzw. als vorherigen Step in der Pipeline?
+        cols = ['date', 'cloud_cover', 'temperature', 'wind_speed'] #df.columns.tolist()  # df befindet sich außerhalb dieser Klasse! -> reinpacken? Bzw. als vorherigen Step in der Pipeline?
         start = [cols[cols.index("date")], cols[cols.index("temperature")]]
         unwanted = {"date", "temperature"}
         end = [x for x in cols if x not in unwanted]
@@ -80,3 +76,10 @@ class InsertLags(BaseEstimator, TransformerMixin):
             for y in cols[1:]:
                 lag_col_names.append(str(y) + '_lag_' + str(self.lags[x]))
         return pd.DataFrame(X, columns = cols + lag_col_names)
+
+
+
+pipe = Pipeline([
+    ("lags", InsertLags([1,2,3,24])),
+    ("debug3", Debugger())
+])
