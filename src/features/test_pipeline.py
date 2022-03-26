@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.pipeline import Pipeline
+from pipeline_classes import Velocity
 from pipeline_classes import InsertLags
 from pipeline_classes import Debugger
 from pipeline_classes import Times
@@ -18,7 +19,9 @@ pipe = Pipeline([
     ("times", Times()),
     ("debug3", Debugger()),
     ("lags", InsertLags([1,2,3,24])),
-    ("debug4", Debugger())
+    ("debug4", Debugger()),
+    ('velocity', Velocity(['temperature', 'cloud_cover'], diff = 1)),   # lagged differences? differenced lags?
+    ("debug5", Debugger())       
 ])
 
 data = pipe.fit_transform(df) 

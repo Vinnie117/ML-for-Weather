@@ -21,23 +21,6 @@ class Debugger(BaseEstimator, TransformerMixin):
         return data
 
 
-# class Cleaner(BaseEstimator, TransformerMixin):
-#     """
-#     Basic cleaning of raw data from API
-#     """
-
-#     def fit(self, dummy):
-#         return self
-
-#     def transform(self, input_data):
-#         input_data = input_data.drop(columns=["station_id", "dataset"])
-#         input_data = input_data.pivot(index="date", columns="parameter", values="value").reset_index()
-#         self.input_data = input_data.rename(columns={'temperature_air_mean_200': 'temperature', 
-#                                                 'cloud_cover_total': 'cloud_cover',
-#                                                 'wind_speed': 'wind_speed'})
-#         return self.input_data
-
-
 class InsertLags(BaseEstimator, TransformerMixin):
     """
     Automatically insert lags
@@ -67,7 +50,6 @@ class InsertLags(BaseEstimator, TransformerMixin):
         for x in range(len(self.lags)):
             for y in cols[4:]:
                 lag_col_names.append(str(y) + '_lag_' + str(self.lags[x]))
-        print(lag_col_names)
         return pd.DataFrame(X, columns = cols + lag_col_names)
 
 
@@ -88,5 +70,28 @@ class Times(BaseEstimator, TransformerMixin):
         cols = list(data.columns)
         cols = cols[-4:] + cols[:len(cols)-4]
         data = data[cols]
+        return data
 
+class Velocity(BaseEstimator, TransformerMixin):
+    """
+    Calculate differences
+    """
+    def __init__(self, vars, diff):
+        self.diff = diff
+        self.vars = vars
+
+    def fit(self, X):
+        return self
+
+    def transform(self, X):
+        data = X
+        
+        # create column names
+        cols = []
+        for i in range(len(self.vars)):
+            cols.append(self.vars[i] + '_velo_' + str(self.diff))
+
+        # create data
+        for i in range(len(self.vars)):
+            data[cols[i]] = data[self.vars[i]].diff(periods = self.diff)
         return data
