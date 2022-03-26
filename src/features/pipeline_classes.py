@@ -24,14 +24,31 @@ class Debugger(BaseEstimator, TransformerMixin):
     View pipeline data for debugging
     """
     def fit(self, data, y=None, **fit_params):
-        # No need to fit anything, because this is not an actual  transformation. 
+        # No need to fit anything, because this is not an actual transformation. 
         return self
     
     def transform(self, data):
-        # Here you just print what you need + return the actual data. You're not transforming anything. 
-        print("Shape of Pre-processed Data:", data.shape)
+        # Here just print what is needed + return the actual data. Nothing is transformed. 
+        print("Shape of data", data.shape)
         print(pd.DataFrame(data).head())
         return data
+
+class Cleaner(BaseEstimator, TransformerMixin):
+    """
+    Basic cleaning of raw data from API
+    """
+
+    def fit(self, dummy):
+        return self
+
+    def transform(self, input_data):
+        input_data = input_data.drop(columns=["station_id", "dataset"])
+        input_data = input_data.pivot(index="date", columns="parameter", values="value").reset_index()
+        self.input_data = input_data.rename(columns={'temperature_air_mean_200': 'temperature', 
+                                                'cloud_cover_total': 'cloud_cover',
+                                                'wind_speed': 'wind_speed'})
+        return self.input_data
+
 
 class InsertLags(BaseEstimator, TransformerMixin):
     """
@@ -63,9 +80,3 @@ class InsertLags(BaseEstimator, TransformerMixin):
             for y in cols[1:]:
                 lag_col_names.append(str(y) + '_lag_' + str(self.lags[x]))
         return pd.DataFrame(X, columns = cols + lag_col_names)
-
-
-
-
-
-
