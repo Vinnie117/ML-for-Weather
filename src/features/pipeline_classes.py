@@ -39,7 +39,7 @@ class InsertLags(BaseEstimator, TransformerMixin):
         col_indices=list(range(len(X[0,:])))
         col_indices = col_indices[4:] # weather variables start after 4th column (timestamp, month, day, hour are before)
 
-        # create lags
+        # create data (lags)
         for lag in self.lags:
             X_lagged=pd.DataFrame(X[:,col_indices]).shift(lag)
             X=np.concatenate((X,X_lagged), axis=1)
@@ -85,13 +85,35 @@ class Velocity(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         data = X
-        
+        print('ehhlo', data)
+
         # create column names
         cols = []
-        for i in range(len(self.vars)):
-            cols.append(self.vars[i] + '_velo_' + str(self.diff))
+
+        for i in range(len(self.diff)):
+            for j in range(len(self.vars)):
+                cols.append(self.vars[j] + '_velo_' + str(self.diff[i]))
 
         # create data
-        for i in range(len(self.vars)):
-            data[cols[i]] = data[self.vars[i]].diff(periods = self.diff)
+        col_indices = [data.columns.get_loc(c) for c in self.vars if c in data]
+        dummy = []
+        for i in self.diff:
+            dummy.append(pd.DataFrame(data.iloc[:,col_indices].diff(periods = i)))
+        X = pd.concat(dummy, axis=1)
+        X.columns = cols
+
+        print('This is X', X)
+        print('type of X', type(X))
+
+        # combine with master data frame
+        data = pd.concat([data, X], axis=1)
+        print('This is data', data)
+
         return data
+
+
+
+
+
+
+
