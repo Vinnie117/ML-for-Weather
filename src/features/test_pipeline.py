@@ -18,9 +18,9 @@ train, test = train_test_split(df, test_size=0.2, shuffle = False)
 pipe = Pipeline([
     ("times", Times()),
     ("debug3", Debugger()),
-    ("lags", InsertLags([1,2,24])),
+    ("lags", InsertLags(['temperature', 'cloud_cover', 'wind_speed'], [1,2,24])),
     ("debug4", Debugger()),
-    ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff = [1,2])),   # lagged differences? differenced lags?
+    ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff = [1,2])),   # lagged differences? differenced lags? -> the same
     ("debug5", Debugger())       
 ])
 

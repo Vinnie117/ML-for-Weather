@@ -25,32 +25,35 @@ class InsertLags(BaseEstimator, TransformerMixin):
     """
     Automatically insert lags
     """
-    def __init__(self, lags):
+    def __init__(self, vars, lags):
         self.lags = lags
+        self.vars = vars
 
     def fit(self, X):
         return self
 
     def transform(self, X):
         data = X
-        X = X.to_numpy()
+        #X = X.to_numpy()
 
-        # indices of 'np array columns', e.g. array with 3 columns -> [0,1,2]
-        col_indices=list(range(len(X[0,:])))
-        col_indices = col_indices[4:] # weather variables start after 4th column (timestamp, month, day, hour are before)
+        # create column names
+        cols = []
+        for i in range(len(self.lags)):
+            for j in range(len(self.vars)):
+                cols.append(self.vars[j] + '_lag_' + str(self.lags[i]))
 
         # create data (lags)
-        for lag in self.lags:
-            X_lagged=pd.DataFrame(X[:,col_indices]).shift(lag)
-            X=np.concatenate((X,X_lagged), axis=1)
+        col_indices = [data.columns.get_loc(c) for c in self.vars if c in data]
+        dummy = []
+        for i in self.lags:
+            dummy.append(pd.DataFrame(data.iloc[:,col_indices].shift(i)))
+        X = pd.concat(dummy, axis=1)
+        X.columns = cols
 
-        # create column names (= normal columns + lagged columns)
-        cols = data.columns.tolist()
-        lag_col_names = []
-        for x in range(len(self.lags)):
-            for y in cols[4:]:
-                lag_col_names.append(str(y) + '_lag_' + str(self.lags[x]))
-        return pd.DataFrame(X, columns = cols + lag_col_names)
+        # combine with master data frame
+        data = pd.concat([data, X], axis=1)
+
+        return data #pd.DataFrame(X, columns = cols + lag_col_names)
 
 
 class Times(BaseEstimator, TransformerMixin):
@@ -85,11 +88,9 @@ class Velocity(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         data = X
-        print('ehhlo', data)
-
+ 
         # create column names
         cols = []
-
         for i in range(len(self.diff)):
             for j in range(len(self.vars)):
                 cols.append(self.vars[j] + '_velo_' + str(self.diff[i]))
@@ -102,12 +103,8 @@ class Velocity(BaseEstimator, TransformerMixin):
         X = pd.concat(dummy, axis=1)
         X.columns = cols
 
-        print('This is X', X)
-        print('type of X', type(X))
-
         # combine with master data frame
         data = pd.concat([data, X], axis=1)
-        print('This is data', data)
 
         return data
 
