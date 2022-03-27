@@ -9,7 +9,12 @@ from functions import clean
 
 # load data
 df_raw = pd.read_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv') 
-df = clean(df_raw)
+df = clean(df_raw, ['temperature_air_mean_200', 
+                    'cloud_cover_total'],
+                    ['temperature',
+                     'cloud_cover'])
+
+print(df)
 
 # Splitting here to prevent information leakage
 train, test = train_test_split(df, test_size=0.2, shuffle = False)
@@ -32,7 +37,7 @@ data = pipe.fit_transform(df)
 # - add acceleration ()
 # - add lagged difference (x)
 # - add lagged acceleration ()
-# - def clean() -> Column names nicht hart verdrahten sondern als Argumente der Funktion (2 Listen für alte und neue Namen) ()
+# - def clean() -> Column names nicht hart verdrahten sondern als Argumente der Funktion (2 Listen für alte und neue Namen) (x)
 # - scenario for more or less than the three variables ()
 
 
