@@ -23,7 +23,7 @@ class Debugger(BaseEstimator, TransformerMixin):
 
 class InsertLags(BaseEstimator, TransformerMixin):
     """
-    Automatically insert lags
+    Automatically insert lags (compute new features in 'X', add to master 'data')
     """
     def __init__(self, vars, lags):
         self.lags = lags
@@ -34,7 +34,6 @@ class InsertLags(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         data = X
-        #X = X.to_numpy()
 
         # create column names
         cols = []
@@ -77,7 +76,7 @@ class Times(BaseEstimator, TransformerMixin):
 
 class Velocity(BaseEstimator, TransformerMixin):
     """
-    Calculate differences
+    Calculate differences (compute new features in 'X', add to master 'data')
     """
     def __init__(self, vars, diff):
         self.diff = diff
