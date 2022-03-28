@@ -9,12 +9,11 @@ from functions import clean
 
 # load data
 df_raw = pd.read_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv') 
-df = clean(df_raw, ['temperature_air_mean_200', 
-                    'cloud_cover_total'],
-                    ['temperature',
-                     'cloud_cover'])
+df = clean(df_raw, old = ['temperature_air_mean_200', 
+                          'cloud_cover_total'],
+                   new = ['temperature',
+                          'cloud_cover'])
 
-print(df)
 
 # Splitting here to prevent information leakage
 train, test = train_test_split(df, test_size=0.2, shuffle = False)
@@ -25,16 +24,17 @@ pipe = Pipeline([
     ("debug3", Debugger()),
     ("lags", InsertLags(['temperature', 'cloud_cover', 'wind_speed'], lags=[1,2,24])),
     ("debug4", Debugger()),
-    ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff=[1,2])),   # lagged differences? differenced lags? -> the same
+    ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff=[1,2])),   
     ("debug5", Debugger()),
-    ('lagged_velocity', InsertLags(['wind_speed_velo_1'], [1,2])),   
+    ('lagged_velocity', InsertLags(['wind_speed_velo_1'], [1,2])),    # lagged difference = differenced lag!
     ("debug6", Debugger())       
 ])
 
 data = pipe.fit_transform(df) 
 
 # To do:
-# - add acceleration ()
+# - add acceleration -> difference of velocity or difference normal values twice () 
+#   - https://stackoverflow.com/questions/54505175/calculating-second-order-derivative-from-timeseries-using-pandas-diff
 # - add lagged difference (x)
 # - add lagged acceleration ()
 # - def clean() -> Column names nicht hart verdrahten sondern als Argumente der Funktion (2 Listen für alte und neue Namen) (x)
