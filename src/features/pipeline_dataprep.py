@@ -1,15 +1,16 @@
 import pandas as pd
 from sklearn.pipeline import Pipeline
-from pipeline_classes import Acceleration
-from pipeline_classes import Velocity
-from pipeline_classes import InsertLags
-from pipeline_classes import Debugger
-from pipeline_classes import Times
+from pipeline_dataprep_classes import Acceleration
+from pipeline_dataprep_classes import Velocity
+from pipeline_dataprep_classes import InsertLags
+from pipeline_dataprep_classes import Debugger
+from pipeline_dataprep_classes import Times
 from sklearn.model_selection import train_test_split
 from functions import clean
 
 # load data
 df_raw = pd.read_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv') 
+# indicate var names to be changed
 df = clean(df_raw, old = ['temperature_air_mean_200', 
                           'cloud_cover_total'],
                    new = ['temperature',
@@ -39,6 +40,7 @@ data = pipe.fit_transform(df)
 # - add lagged acceleration (x)
 # - def clean() -> Column names nicht hart verdrahten sondern als Argumente der Funktion (2 Listen für alte und neue Namen) (x)
 # - scenario for more or less than the three variables (x)
+
 
 
 data.to_csv(r'A:\Projects\ML-for-Weather\data\processed\df.csv', header=True, index=False)
