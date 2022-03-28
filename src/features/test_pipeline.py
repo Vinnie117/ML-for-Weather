@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.pipeline import Pipeline
+from pipeline_classes import Acceleration
 from pipeline_classes import Velocity
 from pipeline_classes import InsertLags
 from pipeline_classes import Debugger
@@ -21,24 +22,23 @@ train, test = train_test_split(df, test_size=0.2, shuffle = False)
 # Feature engineering
 pipe = Pipeline([
     ("times", Times()),
-    ("debug3", Debugger()),
     ("lags", InsertLags(['temperature', 'cloud_cover', 'wind_speed'], lags=[1,2,24])),
-    ("debug4", Debugger()),
     ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff=[1,2])),   
-    ("debug5", Debugger()),
-    ('lagged_velocity', InsertLags(['wind_speed_velo_1'], [1,2])),    # lagged difference = differenced lag!
-    ("debug6", Debugger())       
+    ('lagged_velocity', InsertLags(['temperature_velo_1', 'cloud_cover_velo_1', 'wind_speed_velo_1'], [1,2])),    # lagged difference = differenced lag!
+    ('acceleration', Acceleration(['temperature', 'cloud_cover', 'wind_speed'], diff=[1])),
+    ('lagged_acceleration', InsertLags(['temperature_acc_1', 'cloud_cover_acc_1', 'wind_speed_acc_1'], [1,2])),   
+    ("debug8", Debugger())
 ])
 
 data = pipe.fit_transform(df) 
 
 # To do:
-# - add acceleration -> difference of velocity or difference normal values twice () 
+# - add acceleration -> difference of velocity or difference normal values twice (x) 
 #   - https://stackoverflow.com/questions/54505175/calculating-second-order-derivative-from-timeseries-using-pandas-diff
 # - add lagged difference (x)
-# - add lagged acceleration ()
+# - add lagged acceleration (x)
 # - def clean() -> Column names nicht hart verdrahten sondern als Argumente der Funktion (2 Listen für alte und neue Namen) (x)
-# - scenario for more or less than the three variables ()
+# - scenario for more or less than the three variables (x)
 
 
 data.to_csv(r'A:\Projects\ML-for-Weather\data\processed\df.csv', header=True, index=False)
