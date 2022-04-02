@@ -1,10 +1,12 @@
 import pandas as pd
 from sklearn.pipeline import Pipeline
+from sklearn.utils import shuffle
 from pipeline_dataprep_classes import Acceleration
 from pipeline_dataprep_classes import Velocity
 from pipeline_dataprep_classes import InsertLags
 from pipeline_dataprep_classes import Debugger
 from pipeline_dataprep_classes import Times
+from pipeline_dataprep_classes import Split
 from sklearn.model_selection import train_test_split
 from functions import clean
 
@@ -22,6 +24,7 @@ train, test = train_test_split(df, test_size=0.2, shuffle = False)
 
 # Feature engineering
 pipe = Pipeline([
+    ("split", Split(test_size=0.2, shuffle = False)),
     ("times", Times()),
     ("lags", InsertLags(['temperature', 'cloud_cover', 'wind_speed'], lags=[1,2,24])),
     ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff=[1,2])),   
@@ -34,13 +37,7 @@ pipe = Pipeline([
 data = pipe.fit_transform(df) 
 
 # To do:
-# - add acceleration -> difference of velocity or difference normal values twice (x) 
-#   - https://stackoverflow.com/questions/54505175/calculating-second-order-derivative-from-timeseries-using-pandas-diff
-# - add lagged difference (x)
-# - add lagged acceleration (x)
-# - def clean() -> Column names nicht hart verdrahten sondern als Argumente der Funktion (2 Listen für alte und neue Namen) (x)
-# - scenario for more or less than the three variables (x)
-
+# Split data into train and test in pipeline
 
 
 data.to_csv(r'A:\Projects\ML-for-Weather\data\processed\df.csv', header=True, index=False)

@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
 
 ######################################################
 # Define transformers to edit raw input data
@@ -21,6 +22,49 @@ class Debugger(BaseEstimator, TransformerMixin):
         return data
 
 
+class Split(BaseEstimator, TransformerMixin):
+    """
+    Split data into train and test set
+    """
+    def __init__(self, test_size, shuffle):
+        self.test_size = test_size
+        self.shuffle = shuffle
+
+    def fit(self, X):
+        return self
+
+    def transform(self, X):
+        list_data = []
+        train, test = train_test_split(X, test_size=self.test_size, shuffle = self.shuffle)
+        list_data.append(train)
+        list_data.append(test)
+
+        return list_data
+
+
+class Times(BaseEstimator, TransformerMixin):
+
+    def fit(self, X):
+        return self
+
+    def transform(self, data):
+        # convert to CET (UTC +1), then remove tz
+        print(data[1]) # -> this is test data
+
+        for i in range(0,2):
+            data[i]['timestamp'] = pd.to_datetime(data[i]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
+            data['month'] =  data['timestamp'].dt.month
+            data['day'] =  data['timestamp'].dt.day 
+            data['hour'] =  data['timestamp'].dt.hour
+            data = data.drop('date', 1)
+
+        #reorder columns
+        cols = list(data.columns)
+        cols = cols[-4:] + cols[:len(cols)-4]
+        data = data[cols]
+        return data
+
+
 class InsertLags(BaseEstimator, TransformerMixin):
     """
     Automatically insert lags (compute new features in 'X', add to master 'data')
@@ -33,6 +77,9 @@ class InsertLags(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
+
+        print(X[0])
+
         data = X
 
         # create column names
@@ -54,25 +101,6 @@ class InsertLags(BaseEstimator, TransformerMixin):
 
         return data #pd.DataFrame(X, columns = cols + lag_col_names)
 
-
-class Times(BaseEstimator, TransformerMixin):
-
-    def fit(self, X):
-        return self
-
-    def transform(self, data):
-        # convert to CET (UTC +1), then remove tz
-        data['timestamp'] = pd.to_datetime(data['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
-        data['month'] =  data['timestamp'].dt.month
-        data['day'] =  data['timestamp'].dt.day 
-        data['hour'] =  data['timestamp'].dt.hour
-        data = data.drop('date', 1)
-
-        #reorder columns
-        cols = list(data.columns)
-        cols = cols[-4:] + cols[:len(cols)-4]
-        data = data[cols]
-        return data
 
 class Velocity(BaseEstimator, TransformerMixin):
     """
