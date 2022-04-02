@@ -36,8 +36,9 @@ data = pipe.fit_transform(df)
 train = data['train']
 test = data['test']
 
-print(type(data))
+print(type(train))
 
 
-data.to_csv(r'A:\Projects\ML-for-Weather\data\processed\df.csv', header=True, index=False)
+train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', header=True, index=False)
+test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test.csv', header=True, index=False)
 print("END")
