@@ -18,9 +18,9 @@ class Debugger(BaseEstimator, TransformerMixin):
     
     def transform(self, data):
         # Here just print what is needed + return the actual data. Nothing is transformed. 
-        for i in range(len(data)):
-            print("Shape of data", data[i].shape)
-            print(data[i].head())
+        for k, v in data.items():
+            print('Shape of', k, 'data:', data[k].shape)
+            print(data[k].head())
 
         return data
 
@@ -42,7 +42,11 @@ class Split(BaseEstimator, TransformerMixin):
         list_data.append(train)
         list_data.append(test)
 
-        return list_data
+        dict_data = {}
+        dict_data['train'] = train
+        dict_data['test'] = test
+
+        return dict_data
 
 
 class Times(BaseEstimator, TransformerMixin):
@@ -50,21 +54,21 @@ class Times(BaseEstimator, TransformerMixin):
     def fit(self, X):
         return self
 
-    def transform(self, list_data):
+    def transform(self, dict_data):
         # convert to CET (UTC +1), then remove tz       
-        for i in range(len(list_data)):
-            list_data[i]['timestamp'] = pd.to_datetime(list_data[i]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
-            list_data[i]['month'] =  list_data[i]['timestamp'].dt.month
-            list_data[i]['day'] =  list_data[i]['timestamp'].dt.day 
-            list_data[i]['hour'] =  list_data[i]['timestamp'].dt.hour
-            list_data[i] = list_data[i].drop('date', 1)
+        for k, v in dict_data.items():
+            dict_data[k]['timestamp'] = pd.to_datetime(dict_data[k]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
+            dict_data[k]['month'] =  dict_data[k]['timestamp'].dt.month
+            dict_data[k]['day'] =  dict_data[k]['timestamp'].dt.day 
+            dict_data[k]['hour'] =  dict_data[k]['timestamp'].dt.hour
+            dict_data[k] = dict_data[k].drop('date', 1)
 
             #reorder columns
-            cols = list(list_data[i].columns)
+            cols = list(dict_data[k].columns)
             cols = cols[-4:] + cols[:len(cols)-4]
-            list_data[i] = list_data[i][cols]
+            dict_data[k] = dict_data[k][cols]
 
-        return list_data
+        return dict_data
 
 
 class InsertLags(BaseEstimator, TransformerMixin):
@@ -88,19 +92,20 @@ class InsertLags(BaseEstimator, TransformerMixin):
             for j in range(len(self.vars)):
                 cols.append(self.vars[j] + '_lag_' + str(self.lags[i]))
 
-        # create data (lags) for each data set z (train/test) in list X
-        for z in range(len(X)):
-            col_indices = [data[z].columns.get_loc(c) for c in self.vars if c in data[z]]
+        # create data (lags) for each data set k (train/test) in dict X
+        for k, v in X.items():
+            col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
             dummy = []
             for i in self.lags:
-                dummy.append(pd.DataFrame(data[z].iloc[:,col_indices].shift(i)))
-            X[z] = pd.concat(dummy, axis=1)
-            X[z].columns = cols
+                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].shift(i)))
+            X[k] = pd.concat(dummy, axis=1)
+            X[k].columns = cols
  
             # combine with master data frame
-            data[z] = pd.concat([data[z], X[z]], axis=1)
+            data[k] = pd.concat([data[k], X[k]], axis=1)
 
-        return data # a list with training and test data
+
+        return data # a dict with training and test data
 
 
 class Velocity(BaseEstimator, TransformerMixin):
@@ -124,16 +129,16 @@ class Velocity(BaseEstimator, TransformerMixin):
                 cols.append(self.vars[j] + '_velo_' + str(self.diff[i]))
 
         # create data
-        for z in range(len(X)):
-            col_indices = [data[z].columns.get_loc(c) for c in self.vars if c in data[z]]
+        for k, v in X.items():
+            col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
             dummy = []
             for i in self.diff:
-                dummy.append(pd.DataFrame(data[z].iloc[:,col_indices].diff(periods = i)))
-            X[z] = pd.concat(dummy, axis=1)
-            X[z].columns = cols
+                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i)))
+            X[k] = pd.concat(dummy, axis=1)
+            X[k].columns = cols
  
             # combine with master data frame
-            data[z] = pd.concat([data[z], X[z]], axis=1)
+            data[k] = pd.concat([data[k], X[k]], axis=1)
 
         return data
 
@@ -159,37 +164,15 @@ class Acceleration(BaseEstimator, TransformerMixin):
                 cols.append(self.vars[j] + '_acc_' + str(self.diff[i]))
 
         # create data
-        for z in range(len(X)):
-            col_indices = [data[z].columns.get_loc(c) for c in self.vars if c in data[z]]
+        for k, v in X.items():
+            col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
             dummy = []
             for i in self.diff:
-                dummy.append(pd.DataFrame(data[z].iloc[:,col_indices].diff(periods = i).diff(periods = i)))
-            X[z] = pd.concat(dummy, axis=1)
-            X[z].columns = cols
+                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = i)))
+            X[k] = pd.concat(dummy, axis=1)
+            X[k].columns = cols
  
             # combine with master data frame
-            data[z] = pd.concat([data[z], X[z]], axis=1)
+            data[k] = pd.concat([data[k], X[k]], axis=1)
         
-        print(data[0])
-        print(data[1])
-
         return data
-
-
-        # # create data
-        # col_indices = [data.columns.get_loc(c) for c in self.vars if c in data]
-        # dummy = []
-        # for i in self.diff:
-        #     dummy.append(pd.DataFrame(data.iloc[:,col_indices].diff(periods = i).diff(periods = i)))
-        # X = pd.concat(dummy, axis=1)
-        # X.columns = cols
-        # print(X)
-
-        # # combine with master data frame
-        # data = pd.concat([data, X], axis=1)
-
-
-
-
-
-
