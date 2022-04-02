@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
+import copy 
 
 ######################################################
 # Define transformers to edit raw input data
@@ -47,21 +48,21 @@ class Times(BaseEstimator, TransformerMixin):
     def fit(self, X):
         return self
 
-    def transform(self, data):
+    def transform(self, list_data):
         # convert to CET (UTC +1), then remove tz       
-        for i in range(len(data)):
-            data[i]['timestamp'] = pd.to_datetime(data[i]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
-            data[i]['month'] =  data[i]['timestamp'].dt.month
-            data[i]['day'] =  data[i]['timestamp'].dt.day 
-            data[i]['hour'] =  data[i]['timestamp'].dt.hour
-            data[i] = data[i].drop('date', 1)
+        for i in range(len(list_data)):
+            list_data[i]['timestamp'] = pd.to_datetime(list_data[i]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
+            list_data[i]['month'] =  list_data[i]['timestamp'].dt.month
+            list_data[i]['day'] =  list_data[i]['timestamp'].dt.day 
+            list_data[i]['hour'] =  list_data[i]['timestamp'].dt.hour
+            list_data[i] = list_data[i].drop('date', 1)
 
             #reorder columns
-            cols = list(data[i].columns)
+            cols = list(list_data[i].columns)
             cols = cols[-4:] + cols[:len(cols)-4]
-            data[i] = data[i][cols]
+            list_data[i] = list_data[i][cols]
 
-        return data
+        return list_data
 
 
 class InsertLags(BaseEstimator, TransformerMixin):
@@ -77,9 +78,7 @@ class InsertLags(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
 
-        print(X[0])
-        print(X[1])
-        #data = X
+        data = copy.deepcopy(X)
 
         # create column names
         cols = []
@@ -88,17 +87,21 @@ class InsertLags(BaseEstimator, TransformerMixin):
                 cols.append(self.vars[j] + '_lag_' + str(self.lags[i]))
 
         # create data (lags)
-        col_indices = [data.columns.get_loc(c) for c in self.vars if c in data]
-        dummy = []
-        for i in self.lags:
-            dummy.append(pd.DataFrame(data.iloc[:,col_indices].shift(i)))
-        X = pd.concat(dummy, axis=1)
-        X.columns = cols
+        for z in range(len(X)):
+            col_indices = [data[z].columns.get_loc(c) for c in self.vars if c in data[z]]
+            dummy = []
+            for i in self.lags:
+                dummy.append(pd.DataFrame(data[z].iloc[:,col_indices].shift(i)))
+            X[z] = pd.concat(dummy, axis=1)
+            X[z].columns = cols
+ 
+            # combine with master data frame
+            data[z] = pd.concat([data[z], X[z]], axis=1)
 
-        # combine with master data frame
-        data = pd.concat([data, X], axis=1)
+        print(data[0])
+        print(data[1])
 
-        return data #pd.DataFrame(X, columns = cols + lag_col_names)
+        return data # a list with training and test data
 
 
 class Velocity(BaseEstimator, TransformerMixin):
