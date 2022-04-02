@@ -38,6 +38,9 @@ data = pipe.fit_transform(df)
 
 # To do:
 # Split data into train and test in pipeline
+#    ls = pipe.fit_transform(df)
+#    train = ls[0]
+#    test = ls[1]
 
 
 data.to_csv(r'A:\Projects\ML-for-Weather\data\processed\df.csv', header=True, index=False)

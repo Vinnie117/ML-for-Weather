@@ -24,7 +24,7 @@ class Debugger(BaseEstimator, TransformerMixin):
 
 class Split(BaseEstimator, TransformerMixin):
     """
-    Split data into train and test set
+    Split data into train and test set -> sklearn.model_selection.TimeSeriesSplit
     """
     def __init__(self, test_size, shuffle):
         self.test_size = test_size
@@ -48,20 +48,19 @@ class Times(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, data):
-        # convert to CET (UTC +1), then remove tz
-        print(data[1]) # -> this is test data
-
-        for i in range(0,2):
+        # convert to CET (UTC +1), then remove tz       
+        for i in range(len(data)):
             data[i]['timestamp'] = pd.to_datetime(data[i]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
-            data['month'] =  data['timestamp'].dt.month
-            data['day'] =  data['timestamp'].dt.day 
-            data['hour'] =  data['timestamp'].dt.hour
-            data = data.drop('date', 1)
+            data[i]['month'] =  data[i]['timestamp'].dt.month
+            data[i]['day'] =  data[i]['timestamp'].dt.day 
+            data[i]['hour'] =  data[i]['timestamp'].dt.hour
+            data[i] = data[i].drop('date', 1)
 
-        #reorder columns
-        cols = list(data.columns)
-        cols = cols[-4:] + cols[:len(cols)-4]
-        data = data[cols]
+            #reorder columns
+            cols = list(data[i].columns)
+            cols = cols[-4:] + cols[:len(cols)-4]
+            data[i] = data[i][cols]
+
         return data
 
 
@@ -79,8 +78,8 @@ class InsertLags(BaseEstimator, TransformerMixin):
     def transform(self, X):
 
         print(X[0])
-
-        data = X
+        print(X[1])
+        #data = X
 
         # create column names
         cols = []
