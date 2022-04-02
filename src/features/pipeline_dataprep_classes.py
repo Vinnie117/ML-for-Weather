@@ -37,11 +37,7 @@ class Split(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        list_data = []
         train, test = train_test_split(X, test_size=self.test_size, shuffle = self.shuffle)
-        list_data.append(train)
-        list_data.append(test)
-
         dict_data = {}
         dict_data['train'] = train
         dict_data['test'] = test
