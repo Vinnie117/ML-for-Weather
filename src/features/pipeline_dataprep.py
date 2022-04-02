@@ -41,4 +41,3 @@ print(type(train))
 
 train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', header=True, index=False)
 test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test.csv', header=True, index=False)
-print("END")
