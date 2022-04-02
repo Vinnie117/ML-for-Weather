@@ -18,8 +18,10 @@ class Debugger(BaseEstimator, TransformerMixin):
     
     def transform(self, data):
         # Here just print what is needed + return the actual data. Nothing is transformed. 
-        print("Shape of data", data.shape)
-        print(pd.DataFrame(data).head())
+        for i in range(len(data)):
+            print("Shape of data", data[i].shape)
+            print(data[i].head())
+
         return data
 
 
@@ -86,7 +88,7 @@ class InsertLags(BaseEstimator, TransformerMixin):
             for j in range(len(self.vars)):
                 cols.append(self.vars[j] + '_lag_' + str(self.lags[i]))
 
-        # create data (lags)
+        # create data (lags) for each data set z (train/test) in list X
         for z in range(len(X)):
             col_indices = [data[z].columns.get_loc(c) for c in self.vars if c in data[z]]
             dummy = []
@@ -97,9 +99,6 @@ class InsertLags(BaseEstimator, TransformerMixin):
  
             # combine with master data frame
             data[z] = pd.concat([data[z], X[z]], axis=1)
-
-        print(data[0])
-        print(data[1])
 
         return data # a list with training and test data
 
@@ -116,7 +115,7 @@ class Velocity(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        data = X
+        data = copy.deepcopy(X)
  
         # create column names
         cols = []
@@ -125,15 +124,16 @@ class Velocity(BaseEstimator, TransformerMixin):
                 cols.append(self.vars[j] + '_velo_' + str(self.diff[i]))
 
         # create data
-        col_indices = [data.columns.get_loc(c) for c in self.vars if c in data]
-        dummy = []
-        for i in self.diff:
-            dummy.append(pd.DataFrame(data.iloc[:,col_indices].diff(periods = i)))
-        X = pd.concat(dummy, axis=1)
-        X.columns = cols
-
-        # combine with master data frame
-        data = pd.concat([data, X], axis=1)
+        for z in range(len(X)):
+            col_indices = [data[z].columns.get_loc(c) for c in self.vars if c in data[z]]
+            dummy = []
+            for i in self.diff:
+                dummy.append(pd.DataFrame(data[z].iloc[:,col_indices].diff(periods = i)))
+            X[z] = pd.concat(dummy, axis=1)
+            X[z].columns = cols
+ 
+            # combine with master data frame
+            data[z] = pd.concat([data[z], X[z]], axis=1)
 
         return data
 
@@ -150,7 +150,7 @@ class Acceleration(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        data = X
+        data = copy.deepcopy(X)
  
         # create column names
         cols = []
@@ -159,19 +159,34 @@ class Acceleration(BaseEstimator, TransformerMixin):
                 cols.append(self.vars[j] + '_acc_' + str(self.diff[i]))
 
         # create data
-        col_indices = [data.columns.get_loc(c) for c in self.vars if c in data]
-        dummy = []
-        for i in self.diff:
-            dummy.append(pd.DataFrame(data.iloc[:,col_indices].diff(periods = i).diff(periods = i)))
-        X = pd.concat(dummy, axis=1)
-        X.columns = cols
-        print(X)
-
-        # combine with master data frame
-        data = pd.concat([data, X], axis=1)
+        for z in range(len(X)):
+            col_indices = [data[z].columns.get_loc(c) for c in self.vars if c in data[z]]
+            dummy = []
+            for i in self.diff:
+                dummy.append(pd.DataFrame(data[z].iloc[:,col_indices].diff(periods = i).diff(periods = i)))
+            X[z] = pd.concat(dummy, axis=1)
+            X[z].columns = cols
+ 
+            # combine with master data frame
+            data[z] = pd.concat([data[z], X[z]], axis=1)
+        
+        print(data[0])
+        print(data[1])
 
         return data
 
+
+        # # create data
+        # col_indices = [data.columns.get_loc(c) for c in self.vars if c in data]
+        # dummy = []
+        # for i in self.diff:
+        #     dummy.append(pd.DataFrame(data.iloc[:,col_indices].diff(periods = i).diff(periods = i)))
+        # X = pd.concat(dummy, axis=1)
+        # X.columns = cols
+        # print(X)
+
+        # # combine with master data frame
+        # data = pd.concat([data, X], axis=1)
 
 
 

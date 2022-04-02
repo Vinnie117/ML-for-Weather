@@ -24,7 +24,7 @@ train, test = train_test_split(df, test_size=0.2, shuffle = False)
 
 # Feature engineering
 pipe = Pipeline([
-    ("split", Split(test_size=0.2, shuffle = False)),
+    ("split", Split(test_size=0.2, shuffle = False)), # -> -> sklearn.model_selection.TimeSeriesSplit
     ("times", Times()),
     ("lags", InsertLags(['temperature', 'cloud_cover', 'wind_speed'], lags=[1,2,24])),
     ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff=[1,2])),   
