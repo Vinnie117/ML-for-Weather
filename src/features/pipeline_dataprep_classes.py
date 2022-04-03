@@ -173,19 +173,26 @@ class Acceleration(BaseEstimator, TransformerMixin):
         
         return data
 
-class CleanUp(BaseEstimator, TransformerMixin):
+class Prepare(BaseEstimator, TransformerMixin):
     '''
-    Prepare data for scikit-learn: drop NaN and convert to np.array
+    Prepare data for scikit-learn: drop NaN, convert to np.array -> and select vars for prediction
     '''
+    def __init__(self, vars, target):
+        self.vars = vars
+        self.target = target
 
     def fit(self, X):
         return self
 
     def transform(self, dict_data):
+
         for k,v in dict_data.items():
-            dict_data[k] = dict_data[k].dropna()
-            dict_data[k] = dict_data[k].to_numpy()
-            
+                dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
+                dict_data[k] = dict_data[k].dropna()
+                dict_data[k] = dict_data[k].to_numpy()
+
+        print(dict_data)
+        
         return dict_data
 
 
