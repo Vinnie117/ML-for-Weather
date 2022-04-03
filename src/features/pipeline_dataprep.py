@@ -42,6 +42,11 @@ test = data['test']
 
 print(train)
 
+X_train = train[:, 1:]
+y_train = train[:, 0]
+X_test = test[:, 1:]
+y_test = test[:, 0]
+
 
 #train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', header=True, index=False)
 #test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', header=True, index=False)

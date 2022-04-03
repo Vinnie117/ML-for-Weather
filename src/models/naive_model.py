@@ -5,10 +5,14 @@ from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 
-
+np.set_printoptions(threshold=np.inf)
 # load data
-train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv') 
-test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv') 
+# train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv') 
+# test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv') 
+
+train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
+test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
+
 
 # X_train = train[['month', 'day', 'hour',
 #                  'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']]
@@ -35,13 +39,21 @@ test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv')
 # y_test = y_test.dropna()
 # y_test = y_test.to_numpy()
 
-print(train)
-print(test)
+# print(train)
+# print(test)
+
 
 X_train = train[:, 1:]
 y_train = train[:, 0]
 X_test = test[:, 1:]
 y_test = test[:, 0]
+
+
+print(train)
+print(X_train)
+print(y_train)
+print(X_test)
+print(y_test)
 
 # Train a model
 t0 = time()
