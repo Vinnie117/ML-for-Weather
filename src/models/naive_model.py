@@ -10,14 +10,14 @@ import matplotlib.pyplot as plt
 train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv') 
 test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv') 
 
-X_train = train[['month', 'day', 'hour',
-                 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']]
-y_train = train['temperature']
+# X_train = train[['month', 'day', 'hour',
+#                  'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']]
+# y_train = train['temperature']
 
-X_test = test[['month', 'day', 'hour',
-                 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']]
+# X_test = test[['month', 'day', 'hour',
+#                  'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']]
 
-y_test = test['temperature']                 
+# y_test = test['temperature']                 
 
 # print(X_train)
 # print(y_train)
@@ -35,8 +35,13 @@ y_test = test['temperature']
 # y_test = y_test.dropna()
 # y_test = y_test.to_numpy()
 
-print(X_train)
-print(y_train)
+print(train)
+print(test)
+
+X_train = train[:, 1:]
+y_train = train[:, 0]
+X_test = test[:, 1:]
+y_test = test[:, 0]
 
 # Train a model
 t0 = time()
