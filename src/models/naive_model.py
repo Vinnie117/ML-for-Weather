@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 
 
 # load data
-train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv') 
-test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test.csv') 
+train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv') 
+test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv') 
 
 X_train = train[['month', 'day', 'hour',
                  'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']]
@@ -19,21 +19,21 @@ X_test = test[['month', 'day', 'hour',
 
 y_test = test['temperature']                 
 
-print(X_train)
-print(y_train)
+# print(X_train)
+# print(y_train)
 
-# Adjust data for scikit learn
-y_train = y_train.iloc[1:]
-X_train = X_train.dropna()
-y_train = y_train.dropna()
-X_train = X_train.to_numpy()
-y_train = y_train.to_numpy()
+# # Adjust data for scikit learn
+# y_train = y_train.iloc[1:]
+# X_train = X_train.dropna()
+# y_train = y_train.dropna()
+# X_train = X_train.to_numpy()
+# y_train = y_train.to_numpy()
 
-y_test = y_test.iloc[3:]              # why 3?
-X_test = X_test.dropna()
-X_test = X_test.to_numpy()
-y_test = y_test.dropna()
-y_test = y_test.to_numpy()
+# y_test = y_test.iloc[3:]              # why 3?
+# X_test = X_test.dropna()
+# X_test = X_test.to_numpy()
+# y_test = y_test.dropna()
+# y_test = y_test.to_numpy()
 
 print(X_train)
 print(y_train)

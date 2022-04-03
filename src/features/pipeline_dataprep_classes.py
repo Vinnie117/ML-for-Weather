@@ -20,7 +20,7 @@ class Debugger(BaseEstimator, TransformerMixin):
         # Here just print what is needed + return the actual data. Nothing is transformed. 
         for k, v in data.items():
             print('Shape of', k, 'data:', data[k].shape)
-            print(data[k].head())
+            print(data[k])
 
         return data
 
@@ -172,3 +172,22 @@ class Acceleration(BaseEstimator, TransformerMixin):
             data[k] = pd.concat([data[k], X[k]], axis=1)
         
         return data
+
+class CleanUp(BaseEstimator, TransformerMixin):
+    '''
+    Prepare data for scikit-learn: drop NaN and convert to np.array
+    '''
+
+    def fit(self, X):
+        return self
+
+    def transform(self, dict_data):
+        for k,v in dict_data.items():
+            dict_data[k] = dict_data[k].dropna()
+            dict_data[k] = dict_data[k].to_numpy()
+            
+        return dict_data
+
+
+
+
