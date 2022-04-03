@@ -128,6 +128,7 @@ print("END")
 
 # To do
 # - Select one approach -> bottom (preferred) or top
+    # - adjust Prepare()
 # - create (lagged) trend and seasonality variables
 # - make data suitable for sklearn in pipeline
 # - scale variables to normalize coefficient between 0 and 1
