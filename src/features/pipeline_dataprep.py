@@ -30,8 +30,8 @@ pipe = Pipeline([
     ('lagged_velocity', InsertLags(['temperature_velo_1', 'cloud_cover_velo_1', 'wind_speed_velo_1'], [1,2])),     # lagged difference = differenced lag
     ('acceleration', Acceleration(['temperature', 'cloud_cover', 'wind_speed'], diff=[1])),                        # diff of 1 day between 2 velos
     ('lagged_acceleration', InsertLags(['temperature_acc_1', 'cloud_cover_acc_1', 'wind_speed_acc_1'], [1,2])),   
-#    ('cleanup', Prepare(target = ['temperature'],
-#                        vars=['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1'])),
+    ('cleanup', Prepare(target = ['temperature'],
+                        vars=['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1'])),
     ("debug8", Debugger())
 ])
 
@@ -40,7 +40,7 @@ data = pipe.fit_transform(df)
 train = data['train']
 test = data['test']
 
-print(train)
+print(test)
 
 
 

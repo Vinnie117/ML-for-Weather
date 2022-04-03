@@ -188,7 +188,7 @@ class Prepare(BaseEstimator, TransformerMixin):
         for k,v in dict_data.items():
                 dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
                 dict_data[k] = dict_data[k].dropna()
-                dict_data[k] = dict_data[k].to_numpy()
+       #         dict_data[k] = dict_data[k].to_numpy()
         
         return dict_data
 
