@@ -1,7 +1,7 @@
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 import sys
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 import pandas as pd
 import numpy as np
 from sklearn.pipeline import Pipeline
@@ -18,6 +18,7 @@ from sklearn.model_selection import train_test_split
 from functions import clean
 import hydra
 from hydra.core.config_store import ConfigStore
+from hydra import compose, initialize
 import os
 
 
@@ -25,42 +26,70 @@ import os
 # load data
 #df_raw = pd.read_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv') 
 
+###########################################################
+# Mark data_handler with hydra.main()
 # Use instance of config dataclass
-cs = ConfigStore.instance()
-cs.store(name = 'data_config', node = data_config)
+# cs = ConfigStore.instance()
+# cs.store(name = 'data_config', node = data_config)
 
-@hydra.main(config_path='..\conf', config_name='config')
-def data_handler(cfg: data_config) -> None:
+# @hydra.main(config_path='..\conf', config_name='config')
+# def data_handler(cfg: data_config):
     
-    #print(cfg)
-    df_raw = pd.read_csv(cfg.data.path)
+#     # load data
+#     df_raw = pd.read_csv(cfg.data.path)
     
+#     # clean up and prepare
+#     data = df_raw.drop(columns=["station_id", "dataset"])
+#     data = data.pivot(index="date", columns="parameter", values="value").reset_index()
+    
+#     # renaming
+#     for i in cfg.vars_old:
+#         data = data.rename(columns={cfg.vars_old[i]: cfg.vars_new[i]})
+
+#     # ordering
+#     data.insert(1, cfg.vars_new.temp, data.pop(cfg.vars_new.temp))
+#     print(data)
+
+#     return data
+############################################################
+
+# basic configs with yaml
+conf = OmegaConf.load('src\conf\config.yaml')
+print(conf.vars_new.temp)
+
+def data_handler():
+    
+    # load data
+    df_raw = pd.read_csv(conf.data.path)
+    
+    # clean up and prepare
     data = df_raw.drop(columns=["station_id", "dataset"])
     data = data.pivot(index="date", columns="parameter", values="value").reset_index()
     
-    for i in cfg.vars_old:
-        data = data.rename(columns={cfg.vars_old[i]: cfg.vars_new[i]})
+    # renaming
+    for i in conf.vars_old:
+        data = data.rename(columns={conf.vars_old[i]: conf.vars_new[i]})
 
-    print(data)
-    # data.insert(1, 'temperature', data.pop('temperature'))
+    # ordering
+    data.insert(1, conf.vars_new.temp, data.pop(conf.vars_new.temp))
+    #print(data)
 
-
-    # indicate var names to be changed
-    # df = clean(df_raw, old = [cfg.vars_old.temp, 
-    #                           cfg.vars_old.cloud],
-    #                 new = [cfg.vars_new.temp,
-    #                        cfg.vars_new.cloud])
     return data
 
 
+#data_handler()
 df = data_handler()
 print(df)
 
 ####################################################
 
+# part of hydra-main()
 # if __name__ == "__main__":
 #     data_handler()
 
+
+#####################################################
+# Implement later:
 
 # # Feature engineering
 # pipe = Pipeline([
