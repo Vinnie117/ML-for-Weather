@@ -37,6 +37,9 @@ class Split(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
+        '''
+        Build an (empty) dictionary which will be filled with data in later transformers
+        '''
         train, test = train_test_split(X, test_size=self.test_size, shuffle = self.shuffle)
         dict_data = {}
         dict_data['train'] = train
@@ -188,7 +191,7 @@ class Prepare(BaseEstimator, TransformerMixin):
         for k,v in dict_data.items():
                 dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
                 dict_data[k] = dict_data[k].dropna()
-       #         dict_data[k] = dict_data[k].to_numpy()
+                dict_data[k] = dict_data[k].to_numpy()
         
         return dict_data
 
