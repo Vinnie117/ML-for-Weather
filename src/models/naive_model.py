@@ -52,18 +52,3 @@ plt.show()
 
 
 print("END")
-
-
-
-# To do
-
-# - implement config management
-# - plot training / test error
-# - implement adjusted R2 instead of R2
-# - create (lagged) trend and seasonality variables
-# - make data suitable for sklearn in pipeline
-# - scale variables to normalize coefficient between 0 and 1
-
-
-
-

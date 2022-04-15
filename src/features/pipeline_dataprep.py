@@ -1,12 +1,12 @@
-#import sys
-#sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
+import sys
+sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 #import sys
 from omegaconf import OmegaConf
 import pandas as pd
 import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.utils import shuffle
-#from config import data_config
+from config import data_config
 from pipeline_dataprep_classes import Prepare
 from pipeline_dataprep_classes import Acceleration
 from pipeline_dataprep_classes import Velocity
@@ -16,8 +16,8 @@ from pipeline_dataprep_classes import Times
 from pipeline_dataprep_classes import Split
 from sklearn.model_selection import train_test_split
 from functions import clean
-#import hydra
-#from hydra.core.config_store import ConfigStore
+import hydra
+from hydra.core.config_store import ConfigStore
 from hydra import compose, initialize
 #import os
 
@@ -58,26 +58,26 @@ from hydra import compose, initialize
 ############################################################
 # Does not use hydra
 # basic configs with yaml
-conf = OmegaConf.load('src\conf\config.yaml')
+# conf = OmegaConf.load('src\conf\config.yaml')
 
-def data_handler():
+# def data_handler():
     
-    # load data
-    df_raw = pd.read_csv(conf.data.path)
+#     # load data
+#     df_raw = pd.read_csv(conf.data.path)
     
-    # clean up and prepare
-    data = df_raw.drop(columns=["station_id", "dataset"])
-    data = data.pivot(index="date", columns="parameter", values="value").reset_index()
+#     # clean up and prepare
+#     data = df_raw.drop(columns=["station_id", "dataset"])
+#     data = data.pivot(index="date", columns="parameter", values="value").reset_index()
     
-    # renaming
-    for i in conf.vars_old:
-        data = data.rename(columns={conf.vars_old[i]: conf.vars_new[i]})
+#     # renaming
+#     for i in conf.vars_old:
+#         data = data.rename(columns={conf.vars_old[i]: conf.vars_new[i]})
 
-    # ordering
-    data.insert(1, conf.vars_new.temp, data.pop(conf.vars_new.temp))
-    #print(data)
+#     # ordering
+#     data.insert(1, conf.vars_new.temp, data.pop(conf.vars_new.temp))
+#     #print(data)
 
-    return data
+#     return data
 ################################################################
 
 # Use Compose API of hydra 
@@ -85,8 +85,10 @@ initialize(config_path="..\conf", job_name="config")
 cfg = compose(config_name="config")
 print(OmegaConf.to_yaml(cfg))
 
+cs = ConfigStore.instance()
+cs.store(name = 'data_config', node = data_config)
 
-def data_handler2():
+def data_handler2(cfg: data_config):
     
     # load data
     df_raw = pd.read_csv(cfg.data.path)
@@ -98,7 +100,7 @@ def data_handler2():
     # renaming
     for i in cfg.vars_old:
         data = data.rename(columns={cfg.vars_old[i]: cfg.vars_new[i]})
-
+    
     # ordering
     data.insert(1, cfg.vars_new.temp, data.pop(cfg.vars_new.temp))
     #print(data)
@@ -108,7 +110,7 @@ def data_handler2():
 
 
 
-df2 = data_handler2()
+df2 = data_handler2(cfg=cfg)
 print(df2)
 
 ####################################################
