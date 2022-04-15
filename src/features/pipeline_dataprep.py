@@ -51,11 +51,13 @@ import os
 #     print(data)
 
 #     return data
+
+# This one works but does not return values (intended by hydra!)
+
 ############################################################
 
 # basic configs with yaml
 conf = OmegaConf.load('src\conf\config.yaml')
-print(conf.vars_new.temp)
 
 def data_handler():
     
@@ -75,11 +77,38 @@ def data_handler():
     #print(data)
 
     return data
+################################################################
+
+# Use Compose API of hydra 
+initialize(config_path="..\conf", job_name="config")
+cfg = compose(config_name="config")
+print(OmegaConf.to_yaml(cfg))
 
 
-#data_handler()
-df = data_handler()
-print(df)
+def data_handler2():
+    
+    # load data
+    df_raw = pd.read_csv(cfg.data.path)
+    
+    # clean up and prepare
+    data = df_raw.drop(columns=["station_id", "dataset"])
+    data = data.pivot(index="date", columns="parameter", values="value").reset_index()
+    
+    # renaming
+    for i in cfg.vars_old:
+        data = data.rename(columns={cfg.vars_old[i]: cfg.vars_new[i]})
+
+    # ordering
+    data.insert(1, cfg.vars_new.temp, data.pop(cfg.vars_new.temp))
+    #print(data)
+
+    return data
+##################
+
+
+
+df2 = data_handler2()
+print(df2)
 
 ####################################################
 
