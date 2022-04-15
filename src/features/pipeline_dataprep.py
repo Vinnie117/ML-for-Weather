@@ -1,8 +1,12 @@
+import sys
+sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
+import sys
 from omegaconf import DictConfig
 import pandas as pd
 import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.utils import shuffle
+from config import data_config
 from pipeline_dataprep_classes import Prepare
 from pipeline_dataprep_classes import Acceleration
 from pipeline_dataprep_classes import Velocity
@@ -13,23 +17,23 @@ from pipeline_dataprep_classes import Split
 from sklearn.model_selection import train_test_split
 from functions import clean
 import hydra
-import os 
+from hydra.core.config_store import ConfigStore
+import os
 
-# dir_path = os.path.dirname(os.path.realpath(__file__))
-# print(dir_path)
-
-# cwd = os.getcwd()
-# print(cwd)
 
 
 # load data
 df_raw = pd.read_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv') 
 
-@hydra.main(config_path='..\conf', config_name='config')
-def data_handler(cfg: DictConfig) -> None:
+# Use instance of config dataclass
+cs = ConfigStore.instance()
+cs.store(name = 'data_config', node = data_config)
 
-    print(cfg)
-    return
+@hydra.main(config_path='..\conf', config_name='config')
+def data_handler(cfg: data_config):
+
+    print(cfg.vars_new)
+
 
     # # indicate var names to be changed
     # df = clean(df_raw, old = ['temperature_air_mean_200', 

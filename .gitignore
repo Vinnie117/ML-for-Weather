@@ -3,3 +3,6 @@
 
 # VS Code configs
 .vscode
+
+# Logs of hydra configs (experiment runs)
+outputs
