@@ -23,30 +23,43 @@ import os
 
 
 # load data
-df_raw = pd.read_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv') 
+#df_raw = pd.read_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv') 
 
 # Use instance of config dataclass
 cs = ConfigStore.instance()
 cs.store(name = 'data_config', node = data_config)
 
 @hydra.main(config_path='..\conf', config_name='config')
-def data_handler(cfg: data_config):
+def data_handler(cfg: data_config) -> None:
+    
+    #print(cfg)
+    df_raw = pd.read_csv(cfg.data.path)
+    
+    data = df_raw.drop(columns=["station_id", "dataset"])
+    data = data.pivot(index="date", columns="parameter", values="value").reset_index()
+    
+    for i in cfg.vars_old:
+        data = data.rename(columns={cfg.vars_old[i]: cfg.vars_new[i]})
 
-    print(cfg.vars_new)
+    print(data)
+    # data.insert(1, 'temperature', data.pop('temperature'))
 
 
-    # # indicate var names to be changed
-    # df = clean(df_raw, old = ['temperature_air_mean_200', 
-    #                         'cloud_cover_total'],
-    #                 new = ['temperature',
-    #                         'cloud_cover'])
-    # return df
+    # indicate var names to be changed
+    # df = clean(df_raw, old = [cfg.vars_old.temp, 
+    #                           cfg.vars_old.cloud],
+    #                 new = [cfg.vars_new.temp,
+    #                        cfg.vars_new.cloud])
+    return data
 
+
+df = data_handler()
+print(df)
 
 ####################################################
 
-if __name__ == "__main__":
-    data_handler()
+# if __name__ == "__main__":
+#     data_handler()
 
 
 # # Feature engineering

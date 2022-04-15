@@ -11,6 +11,11 @@ class vars_new:
     cloud: str
 
 @dataclass
+class data:
+    path: str
+
+@dataclass
 class data_config:
     vars_old: vars_old
     vars_new: vars_new
+    data: data

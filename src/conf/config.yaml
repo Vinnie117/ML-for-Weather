@@ -4,3 +4,6 @@ vars_old:
 vars_new:
   temp: 'temperature'
   cloud: 'cloud_cover'
+data:
+  path: 'A:\Projects\ML-for-Weather\data\raw\test_simple.csv'
+
