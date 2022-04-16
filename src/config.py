@@ -15,7 +15,12 @@ class data:
     path: str
 
 @dataclass
+class insert_lags:
+    vars: str
+
+@dataclass
 class data_config:
     vars_old: vars_old
     vars_new: vars_new
     data: data
+    insert_lags: insert_lags

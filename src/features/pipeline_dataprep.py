@@ -1,6 +1,5 @@
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
-#import sys
 from omegaconf import OmegaConf
 import pandas as pd
 import numpy as np
@@ -14,9 +13,9 @@ from pipeline_dataprep_classes import InsertLags
 from pipeline_dataprep_classes import Debugger
 from pipeline_dataprep_classes import Times
 from pipeline_dataprep_classes import Split
-from sklearn.model_selection import train_test_split
-from functions import clean
-import hydra
+#from sklearn.model_selection import train_test_split
+#from functions import clean
+#import hydra
 from hydra.core.config_store import ConfigStore
 from hydra import compose, initialize
 #import os
@@ -85,17 +84,18 @@ initialize(config_path="..\conf", job_name="config")
 cfg = compose(config_name="config")
 print(OmegaConf.to_yaml(cfg))
 
+# Use instance of config dataclass
 cs = ConfigStore.instance()
 cs.store(name = 'data_config', node = data_config)
 
-def data_handler2(cfg: data_config):
+def data_loader(cfg: data_config):
     
     # load data
     df_raw = pd.read_csv(cfg.data.path)
     
     # clean up and prepare
-    data = df_raw.drop(columns=["station_id", "dataset"])
-    data = data.pivot(index="date", columns="parameter", values="value").reset_index()
+    data = df_raw.drop(columns=['station_id', 'dataset'])
+    data = data.pivot(index='date', columns='parameter', values='value').reset_index()
     
     # renaming
     for i in cfg.vars_old:
@@ -103,14 +103,13 @@ def data_handler2(cfg: data_config):
     
     # ordering
     data.insert(1, cfg.vars_new.temp, data.pop(cfg.vars_new.temp))
-    #print(data)
 
     return data
 ##################
 
 
 
-df2 = data_handler2(cfg=cfg)
+df2 = data_loader(cfg=cfg)
 print(df2)
 
 ####################################################
@@ -124,19 +123,27 @@ print(df2)
 # Implement later:
 
 # Feature engineering
-pipe = Pipeline([
-    ("split", Split(test_size=0.2, shuffle = False)), # -> sklearn.model_selection.TimeSeriesSplit
-    ("times", Times()),
-    ("lags", InsertLags(['temperature', 'cloud_cover', 'wind_speed'], lags=[1,2,24])),
-    ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff=[1,2])),   
-    ('lagged_velocity', InsertLags(['temperature_velo_1', 'cloud_cover_velo_1', 'wind_speed_velo_1'], [1,2])),     # lagged difference = differenced lag
-    ('acceleration', Acceleration(['temperature', 'cloud_cover', 'wind_speed'], diff=[1])),                        # diff of 1 day between 2 velos
-    ('lagged_acceleration', InsertLags(['temperature_acc_1', 'cloud_cover_acc_1', 'wind_speed_acc_1'], [1,2])),   
-    ('cleanup', Prepare(target = ['temperature'],
-                        vars=['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']))
-    ])
 
-data = pipe.fit_transform(df2) 
+def feature_engineering(cfg: data_config):
+
+    pipe = Pipeline([
+        ("split", Split(test_size=0.2, shuffle = False)), # -> sklearn.model_selection.TimeSeriesSplit
+        ("times", Times()),
+        ("lags", InsertLags(cfg.insert_lags.vars, lags=[1,2,24])),
+        ('debug', Debugger()),
+        ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff=[1,2])),   
+        ('lagged_velocity', InsertLags(['temperature_velo_1', 'cloud_cover_velo_1', 'wind_speed_velo_1'], [1,2])),     # lagged difference = differenced lag
+        ('acceleration', Acceleration(['temperature', 'cloud_cover', 'wind_speed'], diff=[1])),                        # diff of 1 day between 2 velos
+        ('lagged_acceleration', InsertLags(['temperature_acc_1', 'cloud_cover_acc_1', 'wind_speed_acc_1'], [1,2])),   
+        ('cleanup', Prepare(target = ['temperature'],
+                            vars=['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']))
+        ])
+
+    return pipe
+
+pipeline = feature_engineering(cfg = cfg)
+
+data = pipeline.fit_transform(df2) 
 
 train = data['train']
 test = data['test']
