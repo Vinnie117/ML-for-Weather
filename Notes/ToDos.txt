@@ -1,7 +1,46 @@
-# To do
-- implement config management
-- plot training / test error
+# To do - short term
+- plot training / test error -> make matplotlib work
 - implement adjusted R2 instead of R2
+    - https://stackoverflow.com/questions/51023806/how-to-get-adjusted-r-square-for-linear-regression
+    - https://stackoverflow.com/questions/51038820/how-to-calculated-the-adjusted-r2-value-using-scikit
 - create (lagged) trend and seasonality variables
-- make data suitable for sklearn in pipeline
+    - moving averages
+    - 6h MA? 3h MA?
+- create z-score variables?
+    - https://twitter.com/mattrowsboats/status/1514293331278372876 
 - scale variables to normalize coefficient between 0 and 1
+    - do it in pipeline, close to the end
+    - scale all variables or only selected ones? enable both?
+        - e.g. all = True -> scale all variables
+        - if all = False -> provide a list of variables to be scaled
+
+
+# To do - long term
+- structure for multiple models / experiments
+    - how are they (data / parameters) logged and tracked?
+    - how should the folder structure be?
+    - main.py with a main()-method as a main entry point for the app?
+- Sub config file for each group of data to be used?
+    - with hydra
+        - https://www.youtube.com/watch?v=tEsPyYnzt8s
+        - 24:30
+    - or how to do it with another way?
+        - data to be used must be tracked
+- MLFlow / DVC
+
+
+# chain multiple functions
+- https://stackoverflow.com/questions/20454118/better-way-to-call-a-chain-of-functions-in-python
+
+
+
+
+
+
+
+
+
+
+
+
+

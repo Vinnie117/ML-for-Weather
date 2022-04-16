@@ -17,15 +17,6 @@ from hydra.core.config_store import ConfigStore
 from hydra import compose, initialize
 
 
-# Use Compose API of hydra 
-initialize(config_path="..\conf", job_name="config")
-cfg = compose(config_name="config")
-print(OmegaConf.to_yaml(cfg))
-
-# Use instance of config dataclass
-cs = ConfigStore.instance()
-cs.store(name = 'data_config', node = data_config)
-
 def data_loader(cfg: data_config):
     
     # load data
@@ -45,10 +36,6 @@ def data_loader(cfg: data_config):
     return data
 
 
-df2 = data_loader(cfg=cfg)
-print(df2)
-
-
 # Feature engineering
 def feature_engineering(cfg: data_config):
 
@@ -66,12 +53,22 @@ def feature_engineering(cfg: data_config):
 
     return pipe
 
+
+# Use Compose API of hydra 
+initialize(config_path="..\conf", job_name="config")
+cfg = compose(config_name="config")
+print(OmegaConf.to_yaml(cfg))
+
+# Use instance of config dataclass
+cs = ConfigStore.instance()
+cs.store(name = 'data_config', node = data_config)
+
+df = data_loader(cfg=cfg)
 pipeline = feature_engineering(cfg = cfg)
-data = pipeline.fit_transform(df2) 
+data = pipeline.fit_transform(df) 
 
 train = data['train']
 test = data['test']
 
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', train, delimiter=",", fmt='%s')
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', test, delimiter=",", fmt='%s')
-
