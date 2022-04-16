@@ -42,13 +42,13 @@ print("Coefficient of determination: %.2f" % r2_score(y_test, y_pred_test))
 
 
 #Make a plot
-plt.scatter(X_test, y_test, color="black")
-plt.plot(X_test, y_pred_test, color="blue", linewidth=3)
+# plt.scatter(X_test, y_test, color="black")
+# plt.plot(X_test, y_pred_test, color="blue", linewidth=3)
 
-plt.xticks(())
-plt.yticks(())
+# plt.xticks(())
+# plt.yticks(())
 
-plt.show()
+# plt.show()
 
 
 print("END")

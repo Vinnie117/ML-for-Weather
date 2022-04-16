@@ -9,7 +9,6 @@ class vars_old:
 class vars_new:
     temp: str
     cloud: str
-    wind: str
 
 @dataclass
 class data:

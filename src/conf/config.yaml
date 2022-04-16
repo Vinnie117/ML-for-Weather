@@ -6,7 +6,6 @@ vars_old:
 vars_new:
   temp: 'temperature'
   cloud: 'cloud_cover'
-  wind: 'wind_speed'
 transform:
   vars: ['temperature', 'cloud_cover', 'wind_speed']
   lags_velo: ['temperature_velo_1', 'cloud_cover_velo_1', 'wind_speed_velo_1']
