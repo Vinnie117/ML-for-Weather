@@ -7,10 +7,19 @@ vars_new:
   temp: 'temperature'
   cloud: 'cloud_cover'
   wind: 'wind_speed'
-predictors:
+transform:
   vars: ['temperature', 'cloud_cover', 'wind_speed']
+  lags_velo: ['temperature_velo_1', 'cloud_cover_velo_1', 'wind_speed_velo_1']
+  lags_acc: ['temperature_acc_1', 'cloud_cover_acc_1', 'wind_speed_acc_1']
 diff:
   lags: [1,2,24]
   velo: [1,2]
   acc: [1]
+  lagged_velo: [1,2]
+  lagged_acc: [1,2]
+model:
+  target: ['temperature']
+  predictors: ['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']
+  split: 0.2
+  shuffle: False
 

@@ -74,8 +74,8 @@ class InsertLags(BaseEstimator, TransformerMixin):
     """
     Automatically insert lags (compute new features in 'X', add to master 'data')
     """
-    def __init__(self, vars, lags):
-        self.lags = lags
+    def __init__(self, vars, diff):
+        self.diff = diff
         self.vars = vars
 
     def fit(self, X):
@@ -87,15 +87,15 @@ class InsertLags(BaseEstimator, TransformerMixin):
 
         # create column names
         cols = []
-        for i in range(len(self.lags)):
+        for i in range(len(self.diff)):
             for j in range(len(self.vars)):
-                cols.append(self.vars[j] + '_lag_' + str(self.lags[i]))
+                cols.append(self.vars[j] + '_lag_' + str(self.diff[i]))
 
         # create data (lags) for each data set k (train/test) in dict X
         for k, v in X.items():
             col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
             dummy = []
-            for i in self.lags:
+            for i in self.diff:
                 dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].shift(i)))
             X[k] = pd.concat(dummy, axis=1)
             X[k].columns = cols

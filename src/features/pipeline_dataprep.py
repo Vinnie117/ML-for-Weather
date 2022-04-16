@@ -127,16 +127,16 @@ print(df2)
 def feature_engineering(cfg: data_config):
 
     pipe = Pipeline([
-        ("split", Split(test_size=0.2, shuffle = False)), # -> sklearn.model_selection.TimeSeriesSplit
+        ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
         ("times", Times()),
-        ("lags", InsertLags(vars=cfg.predictors.vars, lags=cfg.diff.lags)),
+        ("lags", InsertLags(vars=cfg.transform.vars, diff=cfg.diff.lags)),
         ('debug', Debugger()),
-        ('velocity', Velocity(vars=cfg.predictors.vars, diff=cfg.diff.velo)),   
-        ('lagged_velocity', InsertLags(['temperature_velo_1', 'cloud_cover_velo_1', 'wind_speed_velo_1'], [1,2])),     # lagged difference = differenced lag
-        ('acceleration', Acceleration(vars=cfg.predictors.vars, diff=cfg.diff.acc)),                        # diff of 1 day between 2 velos
-        ('lagged_acceleration', InsertLags(['temperature_acc_1', 'cloud_cover_acc_1', 'wind_speed_acc_1'], [1,2])),   
-        ('cleanup', Prepare(target = ['temperature'],
-                            vars=['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']))
+        ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.velo)),   
+        ('lagged_velocity', InsertLags(vars=cfg.transform.lags_velo, diff=cfg.diff.lagged_velo)),     # lagged difference = differenced lag
+        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.acc)),                   # diff of 1 day between 2 velos
+        ('lagged_acceleration', InsertLags(vars=cfg.transform.lags_acc, diff=cfg.diff.lagged_acc)),   
+        ('cleanup', Prepare(target = cfg.model.target,
+                            vars=cfg.model.predictors))
         ])
 
     return pipe
@@ -153,6 +153,6 @@ test = data['test']
 
 print(test)
 
-# np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', train, delimiter=",", fmt='%s')
-# np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', test, delimiter=",", fmt='%s')
+np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', train, delimiter=",", fmt='%s')
+np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', test, delimiter=",", fmt='%s')
 
