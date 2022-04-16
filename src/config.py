@@ -9,18 +9,26 @@ class vars_old:
 class vars_new:
     temp: str
     cloud: str
+    wind: str
 
 @dataclass
 class data:
     path: str
 
 @dataclass
-class insert_lags:
+class predictors:
     vars: str
+
+@dataclass
+class diff:
+    lags: int
+    velo: int
+    acc: int
 
 @dataclass
 class data_config:
     vars_old: vars_old
     vars_new: vars_new
     data: data
-    insert_lags: insert_lags
+    predictors: predictors
+    diff: diff

@@ -6,6 +6,11 @@ vars_old:
 vars_new:
   temp: 'temperature'
   cloud: 'cloud_cover'
-insert_lags:
+  wind: 'wind_speed'
+predictors:
   vars: ['temperature', 'cloud_cover', 'wind_speed']
+diff:
+  lags: [1,2,24]
+  velo: [1,2]
+  acc: [1]
 

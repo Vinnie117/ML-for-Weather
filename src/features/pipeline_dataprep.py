@@ -129,11 +129,11 @@ def feature_engineering(cfg: data_config):
     pipe = Pipeline([
         ("split", Split(test_size=0.2, shuffle = False)), # -> sklearn.model_selection.TimeSeriesSplit
         ("times", Times()),
-        ("lags", InsertLags(cfg.insert_lags.vars, lags=[1,2,24])),
+        ("lags", InsertLags(vars=cfg.predictors.vars, lags=cfg.diff.lags)),
         ('debug', Debugger()),
-        ('velocity', Velocity(['temperature', 'cloud_cover', 'wind_speed'], diff=[1,2])),   
+        ('velocity', Velocity(vars=cfg.predictors.vars, diff=cfg.diff.velo)),   
         ('lagged_velocity', InsertLags(['temperature_velo_1', 'cloud_cover_velo_1', 'wind_speed_velo_1'], [1,2])),     # lagged difference = differenced lag
-        ('acceleration', Acceleration(['temperature', 'cloud_cover', 'wind_speed'], diff=[1])),                        # diff of 1 day between 2 velos
+        ('acceleration', Acceleration(vars=cfg.predictors.vars, diff=cfg.diff.acc)),                        # diff of 1 day between 2 velos
         ('lagged_acceleration', InsertLags(['temperature_acc_1', 'cloud_cover_acc_1', 'wind_speed_acc_1'], [1,2])),   
         ('cleanup', Prepare(target = ['temperature'],
                             vars=['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']))
@@ -142,8 +142,11 @@ def feature_engineering(cfg: data_config):
     return pipe
 
 pipeline = feature_engineering(cfg = cfg)
-
 data = pipeline.fit_transform(df2) 
+
+
+
+
 
 train = data['train']
 test = data['test']
