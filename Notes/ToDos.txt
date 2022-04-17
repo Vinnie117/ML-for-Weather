@@ -1,8 +1,12 @@
 # To do - short term
 - plot training / test error -> make matplotlib work
-- implement adjusted R2 instead of R2
-    - https://stackoverflow.com/questions/51023806/how-to-get-adjusted-r-square-for-linear-regression
-    - https://stackoverflow.com/questions/51038820/how-to-calculated-the-adjusted-r2-value-using-scikit
+    - https://scikit-learn.org/stable/auto_examples/linear_model/plot_ols.html
+    - using only the first feature for 2d plot!
+    - think about project structure -> where to put the plots?
+        - simply in'visuals'? Subfolders of visuals? 'eda', 'model evaluation'...
+        - dedicated folders for 'eda' and 'model_evaluation'?
+- plot learning / loss curves?
+    - https://scikit-learn.org/stable/modules/learning_curve.html
 - create (lagged) trend and seasonality variables
     - moving averages
     - 6h MA? 3h MA?
@@ -27,6 +31,8 @@
     - or how to do it with another way?
         - data to be used must be tracked
 - MLFlow / DVC
+- Think about model evaluation
+- Think about Exploratory Data Analysis
 
 
 # chain multiple functions

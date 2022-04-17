@@ -4,8 +4,9 @@ from time import time
 from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
+from functions import adjustedR2
 
-np.set_printoptions(threshold=np.inf)
+#np.set_printoptions(threshold=np.inf)
 
 train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
 test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
@@ -41,7 +42,24 @@ print("Mean squared error: %.2f" % mean_squared_error(y_test, y_pred_test))
 print("Coefficient of determination: %.2f" % r2_score(y_test, y_pred_test))
 
 
+# Implementation of adjusted R2
+r2 = r2_score(y_test, y_pred_test)
+print(r2)
+print(X_train.shape[0])
+print(X_train.shape[1])
+# for training data
+adj_r2_training = adjustedR2(r2, X_train)
+print("Adjusted R2 on training data: %.4f" % adj_r2_training)
+
+#for test data
+adj_r2_test = adjustedR2(r2, X_test)
+print("Adjusted R2 on test data: %.4f" % adj_r2_test)
+
+
 #Make a plot
+#- https://scikit-learn.org/stable/auto_examples/linear_model/plot_ols.html
+#- using only the first feature for 2d plot!
+
 # plt.scatter(X_test, y_test, color="black")
 # plt.plot(X_test, y_pred_test, color="blue", linewidth=3)
 
