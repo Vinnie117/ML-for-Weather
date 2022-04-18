@@ -33,20 +33,11 @@
 - MLFlow / DVC
 - Think about model evaluation
 - Think about Exploratory Data Analysis
+- Documentation of the project
+    - variable description
+    - explain functions
+    - Excalidraw to visualize architecture
 
 
 # chain multiple functions
 - https://stackoverflow.com/questions/20454118/better-way-to-call-a-chain-of-functions-in-python
-
-
-
-
-
-
-
-
-
-
-
-
-
