@@ -7,6 +7,9 @@
         - dedicated folders for 'eda' and 'model_evaluation'?
 - plot learning / loss curves?
     - https://scikit-learn.org/stable/modules/learning_curve.html
+- Think about the structure of the dictionary that contains all training/test data
+    - how to structure it?
+    - plotting needs date! but is excluded for sklearn -> numpy arrays
 - create (lagged) trend and seasonality variables
     - moving averages
     - 6h MA? 3h MA?
@@ -31,6 +34,9 @@
     - or how to do it with another way?
         - data to be used must be tracked
 - MLFlow / DVC
+- Incorporate Explainable AI
+    - LIME
+    -SHaP
 - Think about model evaluation
 - Think about Exploratory Data Analysis
 - Documentation of the project
