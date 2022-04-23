@@ -30,7 +30,6 @@ print("Coefficients: \n", model_reg.coef_)
 y_pred_train = model_reg.predict(X_train)
 y_pred_test = model_reg.predict(X_test)
 
-
 # Model evaluation on training data
 print("Mean squared error: %.2f" % mean_squared_error(y_train, y_pred_train))
 print("Coefficient of determination: %.2f" % r2_score(y_train, y_pred_train))
@@ -60,13 +59,17 @@ print("Adjusted R2 on test data: %.4f" % adj_r2_test)
 #- https://scikit-learn.org/stable/auto_examples/linear_model/plot_ols.html
 #- using only the first feature for 2d plot!
 
-# plt.scatter(X_test, y_test, color="black")
-# plt.plot(X_test, y_pred_test, color="blue", linewidth=3)
+# 1750 is amount of data points in y_pred_test
+x = range(1750)
 
-# plt.xticks(())
-# plt.yticks(())
+plt.plot(x, y_test, label = "actual", alpha = 0.5)
+plt.plot(x, y_pred_test, label = "predicted", alpha = 0.5)
 
-# plt.show()
+plt.legend()
+plt.show()
+
+
+
 
 
 print("END")
