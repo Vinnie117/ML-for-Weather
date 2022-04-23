@@ -6,13 +6,13 @@ import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.utils import shuffle
 from config import data_config
-from pipeline_dataprep_classes import Prepare
-from pipeline_dataprep_classes import Acceleration
-from pipeline_dataprep_classes import Velocity
-from pipeline_dataprep_classes import InsertLags
-from pipeline_dataprep_classes import Debugger
-from pipeline_dataprep_classes import Times
-from pipeline_dataprep_classes import Split
+from features.pipeline_dataprep_classes import Prepare
+from features.pipeline_dataprep_classes import Acceleration
+from features.pipeline_dataprep_classes import Velocity
+from features.pipeline_dataprep_classes import InsertLags
+from features.pipeline_dataprep_classes import Debugger
+from features.pipeline_dataprep_classes import Times
+from features.pipeline_dataprep_classes import Split
 from hydra.core.config_store import ConfigStore
 from hydra import compose, initialize
 
@@ -71,9 +71,9 @@ train = data['train']
 test = data['test']
 pd_df = data['pd_df']
 
-print(train)
-print(test)
-print(pd_df)
+# print(train)
+# print(test)
+# print(pd_df)
 
 
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', train, delimiter=",", fmt='%s')

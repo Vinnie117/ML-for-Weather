@@ -4,7 +4,10 @@ from time import time
 from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
-from functions import adjustedR2
+from models.functions import adjustedR2
+import sys 
+sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
+from features.pipeline_dataprep import pd_df
 
 #np.set_printoptions(threshold=np.inf)
 
@@ -53,23 +56,6 @@ print("Adjusted R2 on training data: %.4f" % adj_r2_training)
 #for test data
 adj_r2_test = adjustedR2(r2, X_test)
 print("Adjusted R2 on test data: %.4f" % adj_r2_test)
-
-
-#Make a plot
-#- https://scikit-learn.org/stable/auto_examples/linear_model/plot_ols.html
-#- using only the first feature for 2d plot!
-
-# 1750 is amount of data points in y_pred_test
-x = range(1750)
-
-plt.plot(x, y_test, label = "actual", alpha = 0.5)
-plt.plot(x, y_pred_test, label = "predicted", alpha = 0.5)
-
-plt.legend()
-plt.show()
-
-
-
 
 
 print("END")
