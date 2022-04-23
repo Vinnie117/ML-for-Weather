@@ -1,15 +1,20 @@
 ######## Exploratory Data Analysis ########
-import pandas as pd
+import sys 
+sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 import matplotlib.pyplot as plt
+from features.pipeline_dataprep import pd_df
+from models.naive_model import y_test
 
-df = pd.read_csv(r'A:\Projects\ML-for-Weather\data\interim\df.csv') 
 
-# matplotlib seems to have trouble loading the plot with so much data?
-plt.plot(df["date"], df["cloud_cover_total"])
+x = pd_df['temperature_lag_1']
+y = pd_df['temperature']
+
+plt.scatter(x, y, s=1)
+
+plt.title("Lag Analysis")
+plt.xlabel("Temperature (°C) at time t-1")
+plt.ylabel("Temperature (°C) at time t-1")
+
 plt.show()
 
-
-
-
-
-
+print('END')
