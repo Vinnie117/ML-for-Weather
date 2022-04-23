@@ -15,7 +15,7 @@
         - if all = False -> provide a list of variables to be scaled
  - Start documentation of the project
     - document the structure of the data objects (esp. dict_data)
-    - variable description
+    - variable description, list of downloadable variables with description
     - explain functions
     - Excalidraw to visualize architecture
 
