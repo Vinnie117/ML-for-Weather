@@ -1,16 +1,8 @@
 # To do - short term
-- plot training / test error -> make matplotlib work
-    - https://scikit-learn.org/stable/auto_examples/linear_model/plot_ols.html
-    - using only the first feature for 2d plot!
-    - think about project structure -> where to put the plots?
-        - simply in'visuals'? Subfolders of visuals? 'eda', 'model evaluation'...
-        - dedicated folders for 'eda' and 'model_evaluation'?
+
 - plot learning / loss curves?
     - https://scikit-learn.org/stable/modules/learning_curve.html
-- Think about the structure of the dictionary that contains all training/test data
-    - how to structure it?
-        -> Do train and test on upper levels and nest the folds within them
-    - plotting needs date! but is excluded for sklearn -> numpy arrays
+    - error curves by number of training data -> in order to see im performance increases!
 - create (lagged) trend and seasonality variables
     - moving averages
     - 6h MA? 3h MA?
@@ -21,6 +13,11 @@
     - scale all variables or only selected ones? enable both?
         - e.g. all = True -> scale all variables
         - if all = False -> provide a list of variables to be scaled
+ - Start documentation of the project
+    - document the structure of the data objects (esp. dict_data)
+    - variable description
+    - explain functions
+    - Excalidraw to visualize architecture
 
 
 # To do - long term
@@ -45,10 +42,7 @@
     -SHaP
 - Think about model evaluation
 - Think about Exploratory Data Analysis
-- Documentation of the project
-    - variable description
-    - explain functions
-    - Excalidraw to visualize architecture
+
 
 
 # chain multiple functions
