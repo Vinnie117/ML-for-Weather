@@ -127,7 +127,7 @@ class Velocity(BaseEstimator, TransformerMixin):
             for j in range(len(self.vars)):
                 cols.append(self.vars[j] + '_velo_' + str(self.diff[i]))
 
-        # create data
+        # create data (velocities) for each data set k (train/test) in dict X
         for k, v in X.items():
             col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
             dummy = []
@@ -162,7 +162,7 @@ class Acceleration(BaseEstimator, TransformerMixin):
             for j in range(len(self.vars)):
                 cols.append(self.vars[j] + '_acc_' + str(self.diff[i]))
 
-        # create data
+        # create data (accelerations) for each data set k (train/test) in dict X
         for k, v in X.items():
             col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
             dummy = []
@@ -188,9 +188,15 @@ class Prepare(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, dict_data):
-        for k,v in dict_data.items():
-                dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
-                dict_data[k] = dict_data[k].dropna()
-                dict_data[k] = dict_data[k].to_numpy()
         
+        # complete dataframe for further use, e.g. evaluation
+        dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0)
+
+        # array data for sklearn
+        for k,v in dict_data.items():
+            if k != 'pd_df':
+                    dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
+                    dict_data[k] = dict_data[k].dropna()
+                    dict_data[k] = dict_data[k].to_numpy()
+
         return dict_data

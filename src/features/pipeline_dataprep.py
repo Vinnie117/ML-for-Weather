@@ -43,11 +43,11 @@ def feature_engineering(cfg: data_config):
         ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
         ("times", Times()),
         ("lags", InsertLags(vars=cfg.transform.vars, diff=cfg.diff.lags)),
-        ('debug', Debugger()),
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.velo)),   
         ('lagged_velocity', InsertLags(vars=cfg.transform.lags_velo, diff=cfg.diff.lagged_velo)),     # lagged difference = differenced lag
         ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.acc)),                   # diff of 1 day between 2 velos
         ('lagged_acceleration', InsertLags(vars=cfg.transform.lags_acc, diff=cfg.diff.lagged_acc)),   
+        ('debug', Debugger()),
         ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
 
@@ -69,6 +69,12 @@ data = pipeline.fit_transform(df)
 
 train = data['train']
 test = data['test']
+pd_df = data['pd_df']
+
+print(train)
+print(test)
+print(pd_df)
+
 
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', train, delimiter=",", fmt='%s')
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', test, delimiter=",", fmt='%s')
