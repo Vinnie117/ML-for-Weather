@@ -190,7 +190,7 @@ class Prepare(BaseEstimator, TransformerMixin):
     def transform(self, dict_data):
         
         # complete dataframe for further use, e.g. evaluation
-        dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0)
+        dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0).dropna()
 
         # array data for sklearn
         for k,v in dict_data.items():
