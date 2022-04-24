@@ -17,7 +17,6 @@
     - document the structure of the data objects (esp. dict_data)
     - variable description, list of downloadable variables with description
     - explain functions
-    - Excalidraw to visualize architecture
 
 
 # To do - long term
