@@ -7,4 +7,5 @@ This is a playground project for ML models to explore weather prediction. There 
 
 
 Currently, the project architecture is as follows:
-![grafik](https://user-images.githubusercontent.com/52510339/164978858-adae8d85-c4c4-4316-be28-4d6daa9f62cf.png)
+![grafik](https://user-images.githubusercontent.com/52510339/164980382-1ce3d000-5444-463f-a5c1-9c5e122c459a.png)
+
