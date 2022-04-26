@@ -1,5 +1,6 @@
 # To do - short term
 
+- retrieve the predictions in some object
 - plot learning / loss curves?
     - https://scikit-learn.org/stable/modules/learning_curve.html
     - error curves by number of training data -> in order to see im performance increases!
