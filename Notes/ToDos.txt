@@ -4,7 +4,7 @@
 - Implement a second model
     -> main motivation: establish a structure to track and log multiple models (e.g. performance, data used etc.)
     - crucial aspect to be able to track experiments
-    - MLFlow. DVC, Tensorboard
+    - MLFlow. DVC -> research and compare!
 - plot learning / loss curves?
     - https://scikit-learn.org/stable/modules/learning_curve.html
     - error curves by number of training data -> in order to see im performance increases!
