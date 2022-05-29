@@ -45,9 +45,8 @@ def feature_engineering(cfg: data_config):
         ("lags", InsertLags(vars=cfg.transform.vars, diff=cfg.diff.lags)),
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.velo)),   
         ('lagged_velocity', InsertLags(vars=cfg.transform.lags_velo, diff=cfg.diff.lagged_velo)),     # lagged difference = differenced lag
-        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.acc)),                   # diff of 1 day between 2 velos
+        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.acc)),                   # diff of rows (s) between 2 subsequent velos
         ('lagged_acceleration', InsertLags(vars=cfg.transform.lags_acc, diff=cfg.diff.lagged_acc)),   
-        ('debug', Debugger()),
         ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
 
@@ -59,11 +58,12 @@ def feature_engineering_2(cfg: data_config):
     pipe = Pipeline([
         ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
         ("times", Times()),
-        ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.velo)),   
-        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.acc)),                   # diff of 1 day between 2 velos
-        ('lags', InsertLags_2(vars=cfg.transform.vars, diff=cfg.diff.lags)),   
-        ('debug', Debugger()),
-        ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
+        ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
+        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),                   # diff of 1 day between 2 velos
+      #  ('debug', Debugger()),
+      #  ('lags', InsertLags_2(vars=cfg.transform.vars, diff=cfg.diff.lags, name=cfg.transform.name)),   
+      #  ('debug2', Debugger()),
+      #  ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
 
     return pipe
@@ -71,7 +71,7 @@ def feature_engineering_2(cfg: data_config):
 # Use Compose API of hydra 
 initialize(config_path="..\conf", job_name="config")
 cfg = compose(config_name="config")
-print(OmegaConf.to_yaml(cfg))
+#print(OmegaConf.to_yaml(cfg))
 
 # Use instance of config dataclass
 cs = ConfigStore.instance()
@@ -85,16 +85,24 @@ train = data['train']
 test = data['test']
 pd_df = data['pd_df']
 
-print(train)
-print(test)
-print(pd_df)
+# print(train)
+# print(test)
+# print(pd_df)
 
-print(pd_df.columns.tolist())
 
 ####
 # -> Nur einmal InsertLags(), vorher alle Variablen erstellen!!!
+pipeline_2 = feature_engineering_2(cfg = cfg)
+data_2 = pipeline_2.fit_transform(df) 
+
+print(data_2['train'])
+print(data_2['train'].columns.tolist())
 
 
+print(pd_df.columns.tolist())
+
+
+####
 
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', train, delimiter=",", fmt='%s')
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', test, delimiter=",", fmt='%s')

@@ -8,12 +8,14 @@ vars_new:
   cloud: 'cloud_cover'
 transform:
   vars: ['temperature', 'cloud_cover', 'wind_speed']
+  name: ['velo', 'acc']
   lags_velo: ['temperature_velo_1', 'cloud_cover_velo_1', 'wind_speed_velo_1']
   lags_acc: ['temperature_acc_1', 'cloud_cover_acc_1', 'wind_speed_acc_1']
 diff:
   lags: [1,2,24]
   velo: [1,2]
   acc: [1]
+  diff: [1,2]
   lagged_velo: [1,2]
   lagged_acc: [1,2]
 model:
