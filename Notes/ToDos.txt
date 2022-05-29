@@ -1,5 +1,8 @@
 # To do - short term
 
+- Think about the acceleration (-> see comments in code)
+- Delete Feature Engineering for the test data
+
 - retrieve the predictions in some object
 - Implement a second model
     -> main motivation: establish a structure to track and log multiple models (e.g. performance, data used etc.)
