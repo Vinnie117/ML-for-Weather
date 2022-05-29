@@ -124,7 +124,7 @@ class InsertLags_2(BaseEstimator, TransformerMixin):
 
         # create column names
         cols = data['train'].columns.tolist()
-        cols = cols[4:]
+        cols = cols[4:] # 4 to start from columns without time vars
 
         lag_cols = []
         for i in range(len(self.diff)):
@@ -134,17 +134,24 @@ class InsertLags_2(BaseEstimator, TransformerMixin):
         cols = cols + lag_cols
         #print(cols)
 
-        # create data (lags) 
+        # create data (lags) only for the training data
+        col_indices = [data['train'].columns.get_loc(c) for c in cols if c in data['train']]
 
+        dummy = []
+        for i in self.diff:
+            dummy.append(pd.DataFrame(data['train'].iloc[:,col_indices].shift(i)))
+        X = pd.concat(dummy, axis=1)
+        X.columns = lag_cols
+
+        print(X)
  
-            # combine with master data frame
-
-
+        # combine with master data frame
+        data['train'] = pd.concat([data['train'], X], axis=1)
+        print(data['train'])
+        print(data['train'].columns.tolist())
 
         return data # a dict with training and test data
 
-
-# -> lagged velocities and accelerations are missing 
 
 
 
