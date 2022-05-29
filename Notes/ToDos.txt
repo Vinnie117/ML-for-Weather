@@ -2,6 +2,7 @@
 
 - Think about the acceleration (-> see comments in code)
 - Delete Feature Engineering for the test data / adjust test data frame
+- Für Prepare() -> wenn keine Variablen angegeben sind, sollen alle mit 'Lag' im Namen genommen werden
 
 - retrieve the predictions in some object
 - Implement a second model
