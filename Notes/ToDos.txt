@@ -1,7 +1,7 @@
 # To do - short term
 
 - Think about the acceleration (-> see comments in code)
-- Delete Feature Engineering for the test data
+- Delete Feature Engineering for the test data / adjust test data frame
 
 - retrieve the predictions in some object
 - Implement a second model
