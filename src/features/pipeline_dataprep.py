@@ -9,7 +9,7 @@ from config import data_config
 from features.pipeline_dataprep_classes import Prepare
 from features.pipeline_dataprep_classes import Acceleration
 from features.pipeline_dataprep_classes import Velocity
-from features.pipeline_dataprep_classes import InsertLags
+from features.pipeline_dataprep_classes import InsertLags, InsertLags_2
 from features.pipeline_dataprep_classes import Debugger
 from features.pipeline_dataprep_classes import Times
 from features.pipeline_dataprep_classes import Split
@@ -54,6 +54,20 @@ def feature_engineering(cfg: data_config):
     return pipe
 
 
+def feature_engineering_2(cfg: data_config):
+
+    pipe = Pipeline([
+        ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
+        ("times", Times()),
+        ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.velo)),   
+        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.acc)),                   # diff of 1 day between 2 velos
+        ('lags', InsertLags_2(vars=cfg.transform.vars, diff=cfg.diff.lags)),   
+        ('debug', Debugger()),
+        ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
+        ])
+
+    return pipe
+
 # Use Compose API of hydra 
 initialize(config_path="..\conf", job_name="config")
 cfg = compose(config_name="config")
@@ -71,9 +85,15 @@ train = data['train']
 test = data['test']
 pd_df = data['pd_df']
 
-# print(train)
-# print(test)
-# print(pd_df)
+print(train)
+print(test)
+print(pd_df)
+
+print(pd_df.columns.tolist())
+
+####
+# -> Nur einmal InsertLags(), vorher alle Variablen erstellen!!!
+
 
 
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', train, delimiter=",", fmt='%s')
