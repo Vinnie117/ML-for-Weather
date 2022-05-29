@@ -132,7 +132,6 @@ class InsertLags_2(BaseEstimator, TransformerMixin):
                  lag_cols.append(cols[j] + '_lag_' + str(self.diff[i]))
 
         cols = cols + lag_cols
-        #print(cols)
 
         # create data (lags) only for the training data
         col_indices = [data['train'].columns.get_loc(c) for c in cols if c in data['train']]
@@ -142,19 +141,11 @@ class InsertLags_2(BaseEstimator, TransformerMixin):
             dummy.append(pd.DataFrame(data['train'].iloc[:,col_indices].shift(i)))
         X = pd.concat(dummy, axis=1)
         X.columns = lag_cols
-
-        #print(X)
  
         # combine with master data frame
         data['train'] = pd.concat([data['train'], X], axis=1)
-        #print(data['train'])
-        #print(data['train'].columns.tolist())
 
         return data # a dict with training and test data
-
-
-
-
 
 
 class Velocity(BaseEstimator, TransformerMixin):
@@ -173,9 +164,9 @@ class Velocity(BaseEstimator, TransformerMixin):
  
         # create column names
         cols = []
-        for i in range(len(self.diff)):
-            for j in range(len(self.vars)):
-                cols.append(self.vars[j] + '_velo_' + str(self.diff[i]))
+        for i in self.diff:
+            for j in self.vars:
+                cols.append(j + '_velo_' + str(i))
 
         # create data (velocities) for each data set k (train/test) in dict X
         for k, v in X.items():
@@ -208,9 +199,9 @@ class Acceleration(BaseEstimator, TransformerMixin):
  
         # create column names
         cols = []
-        for i in range(len(self.diff)):
-            for j in range(len(self.vars)):
-                cols.append(self.vars[j] + '_acc_' + str(self.diff[i]))
+        for i in self.diff:
+            for j in self.vars:
+                cols.append(j + '_acc_' + str(i))
 
         # create data (accelerations) for each data set k (train/test) in dict X
         for k, v in X.items():
@@ -258,7 +249,7 @@ class Prepare(BaseEstimator, TransformerMixin):
         for k,v in dict_data.items():
              if k != 'pd_df':
                 dict_data[k] = dict_data[k].dropna()
-                dict_data[k] = dict_data[k].to_numpy()
+                #dict_data[k] = dict_data[k].to_numpy()
 
 
         return dict_data

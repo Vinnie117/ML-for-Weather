@@ -59,13 +59,36 @@ def feature_engineering_2(cfg: data_config):
         ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
         ("times", Times()),
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
-        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),                   # diff of 1 day between 2 velos
+        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),  # diff of 1 row between 2 velos
         ('lags', InsertLags_2(vars=cfg.transform.vars, diff=cfg.diff.lags)),  
         #('debug2', Debugger()),
         ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
 
     return pipe
+
+'''
+variable explanation
+
+velo_1: t_1 - t_0 der Variable
+velo_2: t_2 - t_0 der Variable
+acc_1: Differenz von 2 aufeinander folgenden velo_1
+acc_2: Differenz von t_2 - t_0 von velo_2
+(-> es fehlen Differenzen! z.B. Diff t_1 - t_0 von velo_2)
+    Grund:
+    - dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = i)))
+    - man iteriert durch i und i am Ende und nicht durch z.B i und j
+    - Lösung: nested loop oder https://stackoverflow.com/questions/17006641/single-line-nested-for-loops
+
+    - Folgeproblem: Wie benennt man die Variablen?
+
+    - Nur Beschleunigung zwischen 2 DIREKT aufeinanderfolgenden velos betrachten?
+        - siehe Kommentar: "diff of 1 row between 2 velos"
+        - Argument: Bei Diff von 2 weit entfernten Velos geht Information verloren
+        - -> dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = 1)))
+
+Lags: um wieviele Reihen die vars verschoben wurden
+'''
 
 # Use Compose API of hydra 
 initialize(config_path="..\conf", job_name="config")
