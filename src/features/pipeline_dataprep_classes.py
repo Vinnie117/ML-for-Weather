@@ -143,12 +143,12 @@ class InsertLags_2(BaseEstimator, TransformerMixin):
         X = pd.concat(dummy, axis=1)
         X.columns = lag_cols
 
-        print(X)
+        #print(X)
  
         # combine with master data frame
         data['train'] = pd.concat([data['train'], X], axis=1)
-        print(data['train'])
-        print(data['train'].columns.tolist())
+        #print(data['train'])
+        #print(data['train'].columns.tolist())
 
         return data # a dict with training and test data
 
@@ -244,10 +244,21 @@ class Prepare(BaseEstimator, TransformerMixin):
         dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0).dropna()
 
         # array data for sklearn
+        #print(dict_data)
+
+        # for k,v in dict_data.items():
+        #     if k != 'pd_df':
+        #             dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
+        #             dict_data[k] = dict_data[k].dropna()
+        #             dict_data[k] = dict_data[k].to_numpy()
+
+
+        dict_data['train'] = pd.concat([dict_data['train'][self.target], dict_data['train'][self.vars]], axis=1)
+        
         for k,v in dict_data.items():
-            if k != 'pd_df':
-                    dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
-                    dict_data[k] = dict_data[k].dropna()
-                    dict_data[k] = dict_data[k].to_numpy()
+             if k != 'pd_df':
+                dict_data[k] = dict_data[k].dropna()
+                dict_data[k] = dict_data[k].to_numpy()
+
 
         return dict_data
