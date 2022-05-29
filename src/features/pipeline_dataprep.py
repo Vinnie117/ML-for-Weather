@@ -60,8 +60,8 @@ def feature_engineering_2(cfg: data_config):
         ("times", Times()),
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
         ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),                   # diff of 1 day between 2 velos
-      #  ('debug', Debugger()),
-      #  ('lags', InsertLags_2(vars=cfg.transform.vars, diff=cfg.diff.lags, name=cfg.transform.name)),   
+        ('lags', InsertLags_2(vars=cfg.transform.vars, diff=cfg.diff.lags)),  
+        ('debug2', Debugger()),
       #  ('debug2', Debugger()),
       #  ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
@@ -95,7 +95,7 @@ pd_df = data['pd_df']
 pipeline_2 = feature_engineering_2(cfg = cfg)
 data_2 = pipeline_2.fit_transform(df) 
 
-print(data_2['train'])
+
 print(data_2['train'].columns.tolist())
 
 

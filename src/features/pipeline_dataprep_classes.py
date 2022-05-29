@@ -111,10 +111,9 @@ class InsertLags_2(BaseEstimator, TransformerMixin):
     """
     Automatically insert lags (compute new features in 'X', add to master 'data')
     """
-    def __init__(self, vars, diff, name):
+    def __init__(self, vars, diff):
         self.diff = diff
         self.vars = vars
-        self.name = name
 
     def fit(self, X):
         return self
@@ -124,14 +123,18 @@ class InsertLags_2(BaseEstimator, TransformerMixin):
         data = copy.deepcopy(X)
 
         # create column names
-        cols = []
-        for i in range(len(self.diff)):
-            for j in range(len(self.vars)):
-                for k in range(len(self.name)):
-                    cols.append(self.vars[j] + '_' + self.name[k] + '_'+  + '_lag_' + str(self.diff[i]))
-        print(cols)
+        cols = data['train'].columns.tolist()
+        cols = cols[4:]
 
-        # create data (lags) for each data set k (train/test) in dict X
+        lag_cols = []
+        for i in range(len(self.diff)):
+            for j in range(len(cols)):
+                 lag_cols.append(cols[j] + '_lag_' + str(self.diff[i]))
+
+        cols = cols + lag_cols
+        #print(cols)
+
+        # create data (lags) 
 
  
             # combine with master data frame
@@ -149,7 +152,7 @@ class InsertLags_2(BaseEstimator, TransformerMixin):
 
 class Velocity(BaseEstimator, TransformerMixin):
     """
-    Calculate differences (compute new features in 'X', add to master 'data')
+    Calculate differences (compute new features in 'X' (= dict_data), add to master 'data')
     """
     def __init__(self, vars, diff):
         self.diff = diff
