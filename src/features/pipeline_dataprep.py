@@ -9,7 +9,7 @@ from config import data_config
 from features.pipeline_dataprep_classes import Prepare
 from features.pipeline_dataprep_classes import Acceleration
 from features.pipeline_dataprep_classes import Velocity
-from features.pipeline_dataprep_classes import InsertLags, InsertLags_2
+from features.pipeline_dataprep_classes import InsertLags
 from features.pipeline_dataprep_classes import Debugger
 from features.pipeline_dataprep_classes import Times
 from features.pipeline_dataprep_classes import Split
@@ -42,25 +42,9 @@ def feature_engineering(cfg: data_config):
     pipe = Pipeline([
         ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
         ("times", Times()),
-        ("lags", InsertLags(vars=cfg.transform.vars, diff=cfg.diff.lags)),
-        ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.velo)),   
-        ('lagged_velocity', InsertLags(vars=cfg.transform.lags_velo, diff=cfg.diff.lagged_velo)),     # lagged difference = differenced lag
-        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.acc)),                   # diff of rows (s) between 2 subsequent velos
-        ('lagged_acceleration', InsertLags(vars=cfg.transform.lags_acc, diff=cfg.diff.lagged_acc)),   
-        ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
-        ])
-
-    return pipe
-
-
-def feature_engineering_2(cfg: data_config):
-
-    pipe = Pipeline([
-        ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
-        ("times", Times()),
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
         ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),  # diff of 1 row between 2 velos
-        ('lags', InsertLags_2(vars=cfg.transform.vars, diff=cfg.diff.lags)),  
+        ('lags', InsertLags(vars=cfg.transform.vars, diff=cfg.diff.lags)),  
         #('debug2', Debugger()),
         ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
@@ -101,6 +85,7 @@ cs = ConfigStore.instance()
 cs.store(name = 'data_config', node = data_config)
 
 df = data_loader(cfg=cfg)
+
 pipeline = feature_engineering(cfg = cfg)
 data = pipeline.fit_transform(df) 
 
@@ -108,27 +93,13 @@ train = data['train']
 test = data['test']
 pd_df = data['pd_df']
 
-# print(train)
-# print(test)
-# print(pd_df)
+print(train)
+print(test)
+print(pd_df)
+#print(train.columns.tolist())
 
 
-####
-# -> Nur einmal InsertLags(), vorher alle Variablen erstellen!!!
-pipeline_2 = feature_engineering_2(cfg = cfg)
-data_2 = pipeline_2.fit_transform(df) 
-
-train_2 = data_2['train']
-test_2 = data_2['test']
-pd_df_2 = data_2['pd_df']
-
-print(train_2)
-print(test_2)
-print(pd_df_2)
-#print(train_2.columns.tolist())
-
-
-print(pd_df_2.columns.tolist())
+print(pd_df.columns.tolist())
 
 
 ####
