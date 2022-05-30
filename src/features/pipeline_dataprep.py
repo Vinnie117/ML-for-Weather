@@ -81,6 +81,7 @@ acc_2: Differenz von t_2 - t_0 von velo_2
     - Lösung: nested loop oder https://stackoverflow.com/questions/17006641/single-line-nested-for-loops
 
     - Folgeproblem: Wie benennt man die Variablen?
+        - 'acc_2_1' -> Diff t_2 - t_0 von velo_1
 
     - Nur Beschleunigung zwischen 2 DIREKT aufeinanderfolgenden velos betrachten?
         - siehe Kommentar: "diff of 1 row between 2 velos"
@@ -122,9 +123,9 @@ test_2 = data_2['test']
 pd_df_2 = data_2['pd_df']
 
 print(train_2)
-#print(train_2.columns.tolist())
+print(test_2)
 print(pd_df_2)
-#print(data_2['train'].columns.tolist())
+#print(train_2.columns.tolist())
 
 
 print(pd_df_2.columns.tolist())

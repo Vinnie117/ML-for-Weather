@@ -208,7 +208,7 @@ class Acceleration(BaseEstimator, TransformerMixin):
             col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
             dummy = []
             for i in self.diff:
-                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = i)))
+                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = 1)))
             X[k] = pd.concat(dummy, axis=1)
             X[k].columns = cols
  
