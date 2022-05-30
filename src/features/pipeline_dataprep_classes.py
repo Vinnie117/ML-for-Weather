@@ -197,9 +197,6 @@ class Prepare(BaseEstimator, TransformerMixin):
         # complete dataframe for further use, e.g. evaluation
         dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0).dropna()
         
-        # print(list(dict_data['pd_df']))
-        # print(self.vars)
-
         # if no predictors are provided in config file, use all lagged variables
         if self.vars:
             dict_data['train'] = pd.concat([dict_data['train'][self.target], dict_data['train'][self.vars]], axis=1)

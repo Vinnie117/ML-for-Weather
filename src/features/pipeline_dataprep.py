@@ -93,9 +93,9 @@ train = data['train']
 test = data['test']
 pd_df = data['pd_df']
 
-print(train)
-print(test)
-print(pd_df)
+# print(train)
+# print(test)
+# print(pd_df)
 
 ####
 
