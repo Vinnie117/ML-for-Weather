@@ -70,47 +70,6 @@ class Times(BaseEstimator, TransformerMixin):
         return dict_data
 
 
-class InsertLags(BaseEstimator, TransformerMixin):
-    """
-    Automatically insert lags (compute new features in 'X', add to master 'data')
-    """
-    def __init__(self, vars, diff):
-        self.diff = diff
-        self.vars = vars
-
-    def fit(self, X):
-        return self
-
-    def transform(self, X):
-
-        data = copy.deepcopy(X)
-
-        # create column names
-        cols = data['train'].columns.tolist()
-        cols = cols[4:] # 4 to start from columns without time vars
-
-        lag_cols = []
-        for i in self.diff:
-            for j in cols:
-                 lag_cols.append(j + '_lag_' + str(i))
-
-        cols = cols + lag_cols
-
-        # create data (lags) only for the training data
-        col_indices = [data['train'].columns.get_loc(c) for c in cols if c in data['train']]
-
-        dummy = []
-        for i in self.diff:
-            dummy.append(pd.DataFrame(data['train'].iloc[:,col_indices].shift(i)))
-        X = pd.concat(dummy, axis=1)
-        X.columns = lag_cols
- 
-        # combine with master data frame
-        data['train'] = pd.concat([data['train'], X], axis=1)
-
-        return data # a dict with training and test data
-
-
 class Velocity(BaseEstimator, TransformerMixin):
     """
     Calculate differences (compute new features in 'X' (= dict_data), add to master 'data')
@@ -181,6 +140,47 @@ class Acceleration(BaseEstimator, TransformerMixin):
         return data
 
 
+class InsertLags(BaseEstimator, TransformerMixin):
+    """
+    Automatically insert lags (compute new features in 'X', add to master 'data')
+    """
+    def __init__(self, vars, diff):
+        self.diff = diff
+        self.vars = vars
+
+    def fit(self, X):
+        return self
+
+    def transform(self, X):
+
+        data = copy.deepcopy(X)
+
+        # create column names
+        cols = data['train'].columns.tolist()
+        cols = cols[4:] # 4 to start from columns without time vars
+
+        lag_cols = []
+        for i in self.diff:
+            for j in cols:
+                 lag_cols.append(j + '_lag_' + str(i))
+
+        cols = cols + lag_cols
+
+        # create data (lags) only for the training data
+        col_indices = [data['train'].columns.get_loc(c) for c in cols if c in data['train']]
+
+        dummy = []
+        for i in self.diff:
+            dummy.append(pd.DataFrame(data['train'].iloc[:,col_indices].shift(i)))
+        X = pd.concat(dummy, axis=1)
+        X.columns = lag_cols
+ 
+        # combine with master data frame
+        data['train'] = pd.concat([data['train'], X], axis=1)
+
+        return data # a dict with training and test data
+
+
 class Prepare(BaseEstimator, TransformerMixin):
     '''
     Prepare data for scikit-learn: drop NaN, convert to np.array -> and select vars for prediction
@@ -196,10 +196,23 @@ class Prepare(BaseEstimator, TransformerMixin):
         
         # complete dataframe for further use, e.g. evaluation
         dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0).dropna()
-
-        # array data for sklearn
-        dict_data['train'] = pd.concat([dict_data['train'][self.target], dict_data['train'][self.vars]], axis=1)
         
+        # print(list(dict_data['pd_df']))
+        # print(self.vars)
+
+        # if no predictors are provided in config file, use all lagged variables
+        if self.vars:
+            dict_data['train'] = pd.concat([dict_data['train'][self.target], dict_data['train'][self.vars]], axis=1)
+        if not self.vars:
+            all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]
+            time = ['month', 'day', 'hour']
+            dict_data['train'] = pd.concat([dict_data['train'][self.target], 
+                                            dict_data['train'][time],
+                                            dict_data['train'][all_vars]], axis=1)
+        
+        dict_data['test'] = pd.concat([dict_data['test']['timestamp'], dict_data['test'][self.target]], axis=1)
+        
+        # array data for sklearn
         for k,v in dict_data.items():
              if k != 'pd_df':
                 dict_data[k] = dict_data[k].dropna()

@@ -96,11 +96,6 @@ pd_df = data['pd_df']
 print(train)
 print(test)
 print(pd_df)
-#print(train.columns.tolist())
-
-
-print(pd_df.columns.tolist())
-
 
 ####
 

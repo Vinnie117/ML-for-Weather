@@ -20,7 +20,9 @@ diff:
   lagged_acc: [1,2]
 model:
   target: ['temperature']
-  predictors: ['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']
+  # if no predictors are provided, all lagged vars are used
+  predictors: ['month', 'day', 'hour', 'temperature_lag_1',
+              'cloud_cover_lag_1', 'wind_speed_lag_1']
   split: 0.2
   shuffle: False
 
