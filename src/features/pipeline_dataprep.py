@@ -97,6 +97,8 @@ print(train)
 print(test)
 print(pd_df)
 
+print(list(pd_df))
+
 ####
 
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', train, delimiter=",", fmt='%s')

@@ -124,6 +124,7 @@ class Acceleration(BaseEstimator, TransformerMixin):
         for i in self.diff:
             for j in self.vars:
                 cols.append(j + '_acc_' + str(i))
+        print(cols)
 
         # create data (accelerations) for each data set k (train/test) in dict X
         for k, v in X.items():
@@ -156,20 +157,21 @@ class InsertLags(BaseEstimator, TransformerMixin):
         data = copy.deepcopy(X)
 
         # create column names
-        cols = []
+        cols = data['train'].columns.tolist()
+        cols = cols[4:] # 4 to start from columns without time vars
+        lags = []
         for i in self.diff:
-            for j in self.vars:
-                cols.append(j + '_lag_' + str(i))
+            for j in cols:
+                lags.append(j + '_lag_' + str(i))
 
         # create data (lags) for each data set k (train/test) in dict X
         for k, v in X.items():
-            col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
+            col_indices = [data[k].columns.get_loc(c) for c in cols if c in data[k]]
             dummy = []
             for i in self.diff:
                 dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].shift(i)))
-            print(dummy)
             X[k] = pd.concat(dummy, axis=1)
-            X[k].columns = cols
+            X[k].columns = lags
 
             # combine with master data frame
             data[k] = pd.concat([data[k], X[k]], axis=1)
@@ -201,14 +203,14 @@ class Prepare(BaseEstimator, TransformerMixin):
                     dict_data[k] = dict_data[k].dropna()
                     #dict_data[k] = dict_data[k].to_numpy()
                 if not self.vars:
-                # if no predictors are provided in config file, use all lagged variables
+                # if no predictors are provided in config file, use all lagged variables for train and test set
                     all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]
                     time = ['month', 'day', 'hour']
                     dict_data[k] = pd.concat([dict_data[k][self.target], 
                                               dict_data[k][time],
                                               dict_data[k][all_vars]], axis=1)
                     dict_data[k] = dict_data[k].dropna()
-                    dict_data[k] = dict_data[k].to_numpy()
+                    #dict_data[k] = dict_data[k].to_numpy()
 
 
 
