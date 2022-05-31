@@ -91,16 +91,16 @@ class Velocity(BaseEstimator, TransformerMixin):
                 cols.append(j + '_velo_' + str(i))
 
         # create data (velocities) for each data set k (train/test) in dict X
-
-        col_indices = [data['train'].columns.get_loc(c) for c in self.vars if c in data['train']]
-        dummy = []
-        for i in self.diff:
-            dummy.append(pd.DataFrame(data['train'].iloc[:,col_indices].diff(periods = i)))
-        X = pd.concat(dummy, axis=1)
-        X.columns = cols
-
-        # combine with master data frame
-        data['train'] = pd.concat([data['train'], X], axis=1)
+        for k, v in X.items():
+            col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
+            dummy = []
+            for i in self.diff:
+                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i)))
+            X[k] = pd.concat(dummy, axis=1)
+            X[k].columns = cols
+ 
+            # combine with master data frame
+            data[k] = pd.concat([data[k], X[k]], axis=1)
 
         return data
 
@@ -126,16 +126,16 @@ class Acceleration(BaseEstimator, TransformerMixin):
                 cols.append(j + '_acc_' + str(i))
 
         # create data (accelerations) for each data set k (train/test) in dict X
-
-        col_indices = [data['train'].columns.get_loc(c) for c in self.vars if c in data['train']]
-        dummy = []
-        for i in self.diff:
-            dummy.append(pd.DataFrame(data['train'].iloc[:,col_indices].diff(periods = i).diff(periods = 1)))
-        X = pd.concat(dummy, axis=1)
-        X.columns = cols
-
-        # combine with master data frame
-        data['train'] = pd.concat([data['train'], X], axis=1)
+        for k, v in X.items():
+            col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
+            dummy = []
+            for i in self.diff:
+                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = i)))
+            X[k] = pd.concat(dummy, axis=1)
+            X[k].columns = cols
+ 
+            # combine with master data frame
+            data[k] = pd.concat([data[k], X[k]], axis=1)
         
         return data
 
@@ -156,27 +156,23 @@ class InsertLags(BaseEstimator, TransformerMixin):
         data = copy.deepcopy(X)
 
         # create column names
-        cols = data['train'].columns.tolist()
-        cols = cols[4:] # 4 to start from columns without time vars
-
-        lag_cols = []
+        cols = []
         for i in self.diff:
-            for j in cols:
-                 lag_cols.append(j + '_lag_' + str(i))
+            for j in self.vars:
+                cols.append(j + '_lag_' + str(i))
 
-        cols = cols + lag_cols
+        # create data (lags) for each data set k (train/test) in dict X
+        for k, v in X.items():
+            col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
+            dummy = []
+            for i in self.diff:
+                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].shift(i)))
+            print(dummy)
+            X[k] = pd.concat(dummy, axis=1)
+            X[k].columns = cols
 
-        # create data (lags) only for the training data
-        col_indices = [data['train'].columns.get_loc(c) for c in cols if c in data['train']]
-
-        dummy = []
-        for i in self.diff:
-            dummy.append(pd.DataFrame(data['train'].iloc[:,col_indices].shift(i)))
-        X = pd.concat(dummy, axis=1)
-        X.columns = lag_cols
- 
-        # combine with master data frame
-        data['train'] = pd.concat([data['train'], X], axis=1)
+            # combine with master data frame
+            data[k] = pd.concat([data[k], X[k]], axis=1)
 
         return data # a dict with training and test data
 
@@ -207,13 +203,13 @@ class Prepare(BaseEstimator, TransformerMixin):
                                             dict_data['train'][time],
                                             dict_data['train'][all_vars]], axis=1)
         
-        dict_data['test'] = pd.concat([dict_data['test']['timestamp'], dict_data['test'][self.target]], axis=1)
+        #dict_data['test'] = pd.concat([dict_data['test']['timestamp'], dict_data['test'][self.target]], axis=1)
         
         # array data for sklearn
         for k,v in dict_data.items():
              if k != 'pd_df':
                 dict_data[k] = dict_data[k].dropna()
-                dict_data[k] = dict_data[k].to_numpy()
+                #dict_data[k] = dict_data[k].to_numpy()
 
 
         return dict_data

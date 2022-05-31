@@ -4,11 +4,10 @@ from time import time
 from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
-from models.functions import adjustedR2
 import sys 
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 from features.pipeline_dataprep import pd_df
-
+from models.functions import adjustedR2
 #np.set_printoptions(threshold=np.inf)
 
 train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
@@ -19,6 +18,10 @@ X_train = train[:, 1:]
 y_train = train[:, 0]
 X_test = test[:, 1:]
 y_test = test[:, 0]
+
+print(train)
+print(test)
+print(X_test)
 
 # Train a model
 t0 = time()
