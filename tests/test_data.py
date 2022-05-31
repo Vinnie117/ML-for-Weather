@@ -7,12 +7,12 @@ import pandas as pd
 
 
 
-# transformed = pd_df['temperature_velo_1_lag_1'][2:]
+revert_transform = pd_df['temperature_lag_1'].shift(-1)[:-1]
+original = pd_df['temperature'][:-1]
 
-# original_transformed = pd_df['temperature'].diff(1).shift(1)[2:]
+print(revert_transform)
+print(original)
 
-# print(transformed)
-# print(original_transformed)
 
 ###########################################
 # https://stackoverflow.com/questions/53830081/python-pandas-the-truth-value-of-a-series-is-ambiguous

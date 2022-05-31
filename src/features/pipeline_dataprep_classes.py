@@ -192,24 +192,24 @@ class Prepare(BaseEstimator, TransformerMixin):
         
         # complete dataframe for further use, e.g. evaluation
         dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0).dropna()
-        
-        # if no predictors are provided in config file, use all lagged variables
-        if self.vars:
-            dict_data['train'] = pd.concat([dict_data['train'][self.target], dict_data['train'][self.vars]], axis=1)
-        if not self.vars:
-            all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]
-            time = ['month', 'day', 'hour']
-            dict_data['train'] = pd.concat([dict_data['train'][self.target], 
-                                            dict_data['train'][time],
-                                            dict_data['train'][all_vars]], axis=1)
-        
-        #dict_data['test'] = pd.concat([dict_data['test']['timestamp'], dict_data['test'][self.target]], axis=1)
-        
+                
         # array data for sklearn
         for k,v in dict_data.items():
              if k != 'pd_df':
-                dict_data[k] = dict_data[k].dropna()
-                #dict_data[k] = dict_data[k].to_numpy()
+                if self.vars:
+                    dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
+                    dict_data[k] = dict_data[k].dropna()
+                    #dict_data[k] = dict_data[k].to_numpy()
+                if not self.vars:
+                # if no predictors are provided in config file, use all lagged variables
+                    all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]
+                    time = ['month', 'day', 'hour']
+                    dict_data[k] = pd.concat([dict_data[k][self.target], 
+                                              dict_data[k][time],
+                                              dict_data[k][all_vars]], axis=1)
+                    dict_data[k] = dict_data[k].dropna()
+                    dict_data[k] = dict_data[k].to_numpy()
+
 
 
         return dict_data

@@ -19,9 +19,6 @@ y_train = train[:, 0]
 X_test = test[:, 1:]
 y_test = test[:, 0]
 
-print(train)
-print(test)
-print(X_test)
 
 # Train a model
 t0 = time()
