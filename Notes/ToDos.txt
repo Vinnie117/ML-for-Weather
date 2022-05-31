@@ -1,8 +1,5 @@
 # To do - short term
 
-- Think about the acceleration (-> see comments in code)
-- Für Prepare() -> wenn keine Variablen angegeben sind, sollen alle mit 'Lag' im Namen genommen werden
-
 - retrieve the predictions in some object
 - Implement a second model
     -> main motivation: establish a structure to track and log multiple models (e.g. performance, data used etc.)
