@@ -17,16 +17,11 @@ class data:
 @dataclass
 class diff:
     lags: int
-    velo: int
-    acc: int
-    lagged_velo: int
-    lagged_acc: int
+    diff: int
 
 @dataclass
 class transform:
     vars: str
-    lags_velo: str
-    lags_acc: str
 
 @dataclass
 class model:
