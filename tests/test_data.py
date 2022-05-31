@@ -47,6 +47,7 @@ def test_temperature_velo_1():
     original_transformed = pd_df['temperature'].diff(1)[1:]
     assert (original_transformed == transformed).all()
 
+
 def test_temperature_velo_1_lag_1():
 
     transformed = pd_df['temperature_velo_1_lag_1'][2:]
