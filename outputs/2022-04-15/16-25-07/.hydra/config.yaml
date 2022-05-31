@@ -1,7 +1,0 @@
-vars:
-  old:
-    temp: temperature_air_mean_200
-    cloud: cloud_cover_total
-  new:
-    temp: temperature
-    cloud: cloud_cover
