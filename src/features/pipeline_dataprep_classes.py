@@ -213,7 +213,7 @@ class Prepare(BaseEstimator, TransformerMixin):
         for k,v in dict_data.items():
              if k != 'pd_df':
                 dict_data[k] = dict_data[k].dropna()
-                #dict_data[k] = dict_data[k].to_numpy()
+                dict_data[k] = dict_data[k].to_numpy()
 
 
         return dict_data

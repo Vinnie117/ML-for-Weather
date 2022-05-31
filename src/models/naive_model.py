@@ -29,6 +29,7 @@ print("Training duration %0.3fs" % (time() - t0))
 # The model
 print("Coefficients: \n", model_reg.coef_)
 
+####
 # Make predictions using the training / testing set
 y_pred_train = model_reg.predict(X_train)
 y_pred_test = model_reg.predict(X_test)
