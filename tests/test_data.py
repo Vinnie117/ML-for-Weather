@@ -7,33 +7,29 @@ import pandas as pd
 
 
 
-revert_transform = train['temperature_lag_1'].shift(-1)[:-1]
-original = train['temperature'][:-1]
 
-print(revert_transform)
-print(original)
+#revert_transform = pd_df['temperature_lag_1'].shift(-1)[:-1]  #[:-1] drops the last row
+#original = pd_df['temperature'][:-1]
+transformed = pd_df['temperature_velo_1'][1:]
+original_transformed = pd_df['temperature'].diff(1)[1:]
+
+transformed.fillna(original_transformed, inplace=True)
+
+#revert_transform.fillna(original, inplace=True)
+# print(revert_transform)
+# print(original)
 
 # Test schlägt fehl
-print(revert_transform.equals(original))
-print(revert_transform.compare(original))
-
-#show specific rows: 7007, 7253, 7277
-print(original.iloc[7007])
-print(revert_transform.iloc[7007])    # -> should be the same!
+print(transformed.equals(original_transformed))
+print(transformed.compare(original_transformed))
 
 
-# fehlgeschlagene Tests kommen durch die Lags zustande
-# -> wenn train und test data gemerged werden
-#   -> wenn die NAs gedroppt werden
-# Lösung: dict_data['pd_df']  ganz am Ende erzeugen? -> Nein
-# Frage: Wo ist Reihe 7008? -> gedroppt wegen NA 
-#   -> einzelne Reihen droppen ok, weil so viele Daten"
 
-# für train klappen die Tests!
-# Aber bei test schlägt der Test auch fehl!
 
-# -> separate tests für test und train, aber in einer Testfunktion für die gleiche Variable!
-
+# weil pd_df ein gemergetes df ist, tauchen in der Mitte des df NAs auf
+# -> von den Test-Daten der Anfang, wo gelaggt wird
+# -> für das Training ist droppen ok, weil viele Daten
+# -> Die NAs müssen für das pytest gefüllt werden
 
 
 ###########################################
@@ -41,9 +37,10 @@ print(revert_transform.iloc[7007])    # -> should be the same!
 
 def test_temperature_lag_1():
     
-    # revert the lag and delete resulting NaN
-    revert_transform = train['temperature_lag_1'].shift(-1)[:-1]
-    original = train['temperature'][:-1]
+    # revert the lag and delete resulting NaN from last row
+    revert_transform = pd_df['temperature_lag_1'].shift(-1)[:-1]
+    original = pd_df['temperature'][:-1]
+    revert_transform.fillna(original, inplace=True)
     assert (original == revert_transform).all()
 
 
@@ -51,6 +48,7 @@ def test_temperature_lag_2():
     
     revert_transform = pd_df['temperature_lag_2'].shift(-2)[:-2]
     original = pd_df['temperature'][:-2]
+    revert_transform.fillna(original, inplace=True)
     assert (original == revert_transform).all()
 
 
@@ -58,6 +56,7 @@ def test_temperature_lag_24():
     
     revert_transform = pd_df['temperature_lag_24'].shift(-24)[:-24]
     original = pd_df['temperature'][:-24]
+    revert_transform.fillna(original, inplace=True)
     assert (original == revert_transform).all()
 
 
@@ -65,6 +64,7 @@ def test_temperature_velo_1():
 
     transformed = pd_df['temperature_velo_1'][1:]
     original_transformed = pd_df['temperature'].diff(1)[1:]
+    transformed.fillna(original_transformed, inplace=True)
     assert (original_transformed == transformed).all()
 
 
@@ -72,4 +72,5 @@ def test_temperature_velo_1_lag_1():
 
     transformed = pd_df['temperature_velo_1_lag_1'][2:]
     original_transformed = pd_df['temperature'].diff(1).shift(1)[2:]
+    transformed.fillna(original_transformed, inplace=True)
     assert (original_transformed == transformed).all()
