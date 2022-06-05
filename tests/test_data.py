@@ -7,8 +7,8 @@ import pandas as pd
 
 
 
-revert_transform = test['temperature_lag_1'].shift(-1)[:-1]
-original = test['temperature'][:-1]
+revert_transform = train['temperature_lag_1'].shift(-1)[:-1]
+original = train['temperature'][:-1]
 
 print(revert_transform)
 print(original)
@@ -32,6 +32,8 @@ print(revert_transform.iloc[7007])    # -> should be the same!
 # für train klappen die Tests!
 # Aber bei test schlägt der Test auch fehl!
 
+# -> separate tests für test und train, aber in einer Testfunktion für die gleiche Variable!
+
 
 
 ###########################################
@@ -40,8 +42,8 @@ print(revert_transform.iloc[7007])    # -> should be the same!
 def test_temperature_lag_1():
     
     # revert the lag and delete resulting NaN
-    revert_transform = pd_df['temperature_lag_1'].shift(-1)[:-1]
-    original = pd_df['temperature'][:-1]
+    revert_transform = train['temperature_lag_1'].shift(-1)[:-1]
+    original = train['temperature'][:-1]
     assert (original == revert_transform).all()
 
 
