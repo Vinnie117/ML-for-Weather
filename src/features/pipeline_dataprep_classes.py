@@ -124,14 +124,13 @@ class Acceleration(BaseEstimator, TransformerMixin):
         for i in self.diff:
             for j in self.vars:
                 cols.append(j + '_acc_' + str(i))
-        print(cols)
 
         # create data (accelerations) for each data set k (train/test) in dict X
         for k, v in X.items():
             col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
             dummy = []
             for i in self.diff:
-                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = i)))
+                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = 1)))
             X[k] = pd.concat(dummy, axis=1)
             X[k].columns = cols
  
@@ -176,6 +175,21 @@ class InsertLags(BaseEstimator, TransformerMixin):
             # combine with master data frame
             data[k] = pd.concat([data[k], X[k]], axis=1)
 
+
+        # Tests are successful for train and test here!
+
+        # revert_transform = data['test']['temperature_lag_1'].shift(-1)[:-1]
+        # original = data['test']['temperature'][:-1]
+
+        # print(revert_transform.equals(original))
+        # print(revert_transform.compare(original))
+
+        # print(original.iloc[7005:7010])
+        # print(revert_transform.iloc[7005:7010]) 
+
+        # print(original.iloc[7006])
+        # print(revert_transform.iloc[7006]) 
+
         return data # a dict with training and test data
 
 
@@ -193,8 +207,12 @@ class Prepare(BaseEstimator, TransformerMixin):
     def transform(self, dict_data):
         
         # complete dataframe for further use, e.g. evaluation
-        dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0).dropna()
-                
+        dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0)  #.dropna()
+
+        #print(dict_data['train'].isnull())
+        #print(dict_data['train'].isnull().any(axis=1))
+
+                             
         # array data for sklearn
         for k,v in dict_data.items():
              if k != 'pd_df':
@@ -202,16 +220,30 @@ class Prepare(BaseEstimator, TransformerMixin):
                     dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
                     dict_data[k] = dict_data[k].dropna()
                     #dict_data[k] = dict_data[k].to_numpy()
-                if not self.vars:
-                # if no predictors are provided in config file, use all lagged variables for train and test set
-                    all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]
-                    time = ['month', 'day', 'hour']
-                    dict_data[k] = pd.concat([dict_data[k][self.target], 
-                                              dict_data[k][time],
-                                              dict_data[k][all_vars]], axis=1)
-                    dict_data[k] = dict_data[k].dropna()
-                    #dict_data[k] = dict_data[k].to_numpy()
+                # if not self.vars:
+                # # if no predictors are provided in config file, use all lagged variables for train and test set
+                #     all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]
+                #     time = ['month', 'day', 'hour']
+                #     dict_data[k] = pd.concat([dict_data[k][self.target], 
+                #                               dict_data[k][time],
+                #                               dict_data[k][all_vars]], axis=1)
+                #     dict_data[k] = dict_data[k].dropna()
+                #     #dict_data[k] = dict_data[k].to_numpy()
+
+        #dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0) #.dropna()
 
 
+        # Hier schlägt der Test für test fehl, aber für train klappt es
+        revert_transform = dict_data['test']['temperature_lag_1'].shift(-1)[:-1]
+        original = dict_data['test']['temperature'][:-1]
+
+        print(revert_transform.equals(original))
+        print(revert_transform.compare(original))
+
+        print(original.iloc[7005:7010])
+        print(revert_transform.iloc[7005:7010]) 
+
+        print(original.iloc[7006])
+        print(revert_transform.iloc[7006]) 
 
         return dict_data

@@ -1,22 +1,38 @@
 ######################## Test validity of data with Pytest ########################
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src') 
-from features.pipeline_dataprep import pd_df
+from features.pipeline_dataprep import pd_df, train, test
 import numpy as np
 import pandas as pd
 
 
 
-revert_transform = pd_df['temperature_lag_1'].shift(-1)[:-1]
-original = pd_df['temperature'][:-1]
+revert_transform = test['temperature_lag_1'].shift(-1)[:-1]
+original = test['temperature'][:-1]
 
 print(revert_transform)
 print(original)
 
 # Test schlägt fehl
 print(revert_transform.equals(original))
-
 print(revert_transform.compare(original))
+
+#show specific rows: 7007, 7253, 7277
+print(original.iloc[7007])
+print(revert_transform.iloc[7007])    # -> should be the same!
+
+
+# fehlgeschlagene Tests kommen durch die Lags zustande
+# -> wenn train und test data gemerged werden
+#   -> wenn die NAs gedroppt werden
+# Lösung: dict_data['pd_df']  ganz am Ende erzeugen? -> Nein
+# Frage: Wo ist Reihe 7008? -> gedroppt wegen NA 
+#   -> einzelne Reihen droppen ok, weil so viele Daten"
+
+# für train klappen die Tests!
+# Aber bei test schlägt der Test auch fehl!
+
+
 
 ###########################################
 # https://stackoverflow.com/questions/53830081/python-pandas-the-truth-value-of-a-series-is-ambiguous
