@@ -1,12 +1,12 @@
 ######################## Test validity of data with Pytest ########################
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src') 
-from features.pipeline_dataprep import pd_df, train, test
+from features.pipeline_dataprep import pd_df
 import numpy as np
 import pandas as pd
 
-
-
+###################################################################################
+# Manual testing
 
 #revert_transform = pd_df['temperature_lag_1'].shift(-1)[:-1]  #[:-1] drops the last row
 #original = pd_df['temperature'][:-1]
@@ -15,24 +15,16 @@ original_transformed = pd_df['temperature'].diff(1)[1:]
 
 transformed.fillna(original_transformed, inplace=True)
 
-#revert_transform.fillna(original, inplace=True)
-# print(revert_transform)
-# print(original)
-
-# Test schlägt fehl
+# Test
 print(transformed.equals(original_transformed))
 print(transformed.compare(original_transformed))
 
+# pd_df is a merged df (train + test) -> has NAs at train/test split point
+# - NAs are from the start of test data, where lags are inserted
+# - NAs are to be filled for the pytest
+# In general: dropping rows with NAs is ok for train/test -> lots of data!
 
-
-
-# weil pd_df ein gemergetes df ist, tauchen in der Mitte des df NAs auf
-# -> von den Test-Daten der Anfang, wo gelaggt wird
-# -> für das Training ist droppen ok, weil viele Daten
-# -> Die NAs müssen für das pytest gefüllt werden
-
-
-###########################################
+###################################################################################
 # https://stackoverflow.com/questions/53830081/python-pandas-the-truth-value-of-a-series-is-ambiguous
 
 def test_temperature_lag_1():

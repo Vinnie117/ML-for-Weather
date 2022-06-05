@@ -211,5 +211,4 @@ class Prepare(BaseEstimator, TransformerMixin):
                     dict_data[k] = dict_data[k].dropna()
                     #dict_data[k] = dict_data[k].to_numpy()
 
-
         return dict_data
