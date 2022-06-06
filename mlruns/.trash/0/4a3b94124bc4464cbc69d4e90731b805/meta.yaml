@@ -1,0 +1,15 @@
+artifact_uri: ./mlruns/0/4a3b94124bc4464cbc69d4e90731b805/artifacts
+end_time: 1654514902585
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 4a3b94124bc4464cbc69d4e90731b805
+run_uuid: 4a3b94124bc4464cbc69d4e90731b805
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1654514902501
+status: 3
+tags: []
+user_id: Hien
