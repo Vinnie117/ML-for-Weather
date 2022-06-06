@@ -1,6 +1,9 @@
 # To do - short term
 
-- retrieve the predictions in some object
+- Implement cross validation for time series (?)
+- Hyperparameter tuning for models -> grid search (needs cross validation?)
+
+
 - Implement a second model
     -> main motivation: establish a structure to track and log multiple models (e.g. performance, data used etc.)
     - crucial aspect to be able to track experiments
