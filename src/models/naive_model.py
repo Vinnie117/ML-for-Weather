@@ -9,6 +9,7 @@ sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent director
 from features.pipeline_dataprep import pd_df
 from models.functions import adjustedR2
 #np.set_printoptions(threshold=np.inf)
+from joblib import dump, load
 
 train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
 test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
@@ -58,5 +59,7 @@ print("Adjusted R2 on training data: %.4f" % adj_r2_training)
 adj_r2_test = adjustedR2(r2, X_test)
 print("Adjusted R2 on test data: %.4f" % adj_r2_test)
 
+# save the model
+dump(model_reg, r'A:\Projects\ML-for-Weather\src\models\saved\naive_reg.joblib') 
 
 print("END")
