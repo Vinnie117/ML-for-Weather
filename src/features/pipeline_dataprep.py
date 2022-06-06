@@ -95,7 +95,7 @@ pd_df = data['pd_df']
 
 #print(train)
 #print(test)
-#print(pd_df)
+print(pd_df)
 
 #print(list(pd_df))
 
