@@ -50,15 +50,18 @@ with mlflow.start_run():
     # Start training the model
     t0 = time()
     model = ElasticNet(random_state=42)
-    lr= GridSearchCV(model, parameters)
+
+    # scoring: Strategy to evaluate the performance of the cross-validated model on the test set; = None -> sklearn.metrics.r2_score 
+    lr= GridSearchCV(model, parameters, scoring=None)
     lr.fit(X_train, y_train)
     duration = time() - t0
 
-    predicted_qualities = lr.predict(X_test)
+    # automatically the model with best params
+    predicted_values = lr.predict(X_test)
 
-    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_qualities)
+    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values)
 
-    # Logging model performance to mlflow
+    # Logging model performance to mlflow -> is only done for the best model
     mlflow.log_param("alpha", alpha)
     mlflow.log_param("l1_ratio", l1_ratio)
     mlflow.log_metric("rmse", rmse)
@@ -76,15 +79,29 @@ print('END')
 
 #### Combine gridsearch cv with mlflow ####
 
+#### To do
+# -> compare mlflow results with GridSearchCV.cv_results_ ?? -> or check in isolation
+# -> fully understand all metrics in GridSearchCV.cv_results_
+
+
+#### Best model from GridsearchCV
+# -> prediction on test data (and resulting metrics) is only done for the best model!
+# -> GridseachCV yields the best model by default
+#   - https://stackoverflow.com/questions/30102973/how-to-get-best-estimator-on-gridsearchcv-random-forest-classifier-scikit
+#   - https://stackoverflow.com/questions/49455806/gridsearchcv-final-model
+#   - https://stackoverflow.com/questions/55581950/how-to-use-optimal-parameters-identified-gridsearchcv
+
+#### Scoring metrics (explanation)
+# - can make an own scorer: 
+#   - https://scikit-learn.org/stable/modules/generated/sklearn.metrics.make_scorer.html#sklearn.metrics.make_scorer
+# - default scorer is r2 for regression -> relevant for mean_test_score, split0_test_score, split0_train_score etc.
+#   - https://datascience.stackexchange.com/questions/94261/whats-the-default-scorer-in-sci-kit-learns-gridsearchcv
+# https://stackoverflow.com/questions/44947574/what-is-the-meaning-of-mean-test-score-in-cv-result
+# https://stackoverflow.com/questions/49899298/how-does-gridsearchcv-compute-training-scores 
+
+#### Storage
 # Parameter combinations of all runs are stored in cv_results_
 # - GridSearchCV.cv_results_['params']
 # - https://stackoverflow.com/questions/34274598/does-gridsearchcv-store-all-the-scores-for-all-parameter-combinations
-
-# need to log params in mlflow
-# - loop through all parameters?
-# - somehow build a function? What to put in? 
-# - use autolog?
-#   - https://www.mlflow.org/docs/latest/python_api/mlflow.sklearn.html 
-#   - https://gist.github.com/liorshk/9dfcb4a8e744fc15650cbd4c2b0955e5
 
 
