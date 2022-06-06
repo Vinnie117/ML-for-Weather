@@ -6,3 +6,5 @@
 
 # Logs of hydra configs (experiment runs)
 outputs
+
+.pytest_cache
