@@ -60,6 +60,6 @@ adj_r2_test = adjustedR2(r2, X_test)
 print("Adjusted R2 on test data: %.4f" % adj_r2_test)
 
 # save the model
-dump(model_reg, r'A:\Projects\ML-for-Weather\src\models\saved\naive_reg.joblib') 
+dump(model_reg, r'A:\Projects\ML-for-Weather\models\naive_reg.joblib') 
 
 print("END")
