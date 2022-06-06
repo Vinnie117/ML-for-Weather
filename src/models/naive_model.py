@@ -23,17 +23,17 @@ y_test = test[:, 0]
 
 # Train a model
 t0 = time()
-model_reg = linear_model.LinearRegression()
-model_reg.fit(X_train, y_train)
+naive_reg = linear_model.LinearRegression()
+naive_reg.fit(X_train, y_train)
 print("Training duration %0.3fs" % (time() - t0))
 
 # The model
-print("Coefficients: \n", model_reg.coef_)
+print("Coefficients: \n", naive_reg.coef_)
 
 ####
 # Make predictions using the training / testing set
-y_pred_train = model_reg.predict(X_train)
-y_pred_test = model_reg.predict(X_test)
+y_pred_train = naive_reg.predict(X_train)
+y_pred_test = naive_reg.predict(X_test)
 
 # Model evaluation on training data
 print("Mean squared error: %.2f" % mean_squared_error(y_train, y_pred_train))
@@ -60,6 +60,6 @@ adj_r2_test = adjustedR2(r2, X_test)
 print("Adjusted R2 on test data: %.4f" % adj_r2_test)
 
 # save the model
-dump(model_reg, r'A:\Projects\ML-for-Weather\models\naive_reg.joblib') 
+dump(naive_reg, r'A:\Projects\ML-for-Weather\models\naive_reg.joblib') 
 
 print("END")
