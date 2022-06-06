@@ -37,9 +37,9 @@ if __name__ == "__main__":
     alpha = 0.5
     l1_ratio = 0.5
 
-    with mlflow.start_run():
+    mlflow.create_experiment('Elastic Nets') 
 
-        mlflow.set_experiment("Elastic Nets")
+    with mlflow.start_run('Elastic Nets'):
 
         lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
         lr.fit(X_train, y_train)
