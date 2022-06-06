@@ -45,10 +45,18 @@ if __name__ == "__main__":
 
         (rmse, mae, r2) = eval_metrics(y_test, predicted_qualities)
 
+        # Model performance
         print("Elasticnet model (alpha=%f, l1_ratio=%f):" % (alpha, l1_ratio))
         print("  RMSE: %s" % rmse)
         print("  MAE: %s" % mae)
         print("  R2: %s" % r2)
+
+        # logging to mlflow
+        mlflow.log_param("alpha", alpha)
+        mlflow.log_param("l1_ratio", l1_ratio)
+        mlflow.log_metric("rmse", rmse)
+        mlflow.log_metric("r2", r2)
+        mlflow.log_metric("mae", mae)
 
 
 print('END')
