@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, TimeSeriesSplit
 import copy 
 
 ######################################################
@@ -40,12 +40,28 @@ class Split(BaseEstimator, TransformerMixin):
         '''
         Build an (empty) dictionary which will be filled with data in later transformers
         '''
-        train, test = train_test_split(X, test_size=self.test_size, shuffle = self.shuffle)
-        dict_data = {}
-        dict_data['train'] = train
-        dict_data['test'] = test
+        # train, test = train_test_split(X, test_size=self.test_size, shuffle = self.shuffle)
+        # dict_data = {}
+        # dict_data['train'] = train
+        # dict_data['test'] = test
 
-        return dict_data
+        dict_data = {}
+        dict_data['train'] = {}
+        dict_data['test'] = {}
+
+        tscv = TimeSeriesSplit(n_splits = 5)
+        indices = list(X.index.values)
+        print(indices)
+
+        for fold, (train_index, test_index) in enumerate(tscv.split(indices)):
+            print("Fold: {}".format(fold))
+            print("TRAIN indices:", train_index, "\n", "TEST indices:", test_index)
+            print("\n")
+            #X_train, X_test = X[train_index], X[test_index]
+            #y_train, y_test = y[train_index], y[test_index]
+
+
+        #return dict_data
 
 
 class Times(BaseEstimator, TransformerMixin):

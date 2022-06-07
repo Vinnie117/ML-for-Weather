@@ -13,6 +13,7 @@ from features.pipeline_dataprep_classes import InsertLags
 from features.pipeline_dataprep_classes import Debugger
 from features.pipeline_dataprep_classes import Times
 from features.pipeline_dataprep_classes import Split
+from sklearn.preprocessing import StandardScaler
 from hydra.core.config_store import ConfigStore
 from hydra import compose, initialize
 
@@ -41,11 +42,11 @@ def feature_engineering(cfg: data_config):
 
     pipe = Pipeline([
         ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
+        ('debug2', Debugger()),
         ("times", Times()),
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
         ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),  # diff of 1 row between 2 velos
         ('lags', InsertLags(vars=cfg.transform.vars, diff=cfg.diff.lags)),  
-        #('debug2', Debugger()),
         ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
 
@@ -85,6 +86,9 @@ cs = ConfigStore.instance()
 cs.store(name = 'data_config', node = data_config)
 
 df = data_loader(cfg=cfg)
+#print(list(df.index.values))
+
+
 
 pipeline = feature_engineering(cfg = cfg)
 data = pipeline.fit_transform(df) 
@@ -93,7 +97,7 @@ train = data['train']
 test = data['test']
 pd_df = data['pd_df']
 
-#print(train)
+print(train)
 #print(test)
 #print(pd_df)
 
