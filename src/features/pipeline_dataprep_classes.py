@@ -160,8 +160,6 @@ class Acceleration(BaseEstimator, TransformerMixin):
                 # combine with master data frame
                 data[i][k] = pd.concat([data[i][k], X[i][k]], axis=1)
         
-        print(data['train'])
-        print(data['test'])
         return data
 
 
@@ -181,7 +179,7 @@ class InsertLags(BaseEstimator, TransformerMixin):
         data = copy.deepcopy(X)
 
         # create column names
-        cols = data['train'].columns.tolist()
+        cols = data['train']['train_fold_0'].columns.tolist()
         cols = cols[4:] # 4 to start from columns without time vars
         lags = []
         for i in self.diff:
@@ -189,17 +187,20 @@ class InsertLags(BaseEstimator, TransformerMixin):
                 lags.append(j + '_lag_' + str(i))
 
         # create data (lags) for each data set k (train/test) in dict X
-        for k, v in X.items():
-            col_indices = [data[k].columns.get_loc(c) for c in cols if c in data[k]]
-            dummy = []
-            for i in self.diff:
-                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].shift(i)))
-            X[k] = pd.concat(dummy, axis=1)
-            X[k].columns = lags
+        for i in X:
+            for k in X[i]:
+                col_indices = [data[i][k].columns.get_loc(c) for c in cols if c in data[i][k]]
+                dummy = []
+                for j in self.diff:
+                    dummy.append(pd.DataFrame(data[i][k].iloc[:,col_indices].shift(j)))
+                X[i][k] = pd.concat(dummy, axis=1)
+                X[i][k].columns = lags
 
-            # combine with master data frame
-            data[k] = pd.concat([data[k], X[k]], axis=1)
+                # combine with master data frame
+                data[i][k] = pd.concat([data[i][k], X[i][k]], axis=1)
 
+        print(data['train'])
+        print(data['test'])
         return data # a dict with training and test data
 
 
