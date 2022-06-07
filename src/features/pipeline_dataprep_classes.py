@@ -33,18 +33,15 @@ class Split(BaseEstimator, TransformerMixin):
         self.test_size = test_size
         self.shuffle = shuffle
 
-    def fit(self, X):
+    def fit(self, data):
         return self
 
-    def transform(self, X):
+    def transform(self, data):
         '''
         Build an (empty) dictionary which will be filled with data in later transformers
         '''
-        # train, test = train_test_split(X, test_size=self.test_size, shuffle = self.shuffle)
-        # dict_data = {}
-        # dict_data['train'] = train
-        # dict_data['test'] = test
 
+        # The dictionary which will contain the data
         dict_data = {}
         dict_data['train'] = {}
         dict_data['test'] = {}
@@ -53,14 +50,14 @@ class Split(BaseEstimator, TransformerMixin):
         tscv = TimeSeriesSplit(n_splits = 5)
 
         # get list of indices of original dataframe
-        indices = list(X.index.values)
+        indices = list(data.index.values)
 
         # create indices and folds for time series data
         for fold, (train_index, test_index) in enumerate(tscv.split(indices)):
             print("Fold: {}".format(fold))
             print("TRAIN indices:", train_index, "\n", "TEST indices:", test_index)
             print("\n")
-            train, test = X.iloc[train_index], X.iloc[test_index]
+            train, test = data.iloc[train_index], data.iloc[test_index]
             dict_data['train']["train_fold_{}".format(fold)] = train
             dict_data['test']["test_fold_{}".format(fold)] = test
 
