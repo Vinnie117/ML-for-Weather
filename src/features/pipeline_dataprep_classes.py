@@ -49,19 +49,25 @@ class Split(BaseEstimator, TransformerMixin):
         dict_data['train'] = {}
         dict_data['test'] = {}
 
+        # Specifiy splitting for Time series cross validation
         tscv = TimeSeriesSplit(n_splits = 5)
-        indices = list(X.index.values)
-        print(indices)
 
+        # get list of indices of original dataframe
+        indices = list(X.index.values)
+
+        # create indices and folds for time series data
         for fold, (train_index, test_index) in enumerate(tscv.split(indices)):
             print("Fold: {}".format(fold))
             print("TRAIN indices:", train_index, "\n", "TEST indices:", test_index)
             print("\n")
-            #X_train, X_test = X[train_index], X[test_index]
-            #y_train, y_test = y[train_index], y[test_index]
+            train, test = X.iloc[train_index], X.iloc[test_index]
+            dict_data['train']["train_fold_{}".format(fold)] = train
+            dict_data['test']["test_fold_{}".format(fold)] = test
 
-
-        #return dict_data
+        
+            
+        print(dict_data)
+        return dict_data
 
 
 class Times(BaseEstimator, TransformerMixin):
