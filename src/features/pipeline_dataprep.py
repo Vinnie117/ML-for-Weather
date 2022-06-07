@@ -42,7 +42,7 @@ def feature_engineering(cfg: data_config):
 
     pipe = Pipeline([
         ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
-        ('debug2', Debugger()),
+        #('debug2', Debugger()),
         ("times", Times()),
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
         ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),  # diff of 1 row between 2 velos

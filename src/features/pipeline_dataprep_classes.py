@@ -4,6 +4,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, TimeSeriesSplit
 import copy 
+pd.options.mode.chained_assignment = None
 
 ######################################################
 # Define transformers to edit raw input data
@@ -18,8 +19,9 @@ class Debugger(BaseEstimator, TransformerMixin):
     
     def transform(self, data):
         # Here just print what is needed + return the actual data. Nothing is transformed. 
-        for k, v in data.items():
-            print('Shape of', k, 'data:', data[k].shape)
+
+        for k in data:
+            #print('Shape of', k, 'data:', data[k].shape)
             print(data[k])
 
         return data
@@ -60,10 +62,7 @@ class Split(BaseEstimator, TransformerMixin):
             train, test = data.iloc[train_index], data.iloc[test_index]
             dict_data['train']["train_fold_{}".format(fold)] = train
             dict_data['test']["test_fold_{}".format(fold)] = test
-
-        
             
-        print(dict_data)
         return dict_data
 
 
@@ -73,18 +72,22 @@ class Times(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, dict_data):
-        # convert to CET (UTC +1), then remove tz       
-        for k, v in dict_data.items():
-            dict_data[k]['timestamp'] = pd.to_datetime(dict_data[k]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
-            dict_data[k]['month'] =  dict_data[k]['timestamp'].dt.month
-            dict_data[k]['day'] =  dict_data[k]['timestamp'].dt.day 
-            dict_data[k]['hour'] =  dict_data[k]['timestamp'].dt.hour
-            dict_data[k] = dict_data[k].drop('date', 1)
+        # convert to CET (UTC +1), then remove tz
 
-            #reorder columns
-            cols = list(dict_data[k].columns)
-            cols = cols[-4:] + cols[:len(cols)-4]
-            dict_data[k] = dict_data[k][cols]
+        for i in dict_data:
+            for k in dict_data[i]:
+                dict_data[i][k]['timestamp'] = pd.to_datetime(dict_data[i][k]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
+                dict_data[i][k]['month'] =  dict_data[i][k]['timestamp'].dt.month
+                dict_data[i][k]['day'] =  dict_data[i][k]['timestamp'].dt.day 
+                dict_data[i][k]['hour'] =  dict_data[i][k]['timestamp'].dt.hour
+                dict_data[i][k] = dict_data[i][k].drop('date', axis = 1)
+
+                #reorder columns
+                cols = list(dict_data[i][k].columns)
+                cols = cols[-4:] + cols[:len(cols)-4]
+                dict_data[i][k] = dict_data[i][k][cols]
+
+        print(dict_data.items())        
 
         return dict_data
 
