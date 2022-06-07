@@ -72,8 +72,8 @@ class Times(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, dict_data):
+        
         # convert to CET (UTC +1), then remove tz
-
         for i in dict_data:
             for k in dict_data[i]:
                 dict_data[i][k]['timestamp'] = pd.to_datetime(dict_data[i][k]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
@@ -86,8 +86,6 @@ class Times(BaseEstimator, TransformerMixin):
                 cols = list(dict_data[i][k].columns)
                 cols = cols[-4:] + cols[:len(cols)-4]
                 dict_data[i][k] = dict_data[i][k][cols]
-
-        print(dict_data.items())        
 
         return dict_data
 
@@ -113,16 +111,18 @@ class Velocity(BaseEstimator, TransformerMixin):
                 cols.append(j + '_velo_' + str(i))
 
         # create data (velocities) for each data set k (train/test) in dict X
-        for k, v in X.items():
-            col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
-            dummy = []
-            for i in self.diff:
-                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i)))
-            X[k] = pd.concat(dummy, axis=1)
-            X[k].columns = cols
- 
-            # combine with master data frame
-            data[k] = pd.concat([data[k], X[k]], axis=1)
+
+        for i in X:
+            for k in X[i]:
+                col_indices = [data[i][k].columns.get_loc(c) for c in self.vars if c in data[i][k]]
+                dummy = []
+                for j in self.diff:
+                    dummy.append(pd.DataFrame(data[i][k].iloc[:,col_indices].diff(periods = j)))
+                X[i][k] = pd.concat(dummy, axis=1)
+                X[i][k].columns = cols
+    
+                # combine with master data frame
+                data[i][k] = pd.concat([data[i][k], X[i][k]], axis=1)
 
         return data
 
@@ -148,17 +148,20 @@ class Acceleration(BaseEstimator, TransformerMixin):
                 cols.append(j + '_acc_' + str(i))
 
         # create data (accelerations) for each data set k (train/test) in dict X
-        for k, v in X.items():
-            col_indices = [data[k].columns.get_loc(c) for c in self.vars if c in data[k]]
-            dummy = []
-            for i in self.diff:
-                dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = 1)))
-            X[k] = pd.concat(dummy, axis=1)
-            X[k].columns = cols
- 
-            # combine with master data frame
-            data[k] = pd.concat([data[k], X[k]], axis=1)
+        for i in X:
+            for k in X[i]:
+                col_indices = [data[i][k].columns.get_loc(c) for c in self.vars if c in data[i][k]]
+                dummy = []
+                for j in self.diff:
+                    dummy.append(pd.DataFrame(data[i][k].iloc[:,col_indices].diff(periods = j).diff(periods = 1)))
+                X[i][k] = pd.concat(dummy, axis=1)
+                X[i][k].columns = cols
+    
+                # combine with master data frame
+                data[i][k] = pd.concat([data[i][k], X[i][k]], axis=1)
         
+        print(data['train'])
+        print(data['test'])
         return data
 
 
