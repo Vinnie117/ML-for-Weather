@@ -27,8 +27,10 @@ class transform:
 class model:
     target: str
     predictors: str
-    split: int
-    shuffle: bool
+
+@dataclass
+class cv:
+    n_splits: int
 
 @dataclass
 class data_config:
@@ -38,3 +40,6 @@ class data_config:
     transform: transform
     diff: diff
     model: model
+    cv: cv
+
+

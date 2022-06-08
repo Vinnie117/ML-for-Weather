@@ -31,9 +31,9 @@ class Split(BaseEstimator, TransformerMixin):
     """
     Split data into train and test set -> sklearn.model_selection.TimeSeriesSplit
     """
-    def __init__(self, test_size, shuffle):
-        self.test_size = test_size
-        self.shuffle = shuffle
+    def __init__(self, n_splits):
+        self.n_splits = n_splits
+
 
     def fit(self, data):
         return self
@@ -49,7 +49,7 @@ class Split(BaseEstimator, TransformerMixin):
         dict_data['test'] = {}
 
         # Specifiy splitting for Time series cross validation
-        tscv = TimeSeriesSplit(n_splits = 5)
+        tscv = TimeSeriesSplit(n_splits = self.n_splits)
 
         # get list of indices of original dataframe
         indices = list(data.index.values)

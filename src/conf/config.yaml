@@ -16,6 +16,6 @@ model:
   # if no predictors are provided, all lagged vars are used
   predictors: ['month', 'day', 'hour', 'temperature_lag_1',
               'cloud_cover_lag_1', 'wind_speed_lag_1']
-  split: 0.2
-  shuffle: False
+cv:
+  n_splits: 5
 

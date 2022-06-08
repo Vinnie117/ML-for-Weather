@@ -41,7 +41,7 @@ def data_loader(cfg: data_config):
 def feature_engineering(cfg: data_config):
 
     pipe = Pipeline([
-        ("split", Split(test_size= cfg.model.split, shuffle = cfg.model.shuffle)), # -> sklearn.model_selection.TimeSeriesSplit
+        ("split", Split(n_splits = cfg.cv.n_splits)), 
         #('debug2', Debugger()),
         ("times", Times()),
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
