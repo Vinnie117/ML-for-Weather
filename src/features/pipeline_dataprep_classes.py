@@ -199,8 +199,6 @@ class InsertLags(BaseEstimator, TransformerMixin):
                 # combine with master data frame
                 data[i][k] = pd.concat([data[i][k], X[i][k]], axis=1)
 
-        print(data['train'])
-        print(data['test'])
         return data # a dict with training and test data
 
 
@@ -217,24 +215,30 @@ class Prepare(BaseEstimator, TransformerMixin):
 
     def transform(self, dict_data):
         
+        # count number of folds in train/test key (-1 bc indexing starts at 0)
+        folds = len(dict_data['train']) - 1
+
         # complete dataframe for further use, e.g. evaluation
-        dict_data['pd_df'] = pd.concat([dict_data['train'], dict_data['test']], axis=0)
+        dict_data['pd_df'] = pd.concat([dict_data['train']["train_fold_{}".format(folds)],
+                                        dict_data['test']["test_fold_{}".format(folds)]], 
+                                        axis=0)
                    
         # array data for sklearn
-        for k,v in dict_data.items():
-             if k != 'pd_df':
-                if self.vars:
-                    dict_data[k] = pd.concat([dict_data[k][self.target], dict_data[k][self.vars]], axis=1)
-                    dict_data[k] = dict_data[k].dropna()
-                    #dict_data[k] = dict_data[k].to_numpy()
-                if not self.vars:
-                # if no predictors are provided in config file, use all lagged variables for train and test set
-                    all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]
-                    time = ['month', 'day', 'hour']
-                    dict_data[k] = pd.concat([dict_data[k][self.target], 
-                                              dict_data[k][time],
-                                              dict_data[k][all_vars]], axis=1)
-                    dict_data[k] = dict_data[k].dropna()
-                    #dict_data[k] = dict_data[k].to_numpy()
+        for i in dict_data:
+            if i != 'pd_df':
+                for k in dict_data[i]:
+                    if self.vars:
+                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][self.vars]], axis=1)
+                        dict_data[i][k] = dict_data[i][k].dropna()
+                        #dict_data[k] = dict_data[k].to_numpy()
+                    if not self.vars:
+                    # if no predictors are provided in config file, use all lagged variables for train and test set
+                        all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]
+                        time = ['month', 'day', 'hour']
+                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
+                                                dict_data[i][k][time],
+                                                dict_data[i][k][all_vars]], axis=1)
+                        dict_data[i][k] = dict_data[i][k].dropna()
+                        #dict_data[k] = dict_data[k].to_numpy()
 
         return dict_data
