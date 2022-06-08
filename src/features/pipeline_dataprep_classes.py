@@ -216,16 +216,56 @@ class Scaler(BaseEstimator, TransformerMixin):
     def fit(self, dict_data):
         return self
 
-    def transform(self, dict_data):
-        
-        print(dict_data['train'])
-        print(dict_data['test'])
+    def transform(self, data):
+
+        dict_data = copy.deepcopy(data)
 
         # define standard scaler
         scaler = StandardScaler()
+
+        # print(dict_data['train'])
+        print(dict_data['train']['train_fold_0'])
+
+        # Das hier muss std werden (Teil davon ist target var -> für die Lags!)
+        print(dict_data['train']['train_fold_0'].iloc[:, 4:]) 
+
+         # das NICHT std (Teil davon ist target var) -> später mit std. vars zusammenfügen (pd.concat)
+        print(dict_data['train']['train_fold_0'].iloc[:, 0:5]) 
+
+        # -> muss für jeden Fold geschehen. StandardScaler gibt eine List of Lists mit allen Cols zurück
+        # Diese Liste muss wieder zu einem df gemacht werden
+        scaled = scaler.fit_transform(data['train']['train_fold_0'].iloc[:, 4:])
+        print(scaled)
+
+        df = pd.DataFrame(scaled, columns = list(data['train']['train_fold_0'].iloc[:, 4:]))
+        print(df)
+
+        # Colname für temperature ist nicht mehr unique 
+        not_scaled = dict_data['train']['train_fold_0'].iloc[:, 0:5]
+        not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
+
+        #std. und NICHT-std. dfs in finales df zusammenbringen
+        df_all = pd.concat([not_scaled, df], axis = 1)
+        print(df_all.iloc[:,0:7])
+
+        # finales df in das dict packen
+        dict_data['train']['train_fold_0'] = df_all
+        print(dict_data['train']['train_fold_0'])
+
+   
+        ######################################################
+        # Jetzt für alle: -> for loop!
+        for i in data:
+            for k in data[i]:
+                scaled = scaler.fit_transform(data[i][k].iloc[:, 5:])
+                #scaler.fit_transform(data[i][k].iloc[:, 4:])
+
+        # values now should be standardized
+        print(scaled)
+        print(dict_data['train']['train_fold_0'].iloc[:, 4:])
+
+
         dict_data = dict_data
-
-
         return dict_data # a dict with training and test data
 
 class Prepare(BaseEstimator, TransformerMixin):
