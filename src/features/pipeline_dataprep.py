@@ -86,22 +86,27 @@ cs = ConfigStore.instance()
 cs.store(name = 'data_config', node = data_config)
 
 df = data_loader(cfg=cfg)
-#print(list(df.index.values))
-
-
 
 pipeline = feature_engineering(cfg = cfg)
 data = pipeline.fit_transform(df) 
 
-train = data['train']
-test = data['test']
+# All folds are here
+train_folds = data['train']
+test_folds = data['test']
+
+# the last fold -> complete data
+last_train_key = list(data['train'])[-1] 
+train = data['train'][last_train_key]
+
+last_test_key = list(data['test'])[-1] 
+test = data['test'][last_test_key]
 pd_df = data['pd_df']
 
 print(train)
-#print(test)
-#print(pd_df)
+print(test)
+print(pd_df)
 
-#print(list(pd_df))
+print(list(pd_df))
 
 ####
 

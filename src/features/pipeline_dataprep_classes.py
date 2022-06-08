@@ -29,7 +29,7 @@ class Debugger(BaseEstimator, TransformerMixin):
 
 class Split(BaseEstimator, TransformerMixin):
     """
-    Split data into train and test set -> sklearn.model_selection.TimeSeriesSplit
+    Split data into train and test sets -> sklearn.model_selection.TimeSeriesSplit
     """
     def __init__(self, n_splits):
         self.n_splits = n_splits
@@ -43,7 +43,7 @@ class Split(BaseEstimator, TransformerMixin):
         Build an (empty) dictionary which will be filled with data in later transformers
         '''
 
-        # The dictionary which will contain the data
+        # The dictionary of dicts which will contain the train/test data
         dict_data = {}
         dict_data['train'] = {}
         dict_data['test'] = {}
@@ -54,7 +54,7 @@ class Split(BaseEstimator, TransformerMixin):
         # get list of indices of original dataframe
         indices = list(data.index.values)
 
-        # create indices and folds for time series data
+        # create indices and train/test folds for time series data
         for fold, (train_index, test_index) in enumerate(tscv.split(indices)):
             print("Fold: {}".format(fold))
             print("TRAIN indices:", train_index, "\n", "TEST indices:", test_index)
