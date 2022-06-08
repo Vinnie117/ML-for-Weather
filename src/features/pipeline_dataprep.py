@@ -12,7 +12,7 @@ from features.pipeline_dataprep_classes import InsertLags
 from features.pipeline_dataprep_classes import Debugger
 from features.pipeline_dataprep_classes import Times
 from features.pipeline_dataprep_classes import Split
-from sklearn.preprocessing import StandardScaler
+from features.pipeline_dataprep_classes import Scaler
 from hydra.core.config_store import ConfigStore
 from hydra import compose, initialize
 
@@ -41,11 +41,12 @@ def feature_engineering(cfg: data_config):
 
     pipe = Pipeline([
         ("split", Split(n_splits = cfg.cv.n_splits)), 
-        #('debug2', Debugger()),
         ("times", Times()),
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
         ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),  # diff of 1 row between 2 velos
-        ('lags', InsertLags(vars=cfg.transform.vars, diff=cfg.diff.lags)),  
+        ('lags', InsertLags(vars=cfg.transform.vars, diff=cfg.diff.lags)),
+        ('debug', Debugger()),
+        ('scale', Scaler(std_target=False)),  
         ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
 

@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, TimeSeriesSplit
+from sklearn.preprocessing import StandardScaler
 import copy 
 pd.options.mode.chained_assignment = None
 
@@ -202,6 +203,31 @@ class InsertLags(BaseEstimator, TransformerMixin):
         return data # a dict with training and test data
 
 
+class Scaler(BaseEstimator, TransformerMixin):
+    """
+    Scale data: Select between:
+        - Standardization of data (Z-score normalization)
+        (- Normalization of data (0-1))
+        - scaling predictors only or also the target
+    """
+    def __init__(self, std_target):
+        self.std_target = std_target
+
+    def fit(self, dict_data):
+        return self
+
+    def transform(self, dict_data):
+        
+        print(dict_data['train'])
+        print(dict_data['test'])
+
+        # define standard scaler
+        scaler = StandardScaler()
+        dict_data = dict_data
+
+
+        return dict_data # a dict with training and test data
+
 class Prepare(BaseEstimator, TransformerMixin):
     '''
     Prepare data for scikit-learn: drop NaN, convert to np.array -> and select vars for prediction
@@ -210,7 +236,7 @@ class Prepare(BaseEstimator, TransformerMixin):
         self.vars = vars
         self.target = target
 
-    def fit(self, X):
+    def fit(self, dict_data):
         return self
 
     def transform(self, dict_data):
