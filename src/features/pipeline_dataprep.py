@@ -4,7 +4,6 @@ from omegaconf import OmegaConf
 import pandas as pd
 import numpy as np
 from sklearn.pipeline import Pipeline
-from sklearn.utils import shuffle
 from config import data_config
 from features.pipeline_dataprep_classes import Prepare
 from features.pipeline_dataprep_classes import Acceleration
@@ -90,6 +89,7 @@ df = data_loader(cfg=cfg)
 pipeline = feature_engineering(cfg = cfg)
 data = pipeline.fit_transform(df) 
 
+
 # All folds are here
 train_folds = data['train']
 test_folds = data['test']
@@ -102,11 +102,13 @@ last_test_key = list(data['test'])[-1]
 test = data['test'][last_test_key]
 pd_df = data['pd_df']
 
+
+
 print(train)
 print(test)
-print(pd_df)
+#print(pd_df)
 
-print(list(pd_df))
+#print(list(pd_df))
 
 ####
 
