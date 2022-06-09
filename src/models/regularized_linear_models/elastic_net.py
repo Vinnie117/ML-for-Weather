@@ -11,6 +11,7 @@ from models.functions import adjustedR2
 import mlflow
 from joblib import dump, load
 from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import TimeSeriesSplit
 
 train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
 test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
@@ -35,6 +36,12 @@ def eval_metrics(actual, pred):
 # set model parameters
 alpha = [0.3, 0.4, 0.5, 0.6]
 l1_ratio = [0.3, 0.4, 0.5, 0.6]
+
+# Specifiy splitting for Time series cross validation
+tscv = TimeSeriesSplit(n_splits = 5)
+
+# (X_train)? or (X_train, y_train)? -> beides ausprobieren und MLFlow schauen
+print(tscv.split(X_train, 5))
 
 parameters = {'alpha':alpha, 
               'l1_ratio':l1_ratio} 

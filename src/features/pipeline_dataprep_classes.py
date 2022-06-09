@@ -222,47 +222,13 @@ class Scaler(BaseEstimator, TransformerMixin):
         # define standard scaler
         scaler = StandardScaler()
 
-        # # print(dict_data['train'])
-        # print(dict_data['train']['train_fold_0'])
-
-        # # Das hier muss std werden (Teil davon ist target var -> für die Lags!)
-        # print(dict_data['train']['train_fold_0'].iloc[:, 4:]) 
-
-        #  # das NICHT std (Teil davon ist target var) -> später mit std. vars zusammenfügen (pd.concat)
-        # print(dict_data['train']['train_fold_0'].iloc[:, 0:5]) 
-
-        # # -> muss für jeden Fold geschehen. StandardScaler gibt eine List of Lists mit allen Cols zurück
-        # # Diese Liste muss wieder zu einem df gemacht werden
-        # scaled = scaler.fit_transform(dict_data['train']['train_fold_0'].iloc[:, 4:])
-        # print(scaled)
-
-        # df = pd.DataFrame(scaled, columns = list(dict_data['train']['train_fold_0'].iloc[:, 4:]))
-        # print(df)
-
-        # # Colname für temperature ist nicht mehr unique 
-        # not_scaled = dict_data['train']['train_fold_0'].iloc[:, 0:5]
-        # not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
-
-        # #std. und NICHT-std. dfs in finales df zusammenbringen
-        # df_all = pd.concat([not_scaled, df], axis = 1)
-        # print(df_all.iloc[:,0:7])
-
-        # # finales df in das dict packen
-        # dict_data['train']['train_fold_0'] = df_all
-        # print(dict_data['train']['train_fold_0'])
-
-   
-        ######################################################
-
-        # print(dict_data['train'])
-        # print(dict_data['test'])
-
-        # Jetzt für alle: -> for loop!
+        # Standardize each fold in training and test data
         for i in dict_data:
             for k in dict_data[i]:
                 scaled = scaler.fit_transform(dict_data[i][k].iloc[:, 4:])
                 df = pd.DataFrame(scaled, columns = list(dict_data[i][k].iloc[:, 4:]))
 
+                # target var is standardized but also extracted as normal value (labeled 'target_...')
                 not_scaled = dict_data[i][k].iloc[:, 0:5]
                 not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
                 df.index = not_scaled.index
@@ -270,24 +236,8 @@ class Scaler(BaseEstimator, TransformerMixin):
                 df_all = pd.concat([not_scaled, df], axis = 1,)
                 dict_data[i][k] = df_all
 
-
-        # # values now should be standardized
-        # print(dict_data['train']['train_fold_0'].iloc[:, 0:12])
-        # print(dict_data['test']['test_fold_0'].iloc[:, 0:12])
-
-        # print(dict_data['train']['train_fold_1'].iloc[:, 0:12])
-        # print(dict_data['test']['test_fold_1'].iloc[:, 0:12])
-
-        # print(dict_data['train']['train_fold_2'].iloc[:, 0:12])
-        # print(dict_data['test']['test_fold_2'].iloc[:, 0:12])
-
-        # print(dict_data['train']['train_fold_3'].iloc[:, 0:12])
-        # print(dict_data['test']['test_fold_3'].iloc[:, 0:12])
-
-        # print(dict_data['train']['train_fold_4'].iloc[:, 0:12])
-        # print(dict_data['test']['test_fold_4'].iloc[:, 0:12])
-
         return dict_data # a dict with training and test data
+
 
 class Prepare(BaseEstimator, TransformerMixin):
     '''
