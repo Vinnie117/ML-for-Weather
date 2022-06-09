@@ -12,7 +12,7 @@ diff:
   diff: [1,2]
   lags: [1,2,24]
 model:
-  target: ['temperature']
+  target: temperature
   # if no predictors are provided, all lagged vars are used
   predictors: ['month', 'day', 'hour', 'temperature_lag_1',
               'cloud_cover_lag_1', 'wind_speed_lag_1']
