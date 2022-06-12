@@ -54,6 +54,7 @@
 # Sources
 - https://developer.nvidia.com/blog/global-ai-weather-forecaster-makes-predictions-in-seconds/ 
 - https://github.com/jweyn/DLWP 
+- https://courses.nvidia.com/courses/course-v1:DLI+S-ES-01+V1/
 
 # chain multiple functions
 - https://stackoverflow.com/questions/20454118/better-way-to-call-a-chain-of-functions-in-python
