@@ -32,7 +32,13 @@ y_test = test.iloc[:, 0]
 
 print(X_train)
 print(X_train.shape)
+print(y_train)
 print(y_train.shape)
+
+print(X_test)
+print(X_test.shape)
+print(y_test)
+print(y_test.shape)
 
 # Cannot pass floats to classifier -> convert to categories/classes
 lab_enc = preprocessing.LabelEncoder()
