@@ -14,17 +14,23 @@ from sklearn.svm import SVC
 from sklearn import preprocessing
 from sklearn import utils
 
-#train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
-#test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
+# Select data -> if numpy array
+train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', names=True)
+test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', names=True)
+X_train = train[:, 1:]
+y_train = train[:, 0]
+X_test = test[:, 1:]
+y_test = test[:, 0]
 
-train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
-test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
+# # Select data -> if pandas dataframe
+# train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', header=0)
+# test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
+# X_train = train.iloc[:, 1:]
+# y_train = train.iloc[:, 0]
+# X_test = test.iloc[:, 1:]
+# y_test = test.iloc[:, 0]
 
-# Select data
-X_train = train.iloc[:, 1:]
-y_train = train.iloc[:, 0]
-X_test = test.iloc[:, 1:]
-y_test = test.iloc[:, 0]
+print(X_train)
 
 # Cannot pass floats to classifier -> convert to categories/classes
 lab_enc = preprocessing.LabelEncoder()
@@ -43,6 +49,15 @@ def eval_metrics(actual, pred):
 
 
 #### Train a model
+
+# single model to observe
+clf = SVC(gamma='auto')
+clf.fit(X_train, y_train_encoded)
+
+# predicted values are nowhere near plausible
+clf_predicted_values = clf.predict(X_test)
+print(clf_predicted_values)
+
 
 # Specifiy splitting for Time series cross validation
 tscv = TimeSeriesSplit(n_splits = 5)
@@ -75,7 +90,7 @@ with mlflow.start_run():
     # automatically the model with best params
     predicted_values = lr.predict(X_test)
 
-    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values)
+    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test_encoded, predicted_values)
 
     # Logging model performance to mlflow -> is only done for the best model
     mlflow.log_param("C", C)

@@ -268,7 +268,7 @@ class Prepare(BaseEstimator, TransformerMixin):
                         dict_data[i][k] = pd.concat([dict_data[i][k]['target_{}'.format(self.target)], dict_data[i][k][self.vars]], 
                                                      axis=1)
                         dict_data[i][k] = dict_data[i][k].dropna()
-                        dict_data[i][k] = dict_data[i][k].to_numpy()
+                        #dict_data[i][k] = dict_data[i][k].to_numpy()
                     if not self.vars:
                     # if no predictors are provided in config file, use all lagged variables for train and test set
                         all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]

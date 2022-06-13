@@ -114,5 +114,15 @@ print(test)
 
 ####
 
-np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', train, delimiter=",", fmt='%s')
-np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', test, delimiter=",", fmt='%s')
+#header = ['target_temperature', 'month',  'day',  'hour',  'temperature_lag_1',  'cloud_cover_lag_1',  'wind_speed_lag_1']
+
+# np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
+#            train, delimiter=",", fmt='%s', header = header)
+# np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
+#            test, delimiter=",", fmt='%s', header=header)
+
+train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
+             header=True, index=False)
+test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
+             header=True, index=False)
+
