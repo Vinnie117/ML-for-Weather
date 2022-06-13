@@ -104,7 +104,8 @@ test = data['test'][last_test_key]
 pd_df = data['pd_df']
 
 
-
+print(type(train))
+print(train.dtypes)
 print(train)
 print(test)
 #print(pd_df)

@@ -6,7 +6,6 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 import sys 
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
-from features.pipeline_dataprep import pd_df
 from models.functions import adjustedR2
 import mlflow
 from joblib import dump, load
@@ -31,7 +30,7 @@ def eval_metrics(actual, pred):
     return rmse, mae, r2, adjusted_r2
 
 
-# Train a model
+#### Train a model
 
 # set model parameters
 alpha = [0.3, 0.4, 0.5, 0.6]
@@ -40,6 +39,7 @@ l1_ratio = [0.3, 0.4, 0.5, 0.6]
 # Specifiy splitting for Time series cross validation
 tscv = TimeSeriesSplit(n_splits = 5)
 
+# Hyperparameter-tuning with grid search
 parameters = {'alpha':alpha, 
               'l1_ratio':l1_ratio} 
 
