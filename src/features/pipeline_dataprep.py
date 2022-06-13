@@ -105,7 +105,14 @@ pd_df = data['pd_df']
 
 
 print(type(train))
-#print(train.dtypes)
+
+# # Time variables as categories
+# for col in ['month', 'day', 'hour']:
+#     train[col] = train[col].astype('category')
+# for col in ['month', 'day', 'hour']:
+#     test[col] = test[col].astype('category')
+
+print(train.dtypes)
 print(train)
 print(test)
 #print(pd_df)
@@ -116,14 +123,15 @@ print(test)
 
 #header = ['target_temperature', 'month',  'day',  'hour',  'temperature_lag_1',  'cloud_cover_lag_1',  'wind_speed_lag_1']
 
-# np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
-#            train, delimiter=",", fmt='%s', header = header)
-# np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
-#            test, delimiter=",", fmt='%s', header=header)
+# , header = header
+np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
+           train, delimiter=",", fmt='%s')
+np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
+           test, delimiter=",", fmt='%s')
 
-# index = False -> no row names
-train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
-             header=True, index=False)
-test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
-             header=True, index=False)
+# # index = False -> no row names
+# train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
+#              header=True, index=False)
+# test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
+#              header=True, index=False)
 
