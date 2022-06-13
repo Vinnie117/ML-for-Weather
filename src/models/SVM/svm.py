@@ -14,23 +14,25 @@ from sklearn.svm import SVC
 from sklearn import preprocessing
 from sklearn import utils
 
-# Select data -> if numpy array
-train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', names=True)
-test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', names=True)
-X_train = train[:, 1:]
-y_train = train[:, 0]
-X_test = test[:, 1:]
-y_test = test[:, 0]
+# # Select data -> if numpy array
+# train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', names=True)
+# test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', names=True)
+# X_train = train[:, 1:]
+# y_train = train[:, 0]
+# X_test = test[:, 1:]
+# y_test = test[:, 0]
 
-# # Select data -> if pandas dataframe
-# train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', header=0)
-# test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
-# X_train = train.iloc[:, 1:]
-# y_train = train.iloc[:, 0]
-# X_test = test.iloc[:, 1:]
-# y_test = test.iloc[:, 0]
+# Select data -> if pandas dataframe
+train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', header=0)
+test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
+X_train = train.iloc[:, 1:]
+y_train = train.iloc[:, 0]
+X_test = test.iloc[:, 1:]
+y_test = test.iloc[:, 0]
 
 print(X_train)
+print(X_train.shape)
+print(y_train.shape)
 
 # Cannot pass floats to classifier -> convert to categories/classes
 lab_enc = preprocessing.LabelEncoder()

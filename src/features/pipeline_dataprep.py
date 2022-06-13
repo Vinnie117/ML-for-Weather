@@ -121,6 +121,7 @@ print(test)
 # np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
 #            test, delimiter=",", fmt='%s', header=header)
 
+# index = False -> no row names
 train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
              header=True, index=False)
 test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
