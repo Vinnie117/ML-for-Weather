@@ -40,9 +40,6 @@ l1_ratio = [0.3, 0.4, 0.5, 0.6]
 # Specifiy splitting for Time series cross validation
 tscv = TimeSeriesSplit(n_splits = 5)
 
-# (X_train)? or (X_train, y_train)? -> beides ausprobieren und MLFlow schauen
-print(tscv.split(X_train, 5))
-
 parameters = {'alpha':alpha, 
               'l1_ratio':l1_ratio} 
 
@@ -59,7 +56,7 @@ with mlflow.start_run():
     model = ElasticNet(random_state=42)
 
     # scoring: Strategy to evaluate the performance of the cross-validated model on the test set; = None -> sklearn.metrics.r2_score 
-    lr= GridSearchCV(model, parameters, scoring=None)
+    lr= GridSearchCV(model, parameters, cv=tscv, scoring=None)
     lr.fit(X_train, y_train)
     duration = time() - t0
 
