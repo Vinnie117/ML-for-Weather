@@ -96,7 +96,7 @@ train_folds = data['train']
 test_folds = data['test']
 
 # the last fold -> complete data
-last_train_key = list(data['train'])[-1] 
+last_train_key = list(data['train'])[-1]
 train = data['train'][last_train_key]
 
 last_test_key = list(data['test'])[-1] 
