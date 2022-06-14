@@ -1,3 +1,4 @@
+from matplotlib import scale
 import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -230,26 +231,30 @@ class Scaler(BaseEstimator, TransformerMixin):
         # apply normalization parameters  obtained from the training set as-is on test data.
         # Test data is unseen, recalculating parameters is inconsistent with model
         scaled = scaler.fit_transform(dict_data['train'][last_train_key].iloc[:, 4:]) 
-        scaled_df = pd.DataFrame(scaled, columns = list(dict_data['train'][last_train_key].iloc[:, 4:]))
+        scaled_cols = ['std_' + x for x in list(dict_data['train'][last_train_key].iloc[:, 4:])]
+        scaled_df = pd.DataFrame(scaled, columns = scaled_cols)
+
+        #print(scaled_df)
 
         not_scaled = dict_data['train'][last_train_key].iloc[:, 0:5]
-        not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
+        #not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
         scaled_df.index = not_scaled.index
 
         df_all = pd.concat([not_scaled, scaled_df], axis = 1,)
-        #print('train_fold_4', df_all.iloc[0:15,0:9])
+        #print(df_all.iloc[0:15,:])
         scaled_data['train_std']['train_fold_4'] = df_all
 
         for i,j in zip(dict_data, scaled_data):
             for k,l in zip(dict_data[i], scaled_data[j]):
                 if k != 'train_fold_4':
                     scaled = scaler.transform(dict_data[i][k].iloc[:, 4:])
-                    df = pd.DataFrame(scaled, columns = list(dict_data[i][k].iloc[:, 4:]))
+                    scaled_cols = ['std_' + x for x in list(dict_data['train'][last_train_key].iloc[:, 4:])]
+                    df = pd.DataFrame(scaled, columns = scaled_cols)
                     # print(df)
 
                     # target var is standardized but also extracted as normal value (labeled 'target_...')
                     not_scaled = dict_data[i][k].iloc[:, 0:5]
-                    not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
+                    #not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
                     # print(not_scaled)
                     df.index = not_scaled.index
 
@@ -261,58 +266,15 @@ class Scaler(BaseEstimator, TransformerMixin):
         
         # at the end build the complete data dict
         dict_data = dict_data | scaled_data # -> order keys in scaled_data! https://stackoverflow.com/questions/51086412/moving-elements-in-dictionary-python-to-another-index
+        
         # for i in dict_data['train']:
         #     print(dict_data['train'][i].iloc[0:15,0:9])
-        for i in dict_data['train_std']:
-            print(dict_data['train_std'][i].iloc[0:15,0:9])
+        # for i in dict_data['train_std']:
+        #     print(dict_data['train_std'][i].iloc[0:15,13:24])
         # for i in dict_data['test']:
         #     print(dict_data['test'][i].iloc[0:15,0:9])
-        for i in dict_data['test_std']:
-            print(dict_data['test_std'][i].iloc[0:15,0:9])
-        # # This approach only scales the last fold (i.e the biggest) of each train and test set
-        # # -> Cannot loop through all folds of train bc. need fit_transform of last fold first
-        # for i in dict_data:
-        #     # the last fold contains all training/test data relevant for parameters of std.
-        #     # TimeSeriesSplits creates subsets
-        #     last_key = list(dict_data[i])[-1]
-
-        #     # apply normalization parameters  obtained from the training set as-is on test data.
-        #     # Test data is unseen, recalculating parameters is inconsistent with model
-        #     if i == 'train':
-        #         scaled = scaler.fit_transform(dict_data[i][last_key].iloc[:, 4:])
-        #     if i == 'test':
-        #         scaled = scaler.transform(dict_data[i][last_key].iloc[:, 4:]) 
-        #     scaled_df = pd.DataFrame(scaled, columns = list(dict_data[i][last_key].iloc[:, 4:]))
-
-        #     # target var is standardized but also extracted as normal value (labeled 'target_...')
-        #     not_scaled = dict_data[i][last_key].iloc[:, 0:5]
-        #     not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
-        #     scaled_df.index = not_scaled.index
-
-        #     df_all = pd.concat([not_scaled, scaled_df], axis = 1,)
-        #     print(i, df_all.iloc[0:15,0:9])
-
-
-#################################################################################################
-        # # Standardize each fold in training and test data
-        # for i in dict_data:
-        #     for k in dict_data[i]:
-        #         scaled = scaler.fit_transform(dict_data[i][k].iloc[:, 4:])
-        #         df = pd.DataFrame(scaled, columns = list(dict_data[i][k].iloc[:, 4:]))
-        #         # print(df)
-
-        #         # target var is standardized but also extracted as normal value (labeled 'target_...')
-        #         not_scaled = dict_data[i][k].iloc[:, 0:5]
-        #         not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
-        #         # print(not_scaled)
-        #         df.index = not_scaled.index
-
-        #         # seperate room in the data dictionary for std. data
-        #         df_all = pd.concat([not_scaled, df], axis = 1,)
-        #         # print(df_all.iloc[:,0:9])
-
-        #         dict_data[i][k] = df_all
-#################################################################################################
+        # for i in dict_data['test_std']:
+        #     print(dict_data['test_std'][i].iloc[0:15,0:9])
 
         return dict_data # a dict with training and test data
 
@@ -337,14 +299,29 @@ class Prepare(BaseEstimator, TransformerMixin):
         dict_data['pd_df'] = pd.concat([dict_data['train']["train_fold_{}".format(folds)],
                                         dict_data['test']["test_fold_{}".format(folds)]], 
                                         axis=0)
-                   
+
         # array data for sklearn
         for i in dict_data:
-            if i != 'pd_df':
+            if i == 'train' or i == 'test':
                 for k in dict_data[i]:
                     if self.vars:
-                        dict_data[i][k] = pd.concat([dict_data[i][k]['target_{}'.format(self.target)], dict_data[i][k][self.vars]], 
-                                                     axis=1)
+                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][self.vars]], axis=1)
+                        dict_data[i][k] = dict_data[i][k].dropna()
+                        #dict_data[i][k] = dict_data[i][k].to_numpy()
+                    if not self.vars:
+                    # if no predictors are provided in config file, use all lagged variables for train and test set
+                        all_vars = [ x for x in dict_data['pd_df'] if "lag" in x ]
+                        time = ['month', 'day', 'hour']
+                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
+                                                dict_data[i][k][time],
+                                                dict_data[i][k][all_vars]], axis=1)
+                        dict_data[i][k] = dict_data[i][k].dropna()
+                        dict_data[i][k] = dict_data[i][k].to_numpy()
+            if  i =='train_std' or i =='test_std':
+                for k in dict_data[i]:
+                    if self.vars:
+                        cols = ['std_' + x for x in self.vars]
+                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][cols]], axis=1)
                         dict_data[i][k] = dict_data[i][k].dropna()
                         #dict_data[i][k] = dict_data[i][k].to_numpy()
                     if not self.vars:
