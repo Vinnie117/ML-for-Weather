@@ -205,10 +205,7 @@ class InsertLags(BaseEstimator, TransformerMixin):
 
 class Scaler(BaseEstimator, TransformerMixin):
     """
-    Scale data: Select between:
-        - Standardization of data (Z-score normalization)
-        (- Normalization of data (0-1))
-        - scaling predictors only or also the target
+    Standardize predictors
     """
     def __init__(self, std_target):
         self.std_target = std_target
@@ -228,12 +225,25 @@ class Scaler(BaseEstimator, TransformerMixin):
                 scaled = scaler.fit_transform(dict_data[i][k].iloc[:, 4:])
                 df = pd.DataFrame(scaled, columns = list(dict_data[i][k].iloc[:, 4:]))
 
+                # print(df)
+
                 # target var is standardized but also extracted as normal value (labeled 'target_...')
                 not_scaled = dict_data[i][k].iloc[:, 0:5]
                 not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
+
+                # print(not_scaled)
                 df.index = not_scaled.index
 
+                # seperate room in the data dictionary for std. data
                 df_all = pd.concat([not_scaled, df], axis = 1,)
+
+                # print(df_all.iloc[:,0:9])
+
+                # if i == 'train':
+                #     dict_data['std_train'][k] = df_all
+                # if i == 'test':
+                #     dict_data['std_test'][k] = df_all
+
                 dict_data[i][k] = df_all
 
         return dict_data # a dict with training and test data

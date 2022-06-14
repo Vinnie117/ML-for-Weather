@@ -105,21 +105,20 @@ pd_df = data['pd_df']
 
 
 print(type(train))
-
-# # Time variables as categories
-# for col in ['month', 'day', 'hour']:
-#     train[col] = train[col].astype('category')
-# for col in ['month', 'day', 'hour']:
-#     test[col] = test[col].astype('category')
-
 print(train.dtypes)
-print(train)
+print(train.head(15))
 print(test)
 #print(pd_df)
 
 #print(list(pd_df))
 
 ####
+
+# # Time variables as categories
+# for col in ['month', 'day', 'hour']:
+#     train[col] = train[col].astype('category')
+# for col in ['month', 'day', 'hour']:
+#     test[col] = test[col].astype('category')
 
 #header = ['target_temperature', 'month',  'day',  'hour',  'temperature_lag_1',  'cloud_cover_lag_1',  'wind_speed_lag_1']
 

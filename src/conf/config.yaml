@@ -14,7 +14,7 @@ diff:
 model:
   target: temperature
   # if no predictors are provided, all lagged vars are used
-  predictors: ['temperature_lag_1'] #['month', 'day', 'hour', 'temperature_lag_1']
+  predictors: ['temperature_lag_1'] #['temperature_lag_1'] #['month', 'day', 'hour', 'temperature_lag_1']
               #['month', 'day', 'hour', 'temperature_lag_1',
               #'cloud_cover_lag_1', 'wind_speed_lag_1']
 cv:
