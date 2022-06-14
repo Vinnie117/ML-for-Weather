@@ -13,7 +13,7 @@ plt.scatter(x, y, s=1)
 
 plt.title("Lag Analysis")
 plt.xlabel("Temperature (°C) at time t-1")
-plt.ylabel("Temperature (°C) at time t-1")
+plt.ylabel("Temperature (°C) at time t")
 
 plt.show()
 
