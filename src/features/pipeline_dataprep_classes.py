@@ -220,11 +220,16 @@ class Scaler(BaseEstimator, TransformerMixin):
         # define standard scaler and make seperate room in the data dictionary for std. data
         scaler = StandardScaler()
         scaled_data = {}
-        scaled_data['train'] = {}
-        scaled_data['test'] = {}
+        scaled_data['train_std'] = dict.fromkeys(list(dict_data['train'].keys()))
+        scaled_data['test_std'] = dict.fromkeys(list(dict_data['test'].keys()))
 
+        # the last fold contains all training/test data relevant for parameters of std.
+        # TimeSeriesSplits creates subsets
         last_train_key = list(dict_data['train'])[-1]
-        scaled = scaler.fit_transform(dict_data['train'][last_train_key].iloc[:, 4:]) # -> Use this Scaler for all other folds!
+
+        # apply normalization parameters  obtained from the training set as-is on test data.
+        # Test data is unseen, recalculating parameters is inconsistent with model
+        scaled = scaler.fit_transform(dict_data['train'][last_train_key].iloc[:, 4:]) 
         scaled_df = pd.DataFrame(scaled, columns = list(dict_data['train'][last_train_key].iloc[:, 4:]))
 
         not_scaled = dict_data['train'][last_train_key].iloc[:, 0:5]
@@ -232,11 +237,11 @@ class Scaler(BaseEstimator, TransformerMixin):
         scaled_df.index = not_scaled.index
 
         df_all = pd.concat([not_scaled, scaled_df], axis = 1,)
-        print('train_fold_4', df_all.iloc[0:15,0:9])
-        scaled_data['train']['train_fold_4'] = df_all
+        #print('train_fold_4', df_all.iloc[0:15,0:9])
+        scaled_data['train_std']['train_fold_4'] = df_all
 
-        for i in dict_data:
-            for k in dict_data[i]:
+        for i,j in zip(dict_data, scaled_data):
+            for k,l in zip(dict_data[i], scaled_data[j]):
                 if k != 'train_fold_4':
                     scaled = scaler.transform(dict_data[i][k].iloc[:, 4:])
                     df = pd.DataFrame(scaled, columns = list(dict_data[i][k].iloc[:, 4:]))
@@ -252,42 +257,40 @@ class Scaler(BaseEstimator, TransformerMixin):
                     df_all = pd.concat([not_scaled, df], axis = 1,)
                     # print(df_all.iloc[:,0:9])
 
-                    scaled_data[i][k] = df_all
+                    scaled_data[j][l] = df_all
         
-        
-        print(scaled_data['train']['train_fold_0'].iloc[0:15,0:9])
-        print(scaled_data['train']['train_fold_4'].iloc[0:15,0:9])
-
-        print(scaled_data['test']['test_fold_0'].iloc[0:15,0:9])
-        print(scaled_data['test']['test_fold_4'].iloc[0:15,0:9])
-
-
         # at the end build the complete data dict
-        # dict_data = dict_data | scaled_data # -> order keys in scaled_data! https://stackoverflow.com/questions/51086412/moving-elements-in-dictionary-python-to-another-index
+        dict_data = dict_data | scaled_data # -> order keys in scaled_data! https://stackoverflow.com/questions/51086412/moving-elements-in-dictionary-python-to-another-index
+        # for i in dict_data['train']:
+        #     print(dict_data['train'][i].iloc[0:15,0:9])
+        for i in dict_data['train_std']:
+            print(dict_data['train_std'][i].iloc[0:15,0:9])
+        # for i in dict_data['test']:
+        #     print(dict_data['test'][i].iloc[0:15,0:9])
+        for i in dict_data['test_std']:
+            print(dict_data['test_std'][i].iloc[0:15,0:9])
+        # # This approach only scales the last fold (i.e the biggest) of each train and test set
+        # # -> Cannot loop through all folds of train bc. need fit_transform of last fold first
+        # for i in dict_data:
+        #     # the last fold contains all training/test data relevant for parameters of std.
+        #     # TimeSeriesSplits creates subsets
+        #     last_key = list(dict_data[i])[-1]
 
+        #     # apply normalization parameters  obtained from the training set as-is on test data.
+        #     # Test data is unseen, recalculating parameters is inconsistent with model
+        #     if i == 'train':
+        #         scaled = scaler.fit_transform(dict_data[i][last_key].iloc[:, 4:])
+        #     if i == 'test':
+        #         scaled = scaler.transform(dict_data[i][last_key].iloc[:, 4:]) 
+        #     scaled_df = pd.DataFrame(scaled, columns = list(dict_data[i][last_key].iloc[:, 4:]))
 
-        # This approach only scales the last fold (i.e the biggest) of each train and test set
-        # -> Cannot loop through all folds of train bc. need fit_transform of last fold first
-        for i in dict_data:
-            # the last fold contains all training/test data relevant for parameters of std.
-            # TimeSeriesSplits creates subsets
-            last_key = list(dict_data[i])[-1]
+        #     # target var is standardized but also extracted as normal value (labeled 'target_...')
+        #     not_scaled = dict_data[i][last_key].iloc[:, 0:5]
+        #     not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
+        #     scaled_df.index = not_scaled.index
 
-            # apply normalization parameters  obtained from the training set as-is on test data.
-            # Test data is unseen, recalculating parameters is inconsistent with model
-            if i == 'train':
-                scaled = scaler.fit_transform(dict_data[i][last_key].iloc[:, 4:])
-            if i == 'test':
-                scaled = scaler.transform(dict_data[i][last_key].iloc[:, 4:]) 
-            scaled_df = pd.DataFrame(scaled, columns = list(dict_data[i][last_key].iloc[:, 4:]))
-
-            # target var is standardized but also extracted as normal value (labeled 'target_...')
-            not_scaled = dict_data[i][last_key].iloc[:, 0:5]
-            not_scaled = not_scaled.rename({'temperature': 'target_temperature'}, axis=1) 
-            scaled_df.index = not_scaled.index
-
-            df_all = pd.concat([not_scaled, scaled_df], axis = 1,)
-            print(i, df_all.iloc[0:15,0:9])
+        #     df_all = pd.concat([not_scaled, scaled_df], axis = 1,)
+        #     print(i, df_all.iloc[0:15,0:9])
 
 
 #################################################################################################
