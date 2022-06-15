@@ -94,14 +94,19 @@ data = pipeline.fit_transform(df)
 # All folds are here
 train_folds = data['train']
 test_folds = data['test']
+train_std_folds = data['train_std']
+test_std_folds = data['test_std']
 
-# the last fold -> complete data
+# the last fold -> complete data. Last key is same for raw and std. data
 last_train_key = list(data['train'])[-1]
-train = data['train'][last_train_key]
-
 last_test_key = list(data['test'])[-1] 
+
+# full dataframes
+train = data['train'][last_train_key]
 test = data['test'][last_test_key]
-pd_df = data['pd_df']
+train_std = data['train_std'][last_train_key]
+test_std = data['test_std'][last_test_key]
+pd_df = data['pd_df'] # train + test
 
 
 print(type(train))
@@ -109,8 +114,10 @@ print(train.dtypes)
 print(train.head(15))
 print(test)
 #print(pd_df)
-
 #print(list(pd_df))
+
+print(train_std)
+
 
 ####
 
@@ -124,9 +131,9 @@ print(test)
 
 # , header = header
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
-           train, delimiter=",", fmt='%s')
+           train_std, delimiter=",", fmt='%s')
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
-           test, delimiter=",", fmt='%s')
+           test_std, delimiter=",", fmt='%s')
 
 # # index = False -> no row names
 # train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 

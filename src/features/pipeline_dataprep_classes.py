@@ -320,7 +320,7 @@ class Prepare(BaseEstimator, TransformerMixin):
             if  i =='train_std' or i =='test_std':
                 for k in dict_data[i]:
                     if self.vars:
-                        cols = ['std_' + x for x in self.vars]
+                        cols = ['std_' + x for x in self.vars if x not in ['month', 'day', 'hour']]
                         dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][cols]], axis=1)
                         dict_data[i][k] = dict_data[i][k].dropna()
                         #dict_data[i][k] = dict_data[i][k].to_numpy()
