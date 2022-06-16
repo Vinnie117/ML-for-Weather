@@ -7,6 +7,6 @@
 # Logs of hydra configs (experiment runs)
 outputs
 
-.pytest_cache
+__pycache__
 mlruns
 *.pyc
