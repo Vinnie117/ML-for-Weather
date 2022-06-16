@@ -37,23 +37,23 @@ print( (5.8 - mean_train)/std_train)         # -0.879333
 print(train)
 # Check: Was training data standardized correctly?
 z1 = (7.6 - mean_train)/std_train    
-print(z1)                                 # -0.6415251952932665                    
-print(train_std)
+print(z1)                                 # -0.6415251952932665 if predictors are given                   
+print(train_std.iloc[0:15,0:9])
 
 print(train_fold_0)                       # the values to be standardized
 z2 = (8.3 - mean_train)/std_train         # one standardized value
 print(z2)                                 # -0.5488323209229191
-print(train_std_fold_0)                   # the standardized values
+print(train_std_fold_0)                   # the standardized values if predictors are given
 
 # Check: Was test data standardized correctly?
 print(test)
 z3 = (0.9 - mean_train)/std_train
-print(z3)                                  # -1.5287284214094465
+print(z3)                                  # -1.5287284214094465 if predictors are given
 print(test_std)
 
 print(test_fold_0)
 z4 = (9.8 - mean_train)/std_train
-print(z4)                                  # -0.3502047329864609
+print(z4)                                  # -0.3502047329864609 if predictors are given
 print(test_std_fold_0)
           
 
