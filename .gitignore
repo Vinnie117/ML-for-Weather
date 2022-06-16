@@ -7,6 +7,7 @@
 # Logs of hydra configs (experiment runs)
 outputs
 
-__pycache__
+# all directories named '__pycache__'
+__pycache__/
 mlruns
-*.pyc
+
