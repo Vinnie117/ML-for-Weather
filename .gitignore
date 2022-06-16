@@ -9,5 +9,7 @@ outputs
 
 # all directories named '__pycache__'
 __pycache__/
+
+# mlflow experiment logs
 mlruns
 
