@@ -110,13 +110,13 @@ pd_df = data['pd_df'] # train + test
 
 
 print(type(train))
-print(train.dtypes)
+#print(train.dtypes)
 print(train.head(15))
-print(test)
+#print(test)
 #print(pd_df)
 #print(list(pd_df))
 
-print(train_std)
+print(train_std.iloc[0:15,0:9])
 
 
 ####

@@ -26,6 +26,10 @@ std_train = train['temperature_lag_1'].std()
 print('Mean for z-score is:', mean_train)
 print('Stddev for z-score is:', std_train)
 
+
+print( (5.8 - mean_train)/std_train)         # -0.879333  
+
+
 ###################################################################
 # Testing  data
 # info: https://stackoverflow.com/questions/5997027/python-rounding-error-with-float-numbers
@@ -51,6 +55,7 @@ print(test_fold_0)
 z4 = (9.8 - mean_train)/std_train
 print(z4)                                  # -0.3502047329864609
 print(test_std_fold_0)
+          
 
 
 print('END')
