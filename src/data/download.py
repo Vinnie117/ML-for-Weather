@@ -36,4 +36,6 @@ historical_data = DwdObservationRequest(parameter=["TEMPERATURE_AIR_MEAN_200", "
 
 df_hist = historical_data.values.all().df
 
+print(df_hist)
+
 df_hist.to_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv', header=True, index=False)
