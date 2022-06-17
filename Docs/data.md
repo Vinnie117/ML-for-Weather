@@ -11,8 +11,8 @@ TABLE for variable description
     -->
 | Variable | Description | Range | Type |
 |---|---|---|---|
-| TEMPERATURE_AIR_MEAN_200 |  | [-20,40] | int |
-| WIND_SPEED |  | [0,14] | int |
+| TEMPERATURE_AIR_MEAN_200 | The mean temperature at 2 meters above ground in the select frequency in °C | [-20,40] | int |
+| WIND_SPEED | Measured in m/s | [0,14] | int |
 | CLOUD_COVER_TOTAL | In meteorology, an okta is a unit of measurement used to describe the amount of cloud cover at any given location. Sky condititions are estimated in terms of how many eighths of the sky are covered in cloud, ranging from 0 oktas (completely clear sky) to 8 oktas (completely overcast). Apparently, there exists an extra cloud cover indicator '9' meaning that the sky is totally obscured (i.e  hidden from view), usually due to dense fog or heavy snow. | [0,8] | int |
 
 A full list of available variables can be found *[here](https://wetterdienst.readthedocs.io/en/latest/data/parameters.html)*
