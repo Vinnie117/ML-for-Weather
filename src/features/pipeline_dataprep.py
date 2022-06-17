@@ -122,15 +122,6 @@ print(train_std.iloc[0:15,0:9])
 print(test_std.iloc[0:15,0:9])
 ####
 
-# # Time variables as categories
-# for col in ['month', 'day', 'hour']:
-#     train[col] = train[col].astype('category')
-# for col in ['month', 'day', 'hour']:
-#     test[col] = test[col].astype('category')
-
-#header = ['target_temperature', 'month',  'day',  'hour',  'temperature_lag_1',  'cloud_cover_lag_1',  'wind_speed_lag_1']
-
-# , header = header
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
            train_std, delimiter=",", fmt='%s')
 np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
