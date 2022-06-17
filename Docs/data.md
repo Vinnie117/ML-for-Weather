@@ -5,7 +5,13 @@ Data for this project comes from the *[DWD - Deutscher Wetterdienst](https://git
 
 Station-ID 1766 -> Muenster
 
-| Variable | Description                                                            | Range | Type |
+| Variable   | Description    | Range    | Type |
+|------------|---          ---|----------|------|
+| TEMPERATURE_AIR_MEAN_200 |  text    | [-20,40] | int  |
+| WIND_SPEED               |   text   | [0,14]   | int  |
+| CLOUD_COVER_TOTAL        | In meteorology, an okta is a unit of measurement used to describe the amount of cloud cover at any given location. Sky condititions are estimated in terms of how many eighths of the sky are covered in cloud, ranging from 0 oktas (completely clear sky) to 8 oktas (completely overcast). Apparently, there exists an extra cloud cover indicator '9' meaning that the sky is totally obscured (i.e  hidden from view), usually due to dense fog or heavy snow. | [0,8]    | int  |
+
+<!-- | Variable | Description                                                            | Range | Type |
 |----------|------------------------------------------------------------------------|----------|------|
 | TEMPERATURE_AIR_MEAN_200 | text                                                   | [-20,40] | int  |
 | WIND_SPEED               | text                                                   | [0,14]   | int  |
@@ -17,7 +23,7 @@ Station-ID 1766 -> Muenster
                              (completely overcast). Apparently, there exists an 
                              extra cloud cover indicator '9' meaning  that the sky 
                              is totally obscured (i.e  hidden from view), usually
-                             due to dense fog or heavy snow.                          | [0,8]    | int  |
+                             due to dense fog or heavy snow.                          | [0,8]    | int  | -->
 
 
 A full list of available variables can be found *[here](https://wetterdienst.readthedocs.io/en/latest/data/parameters.html)*
