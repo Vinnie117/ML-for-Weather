@@ -21,29 +21,24 @@ temperature_lags['temperature_lag_24'] = train['temperature_lag_24']
 
 y = train['temperature']
 
+rows = 3
+cols = 3
 
-fig, axs = plt.subplots(3, 3, figsize=(9,9))
+fig, axs = plt.subplots(rows, cols, sharex=True, sharey=True, figsize=(9,9))
 fig.suptitle('Lag Analysis')
-axs[0, 0].scatter(temperature_lags['temperature_lag_1'], y, s=1)
-axs[0, 1].scatter(temperature_lags['temperature_lag_2'], y, s=1)
-axs[0, 2].scatter(temperature_lags['temperature_lag_3'], y, s=1)
-axs[1, 0].scatter(temperature_lags['temperature_lag_4'], y, s=1)
-axs[1, 1].scatter(temperature_lags['temperature_lag_5'], y, s=1)
-axs[1, 2].scatter(temperature_lags['temperature_lag_6'], y, s=1)
-axs[2, 0].scatter(temperature_lags['temperature_lag_9'], y, s=1)
-axs[2, 1].scatter(temperature_lags['temperature_lag_12'], y, s=1)
-axs[2, 2].scatter(temperature_lags['temperature_lag_24'], y, s=1)
 
-# Loop through this!
+# axs is 2d array (rows and columns), flatten it to loop over
+axs = axs.flatten()
 
-# for i, ax in enumerate(axs.flat):
-#     print(i)
-#     ax.set(xlabel='A', ylabel='temperature')
+for i, j in enumerate(temperature_lags):
+    axs[i].scatter(temperature_lags[j], y, s=1)
+    axs[i].set(xlabel=list(temperature_lags)[i], ylabel='temperature')
 
-for i, ax in zip(range(len(temperature_lags)), axs.flat):
-    ax.set(xlabel=list(temperature_lags)[i], ylabel='temperature')
 
-#plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+
+
+
+
 
 fig.show()
 
