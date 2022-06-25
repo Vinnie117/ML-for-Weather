@@ -4,7 +4,6 @@ sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent director
 import matplotlib.pyplot as plt
 from features.pipeline_dataprep import pd_df, train, test
 import pandas as pd
-from config import data_config
 from hydra import compose
 
 
@@ -36,7 +35,8 @@ def lag_analysis(var, target, rows, cols):
         corrs.append(round(y.corr(lags[j]), 4))
 
         axs[i].scatter(lags[j], y, s=1)
-        axs[i].set(xlabel=list(lags)[i], ylabel=target)
+        axs[i].set(xlabel=str(list(lags)[i].split('_lag_')[0]) + ' at t-' + str(list(lags)[i].split('_lag_')[-1]), 
+                   ylabel=str(target) + ' at time t')
         axs[i].annotate('r = {}'.format(corrs[i]), xy = (0,1), xytext = (0.05,0.9), xycoords = 'axes fraction')
     
 
@@ -54,5 +54,6 @@ lag_analysis(var = 'temperature', target = 'temperature', rows = 3, cols = 3)
 
 
 # Lag_24 seems good -> try 25 and 26 -> might be even better than 6 or 9 though it is further away
+# also 48, 47, 49
 
 print('END')
