@@ -13,84 +13,32 @@ print(cfg['model']['predictors'])
 
 ################################################################
 
-def lag_analysis(var, target):
+def lag_analysis(var, target, rows, cols):
 
-    print(var)
-    dict_name = '{}_lags'.format(var)
-    print(dict_name)
-
+    # create dict with data for lag analysis
     lags = {}
     for i in cfg['model']['predictors']:
         if str(var) + '_lag_' in i:
             lags[i] = train[i]
 
     y = train[target]
-    rows = 3
-    cols = 3
     fig, axs = plt.subplots(rows, cols, sharex=True, sharey=True, figsize=(9,9))
-
     fig.suptitle('Temperature - Lag Analysis')
 
     # axs is 2d array (rows and columns), flatten it to loop over
     axs = axs.flatten()
 
+    # build subplots
     for i, j in enumerate(lags):
         axs[i].scatter(lags[j], y, s=1)
-        axs[i].set(xlabel=list(lags)[i], ylabel='temperature')
+        axs[i].set(xlabel=list(lags)[i], ylabel=target)
     
     return fig
 
-lag_analysis(var = 'cloud_cover', target = 'temperature')
+lag_analysis(var = 'temperature', target = 'temperature', rows = 3, cols = 3)
 
 
-temperature_lags = {}
-temperature_lags['temperature_lag_1'] = train['temperature_lag_1']
-temperature_lags['temperature_lag_2'] = train['temperature_lag_2']
-temperature_lags['temperature_lag_3'] = train['temperature_lag_3']
-temperature_lags['temperature_lag_4'] = train['temperature_lag_4']
-temperature_lags['temperature_lag_5'] = train['temperature_lag_5']
-temperature_lags['temperature_lag_6'] = train['temperature_lag_6']
-temperature_lags['temperature_lag_9'] = train['temperature_lag_9']
-temperature_lags['temperature_lag_12'] = train['temperature_lag_12']
-temperature_lags['temperature_lag_24'] = train['temperature_lag_24']
 
-cloud_cover_lags = {}
-cloud_cover_lags['cloud_cover_lag_1'] = train['cloud_cover_lag_1']
-cloud_cover_lags['cloud_cover_lag_2'] = train['cloud_cover_lag_2']
-cloud_cover_lags['cloud_cover_lag_3'] = train['cloud_cover_lag_3']
-cloud_cover_lags['cloud_cover_lag_4'] = train['cloud_cover_lag_4']
-cloud_cover_lags['cloud_cover_lag_5'] = train['cloud_cover_lag_5']
-cloud_cover_lags['cloud_cover_lag_6'] = train['cloud_cover_lag_6']
-cloud_cover_lags['cloud_cover_lag_9'] = train['cloud_cover_lag_9']
-cloud_cover_lags['cloud_cover_lag_12'] = train['cloud_cover_lag_12']
-cloud_cover_lags['cloud_cover_lag_24'] = train['cloud_cover_lag_24']
-
-
-y = train['temperature']
-
-rows = 3
-cols = 3
-
-# fig, axs = plt.subplots(rows, cols, sharex=True, sharey=True, figsize=(9,9))
-# fig.suptitle('Temperature Lag Analysis')
-
-# # axs is 2d array (rows and columns), flatten it to loop over
-# axs = axs.flatten()
-
-# for i, j in enumerate(temperature_lags):
-#     axs[i].scatter(temperature_lags[j], y, s=1)
-#     axs[i].set(xlabel=list(temperature_lags)[i], ylabel='temperature')
-
-
-fig, axs = plt.subplots(rows, cols, sharex=True, sharey=True, figsize=(9,9))
-fig.suptitle('Cloud Cover - Lag Analysis')
-
-# axs is 2d array (rows and columns), flatten it to loop over
-axs = axs.flatten()
-
-for i, j in enumerate(cloud_cover_lags):
-    axs[i].scatter(cloud_cover_lags[j], y, s=1)
-    axs[i].set(xlabel=list(cloud_cover_lags)[i], ylabel='temperature')
 
 
 
