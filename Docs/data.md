@@ -18,6 +18,10 @@ TABLE for variable description
 A full list of available variables can be found *[here](https://wetterdienst.readthedocs.io/en/latest/data/parameters.html)*. Note that downloaded variable names differ from variable names for model training as they
 will be altered during *[data preprocessing](https://github.com/Vinnie117/ML-for-Weather/blob/main/Docs/preprocessing.md)* 
 
+When using the API, data comes out in this form:
+![grafik](https://user-images.githubusercontent.com/52510339/175810749-8c117922-5f34-4c24-943a-e82e794f6311.png)
+
+
 
 
 ## Sources:
