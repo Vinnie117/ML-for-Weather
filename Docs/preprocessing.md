@@ -29,7 +29,8 @@ The following (custom) transformers are applied to the data for feature engineer
 |  |  |  |
 
 When the pipeline has finished, the resulting data frame looks like this: 
-![grafik](https://user-images.githubusercontent.com/52510339/175811052-a2762c6c-81f2-4973-8913-20201878b91b.png)
+![grafik](https://user-images.githubusercontent.com/52510339/175814437-8152c8bd-b0b3-4e79-9f51-ec09337d31fb.png)
+
 
 The resulting object that holds all information is a dictionary called data and structured as follows:
 - data
