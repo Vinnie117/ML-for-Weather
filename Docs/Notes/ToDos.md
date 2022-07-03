@@ -1,8 +1,7 @@
 # To do - short term
 
-- warning with svm: Feature names unseen at fit time: -> Feature names seen at fit time, yet now missing:
-    - check column names
-    - -> csv data itself has no column names
+- fix training with SVM
+    - need to standardize all variables?
 - need DVC? -> keep track of what data was used in each experiment
 - compare relative performance of using later lags
     - plot -> x: latest lag used, y: score on test data

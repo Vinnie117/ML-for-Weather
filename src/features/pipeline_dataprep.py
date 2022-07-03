@@ -134,4 +134,8 @@ train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv',
              header=True, index=False)
 test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
              header=True, index=False)
+train_std.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_std_array.csv', 
+             header=True, index=False)
+test_std.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_std_array.csv', 
+             header=True, index=False)
 

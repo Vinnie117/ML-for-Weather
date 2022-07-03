@@ -15,16 +15,16 @@ from sklearn import preprocessing
 from sklearn import utils
 
 # # Select data -> if numpy array
-# train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', names=True)
-# test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', names=True)
+# train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
+# test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
 # X_train = train[:, 1:]
 # y_train = train[:, 0]
 # X_test = test[:, 1:]
 # y_test = test[:, 0]
 
 # Select data -> if pandas dataframe
-train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', header=0)
-test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
+train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_std_array.csv', delimiter=',', header=0)
+test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_std_array.csv', delimiter=',', header=0)
 X_train = train.iloc[:, 1:]
 y_train = train.iloc[:, 0]
 X_test = test.iloc[:, 1:]
