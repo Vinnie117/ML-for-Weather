@@ -1,9 +1,12 @@
 # To do - short term
 
+- warning with svm: Feature names unseen at fit time: -> Feature names seen at fit time, yet now missing:
+    - check column names
+    - -> csv data itself has no column names
 - need DVC? -> keep track of what data was used in each experiment
 - compare relative performance of using later lags
     - plot -> x: latest lag used, y: score on test data
-
+- UserWarning: Hint: Inferred schema contains integer column(s). Integer columns in Python cannot represent missing values. If your input data contains missing values at inference time, it will be encoded as floats and will cause a schema enforcement error.
 
 - Implement a multiple models
     -> main motivation: establish a structure to track and log multiple models (e.g. performance, data used etc.)
