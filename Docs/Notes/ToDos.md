@@ -1,10 +1,11 @@
 # To do - short term
 
-- Implement cross validation for time series (?)
-- Hyperparameter tuning for models -> grid search (needs cross validation?)
+- need DVC? -> keep track of what data was used in each experiment
+- compare relative performance of using later lags
+    - plot -> x: latest lag used, y: score on test data
 
 
-- Implement a second model
+- Implement a multiple models
     -> main motivation: establish a structure to track and log multiple models (e.g. performance, data used etc.)
     - crucial aspect to be able to track experiments
     - MLFlow. DVC -> research and compare! https://www.youtube.com/watch?v=W2DvpCYw22o 
@@ -16,15 +17,7 @@
     - 6h MA? 3h MA?
 - create z-score variables?
     - https://twitter.com/mattrowsboats/status/1514293331278372876 
-- scale variables to normalize coefficient between 0 and 1
-    - do it in pipeline, close to the end
-    - scale all variables or only selected ones? enable both?
-        - e.g. all = True -> scale all variables
-        - if all = False -> provide a list of variables to be scaled
- - Start documentation of the project
-    - document the structure of the data objects (esp. dict_data)
-    - variable description, list of downloadable variables with description
-    - explain functions
+
 
 
 # To do - long term
