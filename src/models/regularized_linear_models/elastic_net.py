@@ -56,7 +56,7 @@ with mlflow.start_run():
     model = ElasticNet(random_state=42)
 
     # scoring: Strategy to evaluate the performance of the cross-validated model on the test set; = None -> sklearn.metrics.r2_score 
-    lr= GridSearchCV(model, parameters, cv=tscv, scoring=None)
+    lr= GridSearchCV(model, parameters, cv=tscv, scoring=None, verbose=2)
     lr.fit(X_train, y_train)
     duration = time() - t0
 

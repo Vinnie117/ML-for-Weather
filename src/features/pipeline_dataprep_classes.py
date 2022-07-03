@@ -289,6 +289,7 @@ class Prepare(BaseEstimator, TransformerMixin):
                     dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
                                                  dict_data[i][k][time], 
                                                  dict_data[i][k][all_vars]], axis=1)
+                    dict_data[i][k] = dict_data[i][k].dropna()
 
         # complete dataframe for further use, e.g. evaluation
         dict_data['pd_df'] = pd.concat([dict_data['train']["train_fold_{}".format(folds)],
