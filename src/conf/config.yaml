@@ -10,12 +10,16 @@ transform:
   vars: ['temperature', 'cloud_cover', 'wind_speed']
 diff:
   diff: [1,2]
-  lags: [1,2,24]
+  lags: [1,2,3,4,5,6,9,12,24]
 model:
   target: temperature
   # if no predictors are provided (i.e empty list []), all lagged vars are used
-  predictors: ['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1']
-              #'month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1'
+  predictors: ['month', 'day', 'hour',
+               'temperature_lag_1', 
+
+               'cloud_cover_lag_1',
+               'wind_speed_lag_1']
+             
 cv:
   n_splits: 5
 

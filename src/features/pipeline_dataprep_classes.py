@@ -170,9 +170,8 @@ class InsertLags(BaseEstimator, TransformerMixin):
     """
     Automatically insert lags (compute new features in 'X', add to master 'data')
     """
-    def __init__(self, vars, diff):
+    def __init__(self, diff):
         self.diff = diff
-        self.vars = vars
 
     def fit(self, X):
         return self
@@ -230,7 +229,7 @@ class Scaler(BaseEstimator, TransformerMixin):
         # TimeSeriesSplits creates subsets
         last_train_key = list(dict_data['train'])[-1]
 
-        # apply normalization parameters  obtained from the training set as-is on test data.
+        # apply standardization parameters obtained from the training set as-is on test data.
         # Test data is unseen, recalculating parameters is inconsistent with model
         scaled = scaler.fit_transform(dict_data['train'][last_train_key].iloc[:, 4:])
 
@@ -278,10 +277,12 @@ class Prepare(BaseEstimator, TransformerMixin):
                 if self.vars:
                     if i == 'train' or i == 'test':
                         dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][self.vars]], axis=1)
+                        dict_data[i][k] = dict_data[i][k].dropna()
                     if  i =='train_std' or i =='test_std':
                         cols = ['std_' + x for x in self.vars if x not in time]
                         cols = time + cols
                         dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][cols]], axis=1)
+                        dict_data[i][k] = dict_data[i][k].dropna()
                 if not self.vars:
                 # if no predictors are provided in config file, use all lagged variables for train and test set
                     all_vars = [x for x in dict_data[i][k] if "lag" in x]

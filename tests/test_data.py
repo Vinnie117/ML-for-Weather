@@ -12,7 +12,6 @@ import pandas as pd
 #original = pd_df['temperature'][:-1]
 transformed = pd_df['temperature_velo_1'][1:]
 original_transformed = pd_df['temperature'].diff(1)[1:]
-
 transformed.fillna(original_transformed, inplace=True)
 
 # Test
