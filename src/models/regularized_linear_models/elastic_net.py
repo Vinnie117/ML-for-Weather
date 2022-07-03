@@ -12,15 +12,26 @@ from joblib import dump, load
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
 
-train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
-test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
+# train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
+# test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
+
+# Select data -> if pandas dataframe
+train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', header=0)
+test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
+X_train = train
+y_train = train.iloc[:, 0]
+X_test = test.iloc[:, 1:]
+y_test = test.iloc[:, 0]
+
+
 
 # Select data
-X_train = train[:, 1:]
-y_train = train[:, 0]
-X_test = test[:, 1:]
-y_test = test[:, 0]
+X_train = train.iloc[:, 1:]
+y_train = train.iloc[:, 0]
+X_test = test.iloc[:, 1:]
+y_test = test.iloc[:, 0]
 
+print(X_train)
 
 def eval_metrics(actual, pred):
     rmse = np.sqrt(mean_squared_error(actual, pred))

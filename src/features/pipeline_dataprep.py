@@ -124,14 +124,14 @@ print(train_std.iloc[0:15,0:9])
 print(test_std.iloc[0:15,0:9])
 ####
 
-np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
-           train_std, delimiter=",", fmt='%s')
-np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
-           test_std, delimiter=",", fmt='%s')
+# np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
+#            train_std, delimiter=",", fmt='%s')
+# np.savetxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
+#            test_std, delimiter=",", fmt='%s')
 
-# # index = False -> no row names
-# train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
-#              header=True, index=False)
-# test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
-#              header=True, index=False)
+# index = False -> no row names
+train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
+             header=True, index=False)
+test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
+             header=True, index=False)
 
