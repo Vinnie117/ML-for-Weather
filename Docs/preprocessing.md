@@ -51,6 +51,7 @@ The resulting object that holds all information is a dictionary called data and 
     - ...
     - test_fold_K
   - pd_df
+Note that each subsequent fold contains data of all the prior folds due to the nature of time series, i.e.e random shuffling of slices is not appropriate. THat means "..._fold_K" contains all prior folds
 
 
 
