@@ -95,13 +95,13 @@ with mlflow.start_run():
 
     # scoring: Strategy to evaluate the performance of the cross-validated model on the test set; = None -> sklearn.metrics.r2_score 
     lr= GridSearchCV(model, param_grid, cv=tscv, scoring=None, verbose=2)
-    lr.fit(X_train, y_train_encoded)
+    lr.fit(X_train, y_train)
     duration = time() - t0
 
     # automatically the model with best params
     predicted_values = lr.predict(X_test)
 
-    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test_encoded, predicted_values)
+    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values)
 
     # Logging model performance to mlflow -> is only done for the best model
     mlflow.log_param("C", C)
