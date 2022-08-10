@@ -10,25 +10,25 @@ import mlflow
 from joblib import dump, load
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
-from sklearn.svm import SVC
+from sklearn.svm import SVR
 from sklearn import preprocessing
 from sklearn import utils
+from sklearn.preprocessing import StandardScaler
 
-# # Select data -> if numpy array
-# train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
-# test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
-# X_train = train[:, 1:]
-# y_train = train[:, 0]
-# X_test = test[:, 1:]
-# y_test = test[:, 0]
 
-# Select data -> if pandas dataframe
-train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_std_array.csv', delimiter=',', header=0)
-test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_std_array.csv', delimiter=',', header=0)
+# Select data 
+train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', header=0)
+test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
 X_train = train.iloc[:, 1:]
 y_train = train.iloc[:, 0]
 X_test = test.iloc[:, 1:]
 y_test = test.iloc[:, 0]
+
+# X_train = train.iloc[:, 4:]
+# X_test = test.iloc[:, 4:]
+# scaler = StandardScaler()
+# y_train = pd.DataFrame(scaler.fit_transform(y_train), columns = y_train.columns)
+# y_test = pd.DataFrame(scaler.transform(y_test), columns = y_test.columns)
 
 print(X_train)
 print(X_train.shape)
@@ -40,12 +40,14 @@ print(X_test.shape)
 print(y_test)
 print(y_test.shape)
 
-# Cannot pass floats to classifier -> convert to categories/classes
-lab_enc = preprocessing.LabelEncoder()
-y_train_encoded = lab_enc.fit_transform(y_train)
-y_test_encoded = lab_enc.fit_transform(y_test)
+# # Cannot pass floats to classifier -> convert to categories/classes
+# lab_enc = preprocessing.LabelEncoder()
+# y_train_encoded = lab_enc.fit_transform(y_train)
+# y_test_encoded = lab_enc.fit_transform(y_test)
 
-#print(utils.multiclass.type_of_target(y_train_encoded))
+# print(y_train_encoded)
+# print(y_test_encoded)
+# print(utils.multiclass.type_of_target(y_train_encoded))
 
 
 def eval_metrics(actual, pred):
@@ -59,12 +61,13 @@ def eval_metrics(actual, pred):
 #### Train a model
 
 # single model to observe
-clf = SVC(gamma='auto')
-clf.fit(X_train, y_train_encoded)
+clf = SVR(gamma='auto')
+clf.fit(X_train, y_train)
 
 # predicted values are nowhere near plausible
 clf_predicted_values = clf.predict(X_test)
 print(clf_predicted_values)
+
 
 
 # Specifiy splitting for Time series cross validation
@@ -88,7 +91,7 @@ with mlflow.start_run():
 
     # Start training the model
     t0 = time()
-    model = SVC(random_state=42)
+    model = SVR(random_state=42)
 
     # scoring: Strategy to evaluate the performance of the cross-validated model on the test set; = None -> sklearn.metrics.r2_score 
     lr= GridSearchCV(model, param_grid, cv=tscv, scoring=None, verbose=2)
