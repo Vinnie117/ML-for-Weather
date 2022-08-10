@@ -17,8 +17,8 @@ from sklearn.preprocessing import StandardScaler
 
 
 # Select data 
-train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', header=0)
-test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
+train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_std_array.csv', delimiter=',', header=0)
+test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_std_array.csv', delimiter=',', header=0)
 X_train = train.iloc[:, 1:]
 y_train = train.iloc[:, 0]
 X_test = test.iloc[:, 1:]
@@ -91,7 +91,7 @@ with mlflow.start_run():
 
     # Start training the model
     t0 = time()
-    model = SVR(random_state=42)
+    model = SVR()
 
     # scoring: Strategy to evaluate the performance of the cross-validated model on the test set; = None -> sklearn.metrics.r2_score 
     lr= GridSearchCV(model, param_grid, cv=tscv, scoring=None, verbose=2)

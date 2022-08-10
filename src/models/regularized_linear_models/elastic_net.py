@@ -3,7 +3,6 @@ import numpy as np
 from time import time
 from sklearn.linear_model import ElasticNet
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import matplotlib.pyplot as plt
 import sys 
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 from models.functions import adjustedR2
