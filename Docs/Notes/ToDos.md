@@ -1,7 +1,9 @@
 # To do - short term
 
-- fix training with SVM
-    - need to standardize all variables?
+- fix training with standardized variables
+    - need to standardize all variables, also time?
+    - training for SVM is weird
+    - for elastic net might be ok bc time variables are penalized
 - need DVC? -> keep track of what data was used in each experiment
 - compare relative performance of using later lags
     - plot -> x: latest lag used, y: score on test data
