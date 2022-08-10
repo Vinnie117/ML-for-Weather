@@ -231,16 +231,16 @@ class Scaler(BaseEstimator, TransformerMixin):
 
         # apply standardization parameters obtained from the training set as-is on test data.
         # Test data is unseen, recalculating parameters is inconsistent with model
-        scaled = scaler.fit_transform(dict_data['train'][last_train_key].iloc[:, 4:])
+        scaled = scaler.fit_transform(dict_data['train'][last_train_key].iloc[:, 1:])
 
         for i,j in zip(dict_data, scaled_data):
             for k,l in zip(dict_data[i], scaled_data[j]):
-                scaled = scaler.transform(dict_data[i][k].iloc[:, 4:])
-                scaled_cols = ['std_' + x for x in list(dict_data['train'][last_train_key].iloc[:, 4:])]
+                scaled = scaler.transform(dict_data[i][k].iloc[:, 1:])
+                scaled_cols = ['std_' + x for x in list(dict_data['train'][last_train_key].iloc[:, 1:])]
                 scaled_df = pd.DataFrame(scaled, columns = scaled_cols)
 
                 # target var is standardized but also extracted as normal value (labeled 'target_...')
-                not_scaled = dict_data[i][k].iloc[:, 0:5]
+                not_scaled = dict_data[i][k].iloc[:, [0,4]]
                 scaled_df.index = not_scaled.index
                 df_all = pd.concat([not_scaled, scaled_df], axis = 1,)
 
@@ -271,6 +271,8 @@ class Prepare(BaseEstimator, TransformerMixin):
 
         # array data for sklearn
         time = ['month', 'day', 'hour']
+        std_time = ['std_month', 'std_day', 'std_hour']
+
 
         for i in dict_data:
             for k in dict_data[i]:
@@ -285,11 +287,18 @@ class Prepare(BaseEstimator, TransformerMixin):
                         dict_data[i][k] = dict_data[i][k].dropna()
                 if not self.vars:
                 # if no predictors are provided in config file, use all lagged variables for train and test set
-                    all_vars = [x for x in dict_data[i][k] if "lag" in x]
-                    dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
-                                                 dict_data[i][k][time], 
-                                                 dict_data[i][k][all_vars]], axis=1)
-                    dict_data[i][k] = dict_data[i][k].dropna()
+                    if i == 'train' or i == 'test':
+                        all_vars = [x for x in dict_data[i][k] if "lag" in x]
+                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
+                                                    dict_data[i][k][time], 
+                                                    dict_data[i][k][all_vars]], axis=1)
+                        dict_data[i][k] = dict_data[i][k].dropna()
+                    if i == 'train_std' or i == 'test_std':
+                        all_vars = [x for x in dict_data[i][k] if "lag" in x]
+                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
+                                                    dict_data[i][k][std_time], 
+                                                    dict_data[i][k][all_vars]], axis=1)
+                        dict_data[i][k] = dict_data[i][k].dropna()
 
         # complete dataframe for further use, e.g. evaluation
         dict_data['pd_df'] = pd.concat([dict_data['train']["train_fold_{}".format(folds)],
