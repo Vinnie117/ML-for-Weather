@@ -1,19 +1,14 @@
 import pandas as pd
-import numpy as np
 from time import time
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import matplotlib.pyplot as plt
+from sklearn.svm import SVR
 import sys 
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
-from models.functions import adjustedR2, eval_metrics
+from models.functions import eval_metrics
 import mlflow
-from joblib import dump, load
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
-from sklearn.svm import SVR
-from sklearn import preprocessing
-from sklearn import utils
-from sklearn.preprocessing import StandardScaler
+from config import data_config 
+from hydra import compose, initialize
 
 
 # Select data 
@@ -27,50 +22,53 @@ y_test = test.iloc[:, 0]
 
 #### Train a model
 
-# Specifiy splitting for Time series cross validation
-tscv = TimeSeriesSplit(n_splits = 5)
+initialize(config_path="..\..\conf", job_name="config")
+cfg = compose(config_name="config")
 
-# defining parameter range
-C =  [0.1, 1, 10, 100, 1000]
-gamma = [1, 0.1, 0.01, 0.001, 0.0001]
-kernel = ['rbf']
-
-param_grid = {'C': C,
-              'gamma':gamma,
-              'kernel': kernel}
-
-mlflow.set_experiment(experiment_name='Weather') 
-
-# max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
-mlflow.sklearn.autolog(max_tuning_runs=None) 
-
-with mlflow.start_run(run_name='svm'):
-
-    # Start training the model
-    t0 = time()
-    model = SVR()
-
-    # scoring: Strategy to evaluate the performance of the cross-validated model on the test set; = None -> sklearn.metrics.r2_score 
-    lr= GridSearchCV(model, param_grid, cv=tscv, scoring=None, verbose=2)
-    lr.fit(X_train, y_train)
-    duration = time() - t0
-
-    # automatically the model with best params
-    predicted_values = lr.predict(X_test)
-
-    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values, X_test)
-
-    # Logging model performance to mlflow -> is only done for the best model
-    mlflow.log_param("C", C)
-    mlflow.log_param("gamma", gamma)
-    mlflow.log_param("kernel", kernel)
-    mlflow.log_metric("rmse", rmse)
-    mlflow.log_metric("r2", r2)
-    mlflow.log_metric("mae", mae)
-    mlflow.log_metric("adjusted_r2", adjusted_r2)
-    mlflow.log_metric('duration', duration)
+# # This would also work:
+# import os, omegaconf
+# cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
 
 
+def train_svm(cfg: data_config):
 
-#if __name__ == "__main__":
-print('END')
+    mlflow.set_experiment(experiment_name='Weather') 
+
+    # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
+    mlflow.sklearn.autolog(max_tuning_runs=None) 
+
+    with mlflow.start_run(run_name='svm'):
+
+        # Start training the model
+        t0 = time()
+        model = SVR()
+
+        # Hyperparameter-tuning with grid search
+        param_grid = {'C': cfg.svm.C, 'gamma':cfg.svm.gamma, 'kernel': cfg.svm.kernel}
+        # Specify splitting for Time series cross validation
+        tscv = TimeSeriesSplit(n_splits = cfg.cv.n_splits)
+
+        # scoring: Strategy to evaluate the performance of the cross-validated model on the test set; = None -> sklearn.metrics.r2_score 
+        lr= GridSearchCV(model, param_grid, cv=tscv, scoring=None, verbose=2)
+        lr.fit(X_train, y_train)
+        duration = time() - t0
+
+        # automatically the model with best params
+        predicted_values = lr.predict(X_test)
+
+        (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values, X_test)
+
+        # Logging model performance to mlflow -> is only done for the best model
+        mlflow.log_param("C", cfg.svm.C)
+        mlflow.log_param("gamma", cfg.svm.gamma)
+        mlflow.log_param("kernel", cfg.svm.kernel)
+        mlflow.log_metric("rmse", rmse)
+        mlflow.log_metric("r2", r2)
+        mlflow.log_metric("mae", mae)
+        mlflow.log_metric("adjusted_r2", adjusted_r2)
+        mlflow.log_metric('duration', duration)
+
+
+if __name__ == "__main__":
+    train_svm(cfg = cfg)
+    print('END')

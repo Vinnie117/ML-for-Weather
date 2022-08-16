@@ -3,7 +3,7 @@ from time import time
 from sklearn.linear_model import ElasticNet
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
-from models.functions import adjustedR2, eval_metrics
+from models.functions import eval_metrics
 import mlflow
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
@@ -68,7 +68,6 @@ def train_elastic_net(cfg: data_config):
 
 
 if __name__ == "__main__":
-
     train_elastic_net(cfg = cfg)
     print('END')
 

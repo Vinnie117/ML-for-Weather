@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import string
 
 @dataclass
 class vars_old:
@@ -33,6 +34,17 @@ class cv:
     n_splits: int
 
 @dataclass
+class elastic_net:
+    alpha: float
+    l1_ratio: float
+
+@dataclass
+class svm:
+    C: int
+    gamma: float
+    kernel: string
+
+@dataclass
 class data_config:
     vars_old: vars_old
     vars_new: vars_new
@@ -41,5 +53,7 @@ class data_config:
     diff: diff
     model: model
     cv: cv
+    elastic_net: elastic_net
+    svm: svm
 
 
