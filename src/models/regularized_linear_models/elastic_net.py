@@ -11,10 +11,7 @@ from joblib import dump, load
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
 
-# train = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',')
-# test = np.genfromtxt(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',')
-
-# Select data -> if pandas dataframe
+# Select data
 train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', header=0)
 test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
 X_train = train.iloc[:, 1:]
@@ -43,7 +40,7 @@ mlflow.set_experiment(experiment_name='Weather')
 # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
 mlflow.sklearn.autolog(max_tuning_runs=None) 
 
-with mlflow.start_run():
+with mlflow.start_run(run_name='elastic net'):
 
     # Start training the model
     t0 = time()

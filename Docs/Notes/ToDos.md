@@ -1,8 +1,6 @@
 # To do - short term
 
 - Integrate DVC (with mlflow)
-- Put all model trainings into one mlflow experiment (except for the baseline?)
-- How to label mlflow experiments? Or better: should show by default which model was used
 - Put model parameters into config.yaml
     - -> wrap each model training into a function
 

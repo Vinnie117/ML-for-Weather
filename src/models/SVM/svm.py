@@ -44,7 +44,7 @@ mlflow.set_experiment(experiment_name='Weather')
 # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
 mlflow.sklearn.autolog(max_tuning_runs=None) 
 
-with mlflow.start_run():
+with mlflow.start_run(run_name='svm'):
 
     # Start training the model
     t0 = time()
