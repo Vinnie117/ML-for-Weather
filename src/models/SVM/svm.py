@@ -24,12 +24,6 @@ y_train = train.iloc[:, 0]
 X_test = test.iloc[:, 1:]
 y_test = test.iloc[:, 0]
 
-# X_train = train.iloc[:, 4:]
-# X_test = test.iloc[:, 4:]
-# scaler = StandardScaler()
-# y_train = pd.DataFrame(scaler.fit_transform(y_train), columns = y_train.columns)
-# y_test = pd.DataFrame(scaler.transform(y_test), columns = y_test.columns)
-
 print(X_train)
 print(X_train.shape)
 print(y_train)
@@ -40,16 +34,6 @@ print(X_test.shape)
 print(y_test)
 print(y_test.shape)
 
-# # Cannot pass floats to classifier -> convert to categories/classes
-# lab_enc = preprocessing.LabelEncoder()
-# y_train_encoded = lab_enc.fit_transform(y_train)
-# y_test_encoded = lab_enc.fit_transform(y_test)
-
-# print(y_train_encoded)
-# print(y_test_encoded)
-# print(utils.multiclass.type_of_target(y_train_encoded))
-
-
 def eval_metrics(actual, pred):
     rmse = np.sqrt(mean_squared_error(actual, pred))
     mae = mean_absolute_error(actual, pred)
@@ -59,16 +43,6 @@ def eval_metrics(actual, pred):
 
 
 #### Train a model
-
-# single model to observe
-clf = SVR(gamma='auto')
-clf.fit(X_train, y_train)
-
-# predicted values are nowhere near plausible
-clf_predicted_values = clf.predict(X_test)
-print(clf_predicted_values)
-
-
 
 # Specifiy splitting for Time series cross validation
 tscv = TimeSeriesSplit(n_splits = 5)
@@ -82,7 +56,7 @@ param_grid = {'C': C,
               'gamma':gamma,
               'kernel': kernel}
 
-mlflow.set_experiment(experiment_name='Support Vector Machines') 
+mlflow.set_experiment(experiment_name='Weather') 
 
 # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
 mlflow.sklearn.autolog(max_tuning_runs=None) 
@@ -112,9 +86,6 @@ with mlflow.start_run():
     mlflow.log_metric("mae", mae)
     mlflow.log_metric("adjusted_r2", adjusted_r2)
     mlflow.log_metric('duration', duration)
-
-
-
 
 
 

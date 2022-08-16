@@ -46,7 +46,7 @@ parameters = {'alpha':alpha,
               'l1_ratio':l1_ratio} 
 
 
-mlflow.set_experiment(experiment_name='Elastic Nets') 
+mlflow.set_experiment(experiment_name='Weather') 
 
 # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
 mlflow.sklearn.autolog(max_tuning_runs=None) 
