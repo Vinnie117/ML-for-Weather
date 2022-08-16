@@ -1,6 +1,9 @@
 # To do - short term
 
 - Integrate DVC (with mlflow)
+    - https://www.sicara.fr/blog-technique/dvc-pipeline-runs-mlflow
+    - https://dvc.org/doc/start/data-management#large-datasets-versioning
+    - https://discuss.dvc.org/t/dvc-support-for-the-local-storage/71/2
 - Put model parameters into config.yaml
     - -> wrap each model training into a function
 
