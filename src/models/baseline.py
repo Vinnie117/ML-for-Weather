@@ -6,7 +6,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 import sys 
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
-from models.functions import adjustedR2
+from models.functions import adjustedR2, eval_metrics
 import mlflow
 from joblib import dump, load
 from sklearn.linear_model import LinearRegression
@@ -24,25 +24,18 @@ X_test = test.iloc[:, 1:]
 y_test = test.iloc[:, 0]
 
 
-def eval_metrics(actual, pred):
-    rmse = np.sqrt(mean_squared_error(actual, pred))
-    mae = mean_absolute_error(actual, pred)
-    r2 = r2_score(actual, pred)
-    adjusted_r2 = adjustedR2(r2, X_test)
-    return rmse, mae, r2, adjusted_r2
-
 
 #### Train a model
 
 # Specifiy splitting for Time series cross validation
 tscv = TimeSeriesSplit(n_splits = 5)
 
-mlflow.set_experiment(experiment_name='Baseline') 
+mlflow.set_experiment(experiment_name='weather') 
 
 # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
 mlflow.sklearn.autolog(max_tuning_runs=None) 
 
-with mlflow.start_run():
+with mlflow.start_run(run_name='Baseline: linear regression'):
 
     # Start training the model
     t0 = time()
@@ -53,7 +46,7 @@ with mlflow.start_run():
     # automatically the model with best params
     predicted_values = fit.predict(X_test)
 
-    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values)
+    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values, X_test)
 
     # Logging model performance to mlflow -> is only done for the best model
     mlflow.log_metric("rmse", rmse)
