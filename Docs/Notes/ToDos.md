@@ -1,9 +1,11 @@
 # To do - short term
 
-- fix training with standardized variables
-    - need to standardize all variables, also time?
-    - training for SVM is weird
-    - for elastic net might be ok bc time variables are penalized
+- Integrate DVC (with mlflow)
+- Put all model trainings into one mlflow experiment (except for the baseline?)
+- How to label mlflow experiments? Or better: should show by default which model was used
+- Put model parameters into config.yaml
+    - -> wrap each model training into a function
+
 - need DVC? -> keep track of what data was used in each experiment
 - compare relative performance of using later lags
     - plot -> x: latest lag used, y: score on test data
