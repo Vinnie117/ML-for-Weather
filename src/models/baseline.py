@@ -30,7 +30,7 @@ y_test = test.iloc[:, 0]
 # Specifiy splitting for Time series cross validation
 tscv = TimeSeriesSplit(n_splits = 5)
 
-mlflow.set_experiment(experiment_name='weather') 
+mlflow.set_experiment(experiment_name='Weather') 
 
 # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
 mlflow.sklearn.autolog(max_tuning_runs=None) 
