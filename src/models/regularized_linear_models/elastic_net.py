@@ -5,7 +5,7 @@ from sklearn.linear_model import ElasticNet
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import sys 
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
-from models.functions import adjustedR2
+from models.functions import adjustedR2, eval_metrics
 import mlflow
 from joblib import dump, load
 from sklearn.model_selection import GridSearchCV
@@ -24,13 +24,6 @@ y_test = test.iloc[:, 0]
 
 print(X_train)
 
-def eval_metrics(actual, pred):
-    rmse = np.sqrt(mean_squared_error(actual, pred))
-    mae = mean_absolute_error(actual, pred)
-    r2 = r2_score(actual, pred)
-    adjusted_r2 = adjustedR2(r2, X_test)
-    return rmse, mae, r2, adjusted_r2
-
 
 #### Train a model
 
@@ -44,7 +37,6 @@ tscv = TimeSeriesSplit(n_splits = 5)
 # Hyperparameter-tuning with grid search
 parameters = {'alpha':alpha, 
               'l1_ratio':l1_ratio} 
-
 
 mlflow.set_experiment(experiment_name='Weather') 
 
@@ -65,7 +57,7 @@ with mlflow.start_run():
     # automatically the model with best params
     predicted_values = lr.predict(X_test)
 
-    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values)
+    (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values, X_test)
 
     # Logging model performance to mlflow -> is only done for the best model
     mlflow.log_param("alpha", alpha)
