@@ -130,12 +130,12 @@ print(test_std.iloc[0:15,0:9])
 #            test_std, delimiter=",", fmt='%s')
 
 # index = False -> no row names
-train.to_csv(r'A:\Projects\data storage\ml_for_weather\processed\train_array.csv', 
+train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', 
              header=True, index=False)
-test.to_csv(r'A:\Projects\data storage\ml_for_weather\processed\test_array.csv', 
+test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', 
              header=True, index=False)
-train_std.to_csv(r'A:\Projects\data storage\ml_for_weather\processed\train_std_array.csv', 
+train_std.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_std_array.csv', 
              header=True, index=False)
-test_std.to_csv(r'A:\Projects\data storage\ml_for_weather\processed\test_std_array.csv', 
+test_std.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_std_array.csv', 
              header=True, index=False)
 

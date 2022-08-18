@@ -13,3 +13,6 @@ __pycache__/
 # mlflow experiment logs
 mlruns
 
+# storage for training/test data -> tracked with dvc
+data
+
