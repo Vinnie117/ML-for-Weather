@@ -38,4 +38,4 @@ df_hist = historical_data.values.all().df
 
 print(df_hist)
 
-df_hist.to_csv(r'A:\Projects\ML-for-Weather\data\raw\test_simple.csv', header=True, index=False)
+df_hist.to_csv(r'A:\Projects\data storage\ml_for_weather\raw\test_simple.csv', header=True, index=False)

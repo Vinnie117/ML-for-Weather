@@ -11,8 +11,8 @@ from config import data_config
 from hydra import compose, initialize
 
 # get data
-train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train_array.csv', delimiter=',', header=0)
-test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
+train = pd.read_csv(r'A:\Projects\data storage\ml_for_weather\processed\train_array.csv', delimiter=',', header=0)
+test = pd.read_csv(r'A:\Projects\data storage\ml_for_weather\processed\test_array.csv', delimiter=',', header=0)
 X_train = train.iloc[:, 1:]
 y_train = train.iloc[:, 0]
 X_test = test.iloc[:, 1:]
@@ -37,7 +37,7 @@ def train_xgb(cfg: data_config):
     # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
     mlflow.sklearn.autolog(max_tuning_runs=None) 
 
-    with mlflow.start_run(run_name='XGB'):
+    with mlflow.start_run(run_name='XGB, dataset = [dvc id]'):
 
         # Start training the model
         t0 = time()
