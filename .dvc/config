@@ -1,4 +1,0 @@
-[core]
-    remote = weather_data_dvc
-['remote "weather_data_dvc"']
-    url = A:\Projects\data_storage\ml_for_weather
