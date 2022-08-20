@@ -11,14 +11,17 @@ from config import data_config
 from hydra import compose, initialize
 
 # get data
-train = pd.read_csv(r'A:\Projects\data storage\ml_for_weather\processed\train_array.csv', delimiter=',', header=0)
-test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test_array.csv', delimiter=',', header=0)
+train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', delimiter=',', header=0)
+test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test.csv', delimiter=',', header=0)
 X_train = train.iloc[:, 1:]
 y_train = train.iloc[:, 0]
 X_test = test.iloc[:, 1:]
 y_test = test.iloc[:, 0]
 
 
+print(X_train)
+print(len(list(X_train)))
+print(list(X_train))
 #### Train a model
 
 # initialize(config_path="..\..\conf", job_name="config")
