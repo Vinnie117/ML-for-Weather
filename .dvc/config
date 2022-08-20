@@ -1,0 +1,4 @@
+[core]
+    remote = my_versioned_data
+['remote "my_versioned_data"']
+    url = A:\Projects\data_storage\ml_for_weather\versioned_data
