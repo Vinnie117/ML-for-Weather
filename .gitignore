@@ -13,3 +13,4 @@ __pycache__/
 # mlflow experiment logs
 mlruns
 
+/train.csv

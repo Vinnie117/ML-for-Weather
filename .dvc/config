@@ -1,0 +1,4 @@
+[core]
+    remote = my_remote
+['remote "my_remote"']
+    url = A:\Projects\data_storage\ml_for_weather\processed
