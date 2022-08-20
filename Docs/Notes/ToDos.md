@@ -39,7 +39,7 @@
         - 24:30
     - or how to do it with another way?
         - data to be used must be tracked
-- Deployment
+- Deployment (e.g. with FastAPI or RestAPI)
     - https://towardsdatascience.com/deploying-a-machine-learning-model-as-a-rest-api-4a03b865c166
     - https://towardsdatascience.com/deploying-machine-learning-models-into-a-website-using-flask-8582b7ce8802
     - https://www.natasshaselvaraj.com/ml-model-deployment/
