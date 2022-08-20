@@ -1,4 +1,0 @@
-[core]
-    remote = my_remote_name
-['remote "my_remote_name"']
-    url = A:\Projects\data_storage\ml_for_weather
