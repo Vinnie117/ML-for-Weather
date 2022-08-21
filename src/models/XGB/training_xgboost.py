@@ -24,6 +24,27 @@ y_test = test.iloc[:, 0]
 print(X_train)
 print(len(list(X_train)))
 print(list(X_train))
+
+
+# testing dvc import
+import dvc.api
+with dvc.api.open(
+        r'data_dvc/processed/train.csv'
+        ) as data:
+    print(data)
+    train2 = pd.read_csv(data, delimiter=',', header=0)
+X_train2 = train2.iloc[:, 1:]
+print(X_train2)
+print(len(list(X_train)))
+print(list(X_train2))
+
+# data is the same
+if (X_train == X_train2).all:
+    print("ES IST GLEICH!!!111!1!1!!11")
+
+
+
+
 #### Train a model
 
 # initialize(config_path="..\..\conf", job_name="config")
