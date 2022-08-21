@@ -22,6 +22,21 @@ print(cfg)
 variables = cfg['transform']['vars']
 print(variables)
 
+dict = dict.fromkeys(variables)
+print(dict)
+
+list_temperature_transforms = []
+list_cloud_cover_transforms = []
+list_wind_speed_transforms = []
+for i in features:
+    if 'temperature' in i:
+        print(i)
+
+
+# -> in config.yaml: für acc und velo transform.names erstellen? 
+# Und dann auch in pipeline_dataprep.classes anpassen
+# Dann im for loop auf velo und acc in der config.yaml verweisen -> "... if ... in ..."
+
 
 print("END")
 
@@ -51,7 +66,7 @@ acc_2:
     lag_3:
 
 - Option 2
-base: temperature, wind_speed, cloud_cover
+base: month, day, hour, temperature, wind_speed, cloud_cover
 temperature:
     velo_1: lag_1, lag_2, lag_3
     velo_2: lag_1, lag_2, lag_3
@@ -61,11 +76,13 @@ wind_speed:
     velo:_1
     ...
 
+- Many more options
 
 -> 3 Ebenen, welche Info auf welche Ebene?
+-> so ,dass die wichtigere Info auf der höheren Ebene steht
+-> Option 2!!!
 
-
-
+-> Testn, mit verschiedenen Listen durchspielen!
 
 '''
 
