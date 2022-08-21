@@ -75,63 +75,63 @@ acc_2: Differenz von t_2 - t_0 von velo_2
 
 Lags: um wieviele Reihen die vars verschoben wurden
 '''
+if __name__ == "__main__":
+    # Use Compose API of hydra 
+    initialize(config_path="..\conf", job_name="config")
+    cfg = compose(config_name="config")
+    #print(OmegaConf.to_yaml(cfg))
 
-# Use Compose API of hydra 
-initialize(config_path="..\conf", job_name="config")
-cfg = compose(config_name="config")
-#print(OmegaConf.to_yaml(cfg))
+    # Use instance of config dataclass
+    cs = ConfigStore.instance()
+    cs.store(name = 'data_config', node = data_config)
 
-# Use instance of config dataclass
-cs = ConfigStore.instance()
-cs.store(name = 'data_config', node = data_config)
+    df = data_loader(cfg=cfg)
 
-df = data_loader(cfg=cfg)
-
-pipeline = feature_engineering(cfg = cfg)
-data = pipeline.fit_transform(df) 
-
-
-# All folds are here
-train_folds = data['train']
-test_folds = data['test']
-train_std_folds = data['train_std']
-test_std_folds = data['test_std']
-
-# the last fold -> complete data. Last key is same for raw and std. data
-last_train_key = list(data['train'])[-1]
-last_test_key = list(data['test'])[-1] 
-
-# full dataframes
-train = data['train'][last_train_key]
-test = data['test'][last_test_key]
-train_std = data['train_std'][last_train_key]
-test_std = data['test_std'][last_test_key]
-pd_df = data['pd_df'] # train + test
-
-check = data['train_std']['train_fold_2']
-print(check)
-
-print(type(train))
-#print(train.dtypes)
-print(train.head(15))
-print(test)
-print(pd_df)
-#print(list(pd_df))
-
-print(list(train_std))
-print(train_std.iloc[0:15,0:9])
-
-print(test_std.iloc[0:15,0:9])
-####
+    pipeline = feature_engineering(cfg = cfg)
+    data = pipeline.fit_transform(df) 
 
 
-# index = False -> no row names
-train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', 
-             header=True, index=False)
-test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test.csv', 
-             header=True, index=False)
-train_std.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_std.csv', 
-             header=True, index=False)
-test_std.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_std.csv', 
-             header=True, index=False)
+    # All folds are here
+    train_folds = data['train']
+    test_folds = data['test']
+    train_std_folds = data['train_std']
+    test_std_folds = data['test_std']
+
+    # the last fold -> complete data. Last key is same for raw and std. data
+    last_train_key = list(data['train'])[-1]
+    last_test_key = list(data['test'])[-1] 
+
+    # full dataframes
+    train = data['train'][last_train_key]
+    test = data['test'][last_test_key]
+    train_std = data['train_std'][last_train_key]
+    test_std = data['test_std'][last_test_key]
+    pd_df = data['pd_df'] # train + test
+
+    check = data['train_std']['train_fold_2']
+    print(check)
+
+    print(type(train))
+    #print(train.dtypes)
+    print(train.head(15))
+    print(test)
+    print(pd_df)
+    #print(list(pd_df))
+
+    print(list(train_std))
+    print(train_std.iloc[0:15,0:9])
+
+    print(test_std.iloc[0:15,0:9])
+    ####
+
+
+    # index = False -> no row names
+    train.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', 
+                header=True, index=False)
+    test.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test.csv', 
+                header=True, index=False)
+    train_std.to_csv(r'A:\Projects\ML-for-Weather\data\processed\train_std.csv', 
+                header=True, index=False)
+    test_std.to_csv(r'A:\Projects\ML-for-Weather\data\processed\test_std.csv', 
+                header=True, index=False)
 
