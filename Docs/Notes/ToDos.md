@@ -9,6 +9,8 @@
     - https://stackoverflow.com/questions/66792575/log-text-in-mlflow
     - https://stackoverflow.com/questions/60707372/it-is-possible-to-add-mlflow-experiences-notes-using-code-instead-of-mlflow-ui 
 
+- eda.py gibt keine Ergebnisse, wenn in config.yaml keine Predictors angegeben sind?
+
 - nested dataclass? For a deeper config.yaml
     - https://www.geeksforgeeks.org/creating-nested-dataclass-objects-in-python/ 
 
