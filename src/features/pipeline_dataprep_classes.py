@@ -282,7 +282,7 @@ class Prepare(BaseEstimator, TransformerMixin):
                         dict_data[i][k] = dict_data[i][k].dropna()
                     if  i =='train_std' or i =='test_std':
                         cols = ['std_' + x for x in self.vars if x not in time]
-                        cols = time + cols
+                        cols = std_time + cols
                         dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][cols]], axis=1)
                         dict_data[i][k] = dict_data[i][k].dropna()
                 if not self.vars:
