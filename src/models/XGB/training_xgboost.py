@@ -9,6 +9,8 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
 from config import data_config 
 from hydra import compose, initialize
+import os
+import omegaconf
 
 # get data
 train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', delimiter=',', header=0)
@@ -28,7 +30,6 @@ print(list(X_train))
 # cfg = compose(config_name="config")
 
 # This would also work:
-import os, omegaconf
 cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
 
 
