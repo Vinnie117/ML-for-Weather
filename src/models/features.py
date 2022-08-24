@@ -34,6 +34,12 @@ for i in features:
     if 'temperature' in i:
         if 'velo' in i:
             dummy.append(i)
+
+            # need to include delimiter
+            # test = i.split('lag')[1]
+            test = re.split('(\W)',i)
+            print(test)
+
             transform = re.search(r"(?<=temperature_).*?(?=_lag)", i).group(0)
             list_temperature_transforms.append(transform)
             list_unique_temperature_transforms = list(set(list_temperature_transforms))
