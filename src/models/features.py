@@ -3,6 +3,7 @@
 import pandas as pd
 import omegaconf
 import os
+import re
 
 # get data
 train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', delimiter=',', header=0)
@@ -28,9 +29,21 @@ print(dict)
 list_temperature_transforms = []
 list_cloud_cover_transforms = []
 list_wind_speed_transforms = []
+dummy = []
 for i in features:
     if 'temperature' in i:
-        print(i)
+        if 'velo' in i:
+            dummy.append(i)
+            transform = re.search(r"(?<=temperature_).*?(?=_lag)", i).group(0)
+            list_temperature_transforms.append(transform)
+            list_unique_temperature_transforms = list(set(list_temperature_transforms))
+print('dummy is: ', dummy)
+print(list_temperature_transforms)
+print(list(set(list_temperature_transforms)))
+
+
+# a) extract substring between two markers "temperature_" and "_lag"
+# or b) extract substring "velo" and the following 2 characters -> a) is better
 
 
 # -> in config.yaml: für acc und velo transform.names erstellen? 
