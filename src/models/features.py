@@ -29,23 +29,19 @@ print(dict)
 list_temperature_transforms = []
 list_cloud_cover_transforms = []
 list_wind_speed_transforms = []
-dummy = []
+
 for i in features:
     if 'temperature' in i:
-        if 'velo' in i:
-            dummy.append(i)
 
-            # need to include delimiter
-            # test = i.split('lag')[1]
-            test = re.split('(\W)',i)
-            print(test)
+        transform = re.search(r"(?<=temperature_).*?(?=_lag)", i)
+        if transform:
+            transform = transform.group(0)
 
-            transform = re.search(r"(?<=temperature_).*?(?=_lag)", i).group(0)
             list_temperature_transforms.append(transform)
             list_unique_temperature_transforms = list(set(list_temperature_transforms))
-print('dummy is: ', dummy)
-print(list_temperature_transforms)
-print(list(set(list_temperature_transforms)))
+
+
+print(list_unique_temperature_transforms)
 
 
 # a) extract substring between two markers "temperature_" and "_lag"
