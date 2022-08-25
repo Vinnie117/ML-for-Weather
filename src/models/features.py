@@ -23,7 +23,8 @@ print(cfg)
 variables = cfg['transform']['vars']
 print(variables)
 
-dict = dict.fromkeys(variables)
+#dict = dict.fromkeys(variables)
+dict = dict((k, []) for k in variables)
 print(dict)
 
 list_temperature_transforms = []
@@ -43,14 +44,9 @@ for i in features:
 
 print(list_unique_temperature_transforms)
 
-
-# a) extract substring between two markers "temperature_" and "_lag"
-# or b) extract substring "velo" and the following 2 characters -> a) is better
-
-
-# -> in config.yaml: für acc und velo transform.names erstellen? 
-# Und dann auch in pipeline_dataprep.classes anpassen
-# Dann im for loop auf velo und acc in der config.yaml verweisen -> "... if ... in ..."
+dict['temperature'].append(list_unique_temperature_transforms)
+dict['temperature']= dict['temperature'][0]
+print(dict)
 
 
 print("END")
