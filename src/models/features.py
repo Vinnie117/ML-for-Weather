@@ -27,19 +27,19 @@ print(variables)
 
 d = {} 
 
-
 for i in cfg['transform']['vars']:
     list_transforms = []
     for j in features:
         d[i] = {}
-        transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)
+        transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  # extract the feature engineering of each feature
         if transform:
             transform = transform.group(0)
             list_transforms.append(transform)
     list_transforms = sorted(list(set(list_transforms)))
-    print(list_transforms)
     for k in list_transforms:
         d[i][k] = []
+        for l in cfg['diff']['lags']:
+            d[i][k].append('lag_' + str(l))
 
 
 print(d)
