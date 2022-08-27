@@ -1,10 +1,12 @@
 ######## Extract features to track them with mlflow ########
-
+import sys
+sys.path.append('A:\Projects\ML-for-Weather\src') 
 import pandas as pd
 import omegaconf
 import os
 import re
-from collections import defaultdict
+from hydra import compose, initialize
+from config import data_config 
 
 # get data
 train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', delimiter=',', header=0)
@@ -15,32 +17,35 @@ X_test = test.iloc[:, 1:]
 y_test = test.iloc[:, 0]
 
 features = list(X_train)
+#print(features)
 
-cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
-print(features)
+initialize(config_path="..\conf", job_name="config")
+cfg = compose(config_name="config")
+#cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
+#print(cfg)
+#variables = cfg['transform']['vars']
+#print(variables)
 
+def track_features(cfg: data_config):
 
-print(cfg)
-variables = cfg['transform']['vars']
-print(variables)
+    d = {} 
+    for i in cfg.transform.vars:
+        list_transforms = []
+        for j in features:
+            d[i] = {}
+            transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  # extract the feature engineering of each feature
+            if transform:
+                transform = transform.group(0)
+                list_transforms.append(transform)
+        list_transforms = sorted(list(set(list_transforms)))
+        for k in list_transforms:
+            d[i][k] = []
+            for l in cfg.diff.lags:
+                d[i][k].append('lag_' + str(l))
+    
+    return d
 
-
-d = {} 
-
-for i in cfg['transform']['vars']:
-    list_transforms = []
-    for j in features:
-        d[i] = {}
-        transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  # extract the feature engineering of each feature
-        if transform:
-            transform = transform.group(0)
-            list_transforms.append(transform)
-    list_transforms = sorted(list(set(list_transforms)))
-    for k in list_transforms:
-        d[i][k] = []
-        for l in cfg['diff']['lags']:
-            d[i][k].append('lag_' + str(l))
-
+d = track_features(cfg = cfg)
 
 print(d)
 
