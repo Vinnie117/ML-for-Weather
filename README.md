@@ -9,3 +9,6 @@ This is a playground project for ML models to explore weather prediction. There 
 Currently, the project architecture is as follows:
 ![grafik](https://user-images.githubusercontent.com/52510339/164980382-1ce3d000-5444-463f-a5c1-9c5e122c459a.png)
 
+## Usage
+The central entrypoint to use this project is "src\conf\config.yaml" where parameters for feature engineering and model training can be set.
+More documenation is here: https://github.com/Vinnie117/ML-for-Weather/tree/main/Docs
