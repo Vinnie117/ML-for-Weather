@@ -4,6 +4,7 @@ import pandas as pd
 import omegaconf
 import os
 import re
+from collections import defaultdict
 
 # get data
 train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', delimiter=',', header=0)
@@ -23,31 +24,35 @@ print(cfg)
 variables = cfg['transform']['vars']
 print(variables)
 
-#dict = dict.fromkeys(variables)
-dict = dict((k, []) for k in variables)
-print(dict)
 
-list_temperature_transforms = []
-list_cloud_cover_transforms = []
-list_wind_speed_transforms = []
+d = {} 
 
-for i in features:
-    if 'temperature' in i:
 
-        transform = re.search(r"(?<=temperature_).*?(?=_lag)", i)
+for i in cfg['transform']['vars']:
+    list_transforms = []
+    for j in features:
+        d[i] = {}
+        transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)
         if transform:
             transform = transform.group(0)
+            list_transforms.append(transform)
+    list_transforms = sorted(list(set(list_transforms)))
+    print(list_transforms)
+    for k in list_transforms:
+        d[i][k] = []
 
-            list_temperature_transforms.append(transform)
-            list_unique_temperature_transforms = list(set(list_temperature_transforms))
+
+print(d)
 
 
-print(list_unique_temperature_transforms)
 
-dict['temperature'].append(list_unique_temperature_transforms)
-dict['temperature']= dict['temperature'][0]
-print(dict)
 
+
+
+
+#####################################
+# For the lags use config.yaml! 
+# depending if [] or preds are given -> cfg.model.predictors
 
 print("END")
 
