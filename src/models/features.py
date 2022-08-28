@@ -7,6 +7,7 @@ import os
 import re
 from hydra import compose, initialize
 from config import data_config 
+from collections import defaultdict
 
 # get data
 train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', delimiter=',', header=0)
@@ -32,8 +33,8 @@ def track_features(cfg: data_config):
         d['time'] = ['month', 'day', 'hour']
         for i in cfg.transform.vars:
             list_transforms = []
+            d[i] = {}
             for j in features:
-                d[i] = {}
                 transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  
                 if transform:
 
@@ -55,27 +56,42 @@ def track_features(cfg: data_config):
         for i in cfg.transform.vars:
             list_transforms = []
             d[i] = {}
+            #list_lags = []
             for j in features:
-                list_lags = []
+                #list_lags = []
                 transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)
                 if transform:
-
+                    
                     # extract variable transformation
                     transform = transform.group(0)
-                    list_transforms.append(transform)
-                    list_transforms = sorted(list(set(list_transforms)))
+                    print('transform: ', transform)
+                    #list_transforms.append(transform)
+                    #list_transforms = sorted(list(set(list_transforms)))
+                    #print('list_transform: ', list_transforms)
+                    
+                    # create inner dict
+                    d[i][transform] = []    # -> This is problematic: new list is initialized after each step.
 
-                    # extract lag
-                    lag = re.search(rf"(?<={transform}_).*", j)
-                    lag = lag.group(0)
-                    list_lags.append(lag)
 
-                    # Insert variable transformation into nested dict
-                    for k in list_transforms:
-                        d[i][k] = []
-                        # Insert lags into nested dict
-                        for l in list_lags:
-                            d[i][k].append(l)
+                    # lag = re.search(rf"(?=lag)(.*)", j)
+                    # lag = lag.group(0)
+                    # print(lag)
+                    # d[i][transform].append(lag)
+
+
+
+
+                    # list_lags = []
+                    # # extract lag
+                    # lag = re.search(rf"(?=lag)(.*)", j)
+                    # lag = lag.group(0)
+                    # print('lag: ', lag)
+                    # list_lags.append(lag)
+                    # print('list_lags: ', list_lags)
+
+                    # list_lags = sorted(list(set(list_lags)))
+                    # d[i][transform] = list_lags
+
 
     return d
 
@@ -84,6 +100,12 @@ d = track_features(cfg = cfg)
 print(d)
 
 ####
+# Problem velo_1 gets overwritten by velo_2, because list_transform is longer
+
+# extract 'lag_1' with (?<=temperature_velo_1_).*
+# extract  temperature_velo_1_ with .*?(?=lag)
+# (?=lag)(.*)
+# lag(.*)$
 
 # TO DO: Refactor the function
 # TO DO: Include raw variable
