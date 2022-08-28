@@ -21,52 +21,61 @@ print('features are: ', features)
 
 initialize(config_path="..\conf", job_name="config")
 cfg = compose(config_name="config")
-#cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
-#print(cfg)
-#variables = cfg['transform']['vars']
-#print(variables)
+
 
 def track_features(cfg: data_config):
     '''This function tracks the features that have been used in order to train the model'''
 
-    if cfg.model.predictors == []:                                  # when no preds are given, all are used
+    # when no preds are given, all are used
+    if cfg.model.predictors == []:                                  
         d = {} 
         d['time'] = ['month', 'day', 'hour']
         for i in cfg.transform.vars:
             list_transforms = []
             for j in features:
                 d[i] = {}
-                transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  # extract the feature engineering of each feature
+                transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  
                 if transform:
+
+                    # extract variable transformation
                     transform = transform.group(0)
                     list_transforms.append(transform)
             list_transforms = sorted(list(set(list_transforms)))
+
+            # Insert lags into nested dict
             for k in list_transforms:
                 d[i][k] = []
                 for l in cfg.diff.lags:
                     d[i][k].append('lag_' + str(l))
 
+    # the case for when predictors are specified
     else:
         d = {} 
         d['time'] = ['month', 'day', 'hour']
         for i in cfg.transform.vars:
             list_transforms = []
-            list_lags = []
+            d[i] = {}
             for j in features:
-                d[i] = {}
-                transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  # extract the feature engineering of each feature
+                list_lags = []
+                transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)
                 if transform:
+
+                    # extract variable transformation
                     transform = transform.group(0)
                     list_transforms.append(transform)
+                    list_transforms = sorted(list(set(list_transforms)))
+
+                    # extract lag
                     lag = re.search(rf"(?<={transform}_).*", j)
                     lag = lag.group(0)
                     list_lags.append(lag)
-                    print(list_lags)
-            list_transforms = sorted(list(set(list_transforms)))
-            for k in list_transforms:
-                d[i][k] = []
-                for l in list_lags:
-                    d[i][k].append(l)
+
+                    # Insert variable transformation into nested dict
+                    for k in list_transforms:
+                        d[i][k] = []
+                        # Insert lags into nested dict
+                        for l in list_lags:
+                            d[i][k].append(l)
 
     return d
 
@@ -74,16 +83,12 @@ d = track_features(cfg = cfg)
 
 print(d)
 
-
-
-
 ####
- # To do extract features, when only some preds are given
+
+# TO DO: Refactor the function
+# TO DO: Include raw variable
 
 
-#####################################
-# For the lags use config.yaml! 
-# depending if [] or preds are given -> cfg.model.predictors
 
 print("END")
 
