@@ -17,7 +17,7 @@ X_test = test.iloc[:, 1:]
 y_test = test.iloc[:, 0]
 
 features = list(X_train)
-#print(features)
+print('features are: ', features)
 
 initialize(config_path="..\conf", job_name="config")
 cfg = compose(config_name="config")
@@ -27,22 +27,47 @@ cfg = compose(config_name="config")
 #print(variables)
 
 def track_features(cfg: data_config):
+    '''This function tracks the features that have been used in order to train the model'''
 
-    d = {} 
-    for i in cfg.transform.vars:
-        list_transforms = []
-        for j in features:
-            d[i] = {}
-            transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  # extract the feature engineering of each feature
-            if transform:
-                transform = transform.group(0)
-                list_transforms.append(transform)
-        list_transforms = sorted(list(set(list_transforms)))
-        for k in list_transforms:
-            d[i][k] = []
-            for l in cfg.diff.lags:
-                d[i][k].append('lag_' + str(l))
-    
+    if cfg.model.predictors == []:                                  # when no preds are given, all are used
+        d = {} 
+        d['time'] = ['month', 'day', 'hour']
+        for i in cfg.transform.vars:
+            list_transforms = []
+            for j in features:
+                d[i] = {}
+                transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  # extract the feature engineering of each feature
+                if transform:
+                    transform = transform.group(0)
+                    list_transforms.append(transform)
+            list_transforms = sorted(list(set(list_transforms)))
+            for k in list_transforms:
+                d[i][k] = []
+                for l in cfg.diff.lags:
+                    d[i][k].append('lag_' + str(l))
+
+    else:
+        d = {} 
+        d['time'] = ['month', 'day', 'hour']
+        for i in cfg.transform.vars:
+            list_transforms = []
+            list_lags = []
+            for j in features:
+                d[i] = {}
+                transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  # extract the feature engineering of each feature
+                if transform:
+                    transform = transform.group(0)
+                    list_transforms.append(transform)
+                    lag = re.search(rf"(?<={transform}_).*", j)
+                    lag = lag.group(0)
+                    list_lags.append(lag)
+                    print(list_lags)
+            list_transforms = sorted(list(set(list_transforms)))
+            for k in list_transforms:
+                d[i][k] = []
+                for l in list_lags:
+                    d[i][k].append(l)
+
     return d
 
 d = track_features(cfg = cfg)
@@ -52,7 +77,8 @@ print(d)
 
 
 
-
+####
+ # To do extract features, when only some preds are given
 
 
 #####################################
