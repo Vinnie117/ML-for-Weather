@@ -54,43 +54,31 @@ def track_features(cfg: data_config):
         d = {} 
         d['time'] = ['month', 'day', 'hour']
         for i in cfg.transform.vars:
-            list_transforms = []
             d[i] = {}
-            #list_lags = []
+
+            list_transforms = [] # a list to collect transforms of each variable for all features
+            list_lags = []       # a list to collect lags of each feature
             for j in features:
-                #list_lags = []
                 transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)
+
                 if transform:
-                    
-                    # extract variable transformation
                     transform = transform.group(0)
                     print('transform: ', transform)
-                    #list_transforms.append(transform)
-                    #list_transforms = sorted(list(set(list_transforms)))
-                    #print('list_transform: ', list_transforms)
+
+                    lag = re.search(rf"(?=lag)(.*)", j)
+                    lag = lag.group(0)
+                    print(lag)
+
+                    if transform not in list_transforms:
+                        list_lags = []
+
+                    list_transforms.append(transform)
+                    list_transforms = sorted(list(set(list_transforms)))
                     
-                    # create inner dict
-                    d[i][transform] = []    # -> This is problematic: new list is initialized after each step.
+                    list_lags.append(lag)
+                    d[i][transform] = list_lags
 
 
-                    # lag = re.search(rf"(?=lag)(.*)", j)
-                    # lag = lag.group(0)
-                    # print(lag)
-                    # d[i][transform].append(lag)
-
-
-
-
-                    # list_lags = []
-                    # # extract lag
-                    # lag = re.search(rf"(?=lag)(.*)", j)
-                    # lag = lag.group(0)
-                    # print('lag: ', lag)
-                    # list_lags.append(lag)
-                    # print('list_lags: ', list_lags)
-
-                    # list_lags = sorted(list(set(list_lags)))
-                    # d[i][transform] = list_lags
 
 
     return d
@@ -98,17 +86,6 @@ def track_features(cfg: data_config):
 d = track_features(cfg = cfg)
 
 print(d)
-
-####
-# Problem velo_1 gets overwritten by velo_2, because list_transform is longer
-
-# extract 'lag_1' with (?<=temperature_velo_1_).*
-# extract  temperature_velo_1_ with .*?(?=lag)
-# (?=lag)(.*)
-# lag(.*)$
-
-# TO DO: Refactor the function
-# TO DO: Include raw variable
 
 
 
