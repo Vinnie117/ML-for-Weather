@@ -27,58 +27,56 @@ cfg = compose(config_name="config")
 def track_features(cfg: data_config):
     '''This function tracks the features that have been used in order to train the model'''
 
-    # when no preds are given, all are used
-    if cfg.model.predictors == []:                                  
-        d = {} 
-        d['time'] = ['month', 'day', 'hour']
-        for i in cfg.transform.vars:
-            list_transforms = []
-            d[i] = {}
-            for j in features:
-                transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  
-                if transform:
+    # # when no preds are given, all are used
+    # if cfg.model.predictors == []:                                  
+    #     d = {} 
+    #     d['time'] = ['month', 'day', 'hour']
+    #     for i in cfg.transform.vars:
+    #         list_transforms = []
+    #         d[i] = {}
+    #         for j in features:
+    #             transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)  
+    #             if transform:
 
-                    # extract variable transformation
-                    transform = transform.group(0)
-                    list_transforms.append(transform)
-            list_transforms = sorted(list(set(list_transforms)))
+    #                 # extract variable transformation
+    #                 transform = transform.group(0)
+    #                 list_transforms.append(transform)
+    #         list_transforms = sorted(list(set(list_transforms)))
 
-            # Insert lags into nested dict
-            for k in list_transforms:
-                d[i][k] = []
-                for l in cfg.diff.lags:
-                    d[i][k].append('lag_' + str(l))
+    #         # Insert lags into nested dict
+    #         for k in list_transforms:
+    #             d[i][k] = []
+    #             for l in cfg.diff.lags:
+    #                 d[i][k].append('lag_' + str(l))
 
-    # the case for when predictors are specified
-    else:
-        d = {} 
-        d['time'] = ['month', 'day', 'hour']
-        for i in cfg.transform.vars:
-            d[i] = {}
+    # # the case for when predictors are specified
+    # else:
+    d = {} 
+    d['time'] = ['month', 'day', 'hour']
+    for i in cfg.transform.vars:
+        d[i] = {}
 
-            list_transforms = [] # a list to collect transforms of each variable for all features
-            list_lags = []       # a list to collect lags of each feature
-            for j in features:
-                transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)
+        list_transforms = [] # a list to collect transforms of each variable for all features
+        list_lags = []       # a list to collect lags of each feature
+        for j in features:
+            transform = re.search(rf"(?<={i}_).*?(?=_lag)", j)
 
-                if transform:
-                    transform = transform.group(0)
-                    print('transform: ', transform)
+            if transform:
+                transform = transform.group(0)
+                print('transform: ', transform)
 
-                    lag = re.search(rf"(?=lag)(.*)", j)
-                    lag = lag.group(0)
-                    print(lag)
+                lag = re.search(rf"(?=lag)(.*)", j)
+                lag = lag.group(0)
+                print(lag)
 
-                    if transform not in list_transforms:
-                        list_lags = []
+                if transform not in list_transforms:    # reset lags for a new transform
+                    list_lags = []
 
-                    list_transforms.append(transform)
-                    list_transforms = sorted(list(set(list_transforms)))
-                    
-                    list_lags.append(lag)
-                    d[i][transform] = list_lags
-
-
+                list_transforms.append(transform)       # keep track for which transforms lags were collected
+                list_transforms = sorted(list(set(list_transforms)))
+                
+                list_lags.append(lag)
+                d[i][transform] = sorted(list(set(list_lags)))
 
 
     return d
