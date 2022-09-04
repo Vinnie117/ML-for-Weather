@@ -39,7 +39,7 @@ def track_features(cfg: data_config, X_train):
     
     @param cfg.transform.vars: a list of variables that have transformations
     @param X_train: training data with predictors
-    @return: a nested dictionary with tranformed variabes and their lags
+    @return d: a nested dictionary with tranformed variabes and their lags
 
     '''
     features = list(X_train)
