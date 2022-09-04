@@ -3,7 +3,7 @@ from time import time
 import xgboost as xgb
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
-from models.functions import eval_metrics
+from models.functions import eval_metrics, track_features
 import mlflow
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
@@ -26,21 +26,21 @@ print(len(list(X_train)))
 print(list(X_train))
 
 
-# testing dvc import
-import dvc.api
-with dvc.api.open(
-        r'data_dvc/processed/train.csv'
-        ) as data:
-    print(data)
-    train2 = pd.read_csv(data, delimiter=',', header=0)
-X_train2 = train2.iloc[:, 1:]
-print(X_train2)
-print(len(list(X_train)))
-print(list(X_train2))
+# # testing dvc import
+# import dvc.api
+# with dvc.api.open(
+#         r'data_dvc/processed/train.csv'
+#         ) as data:
+#     print(data)
+#     train2 = pd.read_csv(data, delimiter=',', header=0)
+# X_train2 = train2.iloc[:, 1:]
+# print(X_train2)
+# print(len(list(X_train)))
+# print(list(X_train2))
 
-# data is the same
-if (X_train == X_train2).all:
-    print("ES IST GLEICH!!!111!1!1!!11")
+# # data is the same
+# if (X_train == X_train2).all:
+#     print("ES IST GLEICH!!!111!1!1!!11")
 
 
 
@@ -70,10 +70,14 @@ def train_xgb(cfg: data_config):
         
         # Hyperparameter-tuning with grid search
         parameters = {
-        'n_estimators': [100, 400, 800],
-        'max_depth': [3, 6, 9],
-        'learning_rate': [0.05, 0.1, 0.20],
-        'min_child_weight': [1, 10, 100]
+        # 'n_estimators': [100, 400, 800],
+        # 'max_depth': [3, 6, 9],
+        # 'learning_rate': [0.05, 0.1, 0.20],
+        # 'min_child_weight': [1, 10, 100]
+        'n_estimators': [100],
+        'max_depth': [3],
+        'learning_rate': [0.05],
+        'min_child_weight': [1]
         }
         # Specifiy splitting for Time series cross validation
         tscv = TimeSeriesSplit(n_splits = cfg.cv.n_splits)
@@ -100,6 +104,10 @@ def train_xgb(cfg: data_config):
 
 if __name__ == "__main__":
     train_xgb(cfg = cfg)
+
+    d = track_features(cfg = cfg, X_train = X_train)
+    print(d)
+
     print('END')
 
 
