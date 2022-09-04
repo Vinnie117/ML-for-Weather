@@ -3,12 +3,8 @@
 import numpy as np
 import re
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import hydra
 from config import data_config 
 
-#from hydra import compose, initialize
-hydra.initialize(config_path="..\conf", job_name="config")
-cfg = hydra.compose(config_name="config")
 
 def adjustedR2(r2, test_data):
     '''Custom function to calculate adjsuted R2

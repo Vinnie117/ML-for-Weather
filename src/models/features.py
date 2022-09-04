@@ -1,4 +1,14 @@
 ######## Extract features to track them with mlflow ########
+
+#
+#
+#
+# -> THIS FILE IS A PLAYGROUND TO TEST FEATURE TRACKING FUNCTION
+#
+#
+#
+
+
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src') 
 import pandas as pd
