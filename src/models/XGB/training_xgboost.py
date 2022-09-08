@@ -93,9 +93,10 @@ def train_xgb(cfg: data_config):
 
         (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values, X_test)
 
-        # dict_features = track_features(cfg = cfg, X_train = X_train)
-        # with open('data.yml', 'w') as outfile:
-        #     yaml.dump(dict_features, outfile, default_flow_style=False)
+        dict_features = track_features(cfg = cfg, X_train = X_train)
+        with open('artifacts/features/data_features.yaml', 'w') as outfile:
+            yaml.dump(dict_features, outfile, default_flow_style=False)
+        print(yaml.dump(dict_features, default_flow_style=False))
 
         # Logging model performance to mlflow -> is only done for the best model
         mlflow.log_param("alpha", cfg.elastic_net.alpha)
@@ -105,16 +106,11 @@ def train_xgb(cfg: data_config):
         mlflow.log_metric("mae", mae)
         mlflow.log_metric("adjusted_r2", adjusted_r2)
         mlflow.log_metric('duration', duration)
+        mlflow.log_artifact("artifacts/features/data_features.yaml")
 
 
 if __name__ == "__main__":
     train_xgb(cfg = cfg)
-
-    d = track_features(cfg = cfg, X_train = X_train)
-    print(d)
-    print(yaml.dump(d, default_flow_style=False))
-    with open('artifacts/features/data_features.yml', 'w') as outfile:
-        yaml.dump(d, outfile, default_flow_style=False)
 
 
     print('END')
