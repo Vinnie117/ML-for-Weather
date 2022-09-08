@@ -11,6 +11,7 @@ from config import data_config
 from hydra import compose, initialize
 import os
 import omegaconf
+import yaml
 
 # get data
 train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', delimiter=',', header=0)
@@ -47,11 +48,11 @@ print(list(X_train))
 
 #### Train a model
 
-# initialize(config_path="..\..\conf", job_name="config")
-# cfg = compose(config_name="config")
+initialize(config_path="..\..\conf", job_name="config")
+cfg = compose(config_name="config")
 
 # This would also work:
-cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
+# cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
 
 
 
@@ -92,6 +93,10 @@ def train_xgb(cfg: data_config):
 
         (rmse, mae, r2, adjusted_r2) = eval_metrics(y_test, predicted_values, X_test)
 
+        # dict_features = track_features(cfg = cfg, X_train = X_train)
+        # with open('data.yml', 'w') as outfile:
+        #     yaml.dump(dict_features, outfile, default_flow_style=False)
+
         # Logging model performance to mlflow -> is only done for the best model
         mlflow.log_param("alpha", cfg.elastic_net.alpha)
         mlflow.log_param("l1_ratio", cfg.elastic_net.l1_ratio)
@@ -107,6 +112,10 @@ if __name__ == "__main__":
 
     d = track_features(cfg = cfg, X_train = X_train)
     print(d)
+    print(yaml.dump(d, default_flow_style=False))
+    with open('artifacts/features/data_features.yml', 'w') as outfile:
+        yaml.dump(d, outfile, default_flow_style=False)
+
 
     print('END')
 

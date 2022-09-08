@@ -55,12 +55,9 @@ def track_features(cfg: data_config, X_train):
 
             if transform:
                 transform = transform.group(0)
-                print('transform: ', transform)
-
                 lag = re.search(rf"(?=lag)(.*)", j)
                 lag = lag.group(0)
-                print(lag)
-
+                
                 if transform not in list_transforms:    # reset lags for a new transform
                     list_lags = []
 
