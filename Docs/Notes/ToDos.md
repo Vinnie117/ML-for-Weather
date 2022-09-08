@@ -1,6 +1,7 @@
 # To do - short term
 
-Wrap model in a simple API with FastAPI
+Wrap model in a simple API with FastAPI (inference, inference pipeline?)
+
 
 - eda.py gibt keine Ergebnisse, wenn in config.yaml keine Predictors angegeben sind?
 
