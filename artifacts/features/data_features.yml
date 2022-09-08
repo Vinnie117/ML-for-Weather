@@ -1,0 +1,14 @@
+cloud_cover:
+  acc_2:
+  - lag_2
+temperature:
+  velo_1:
+  - lag_1
+  - lag_2
+  velo_2:
+  - lag_2
+time:
+- month
+- day
+- hour
+wind_speed: {}
