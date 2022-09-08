@@ -1,18 +1,10 @@
 # To do - short term
 
-- Integrate DVC (with mlflow)
-    - https://www.sicara.fr/blog-technique/dvc-pipeline-runs-mlflow
-    - https://dvc.org/doc/start/data-management#large-datasets-versioning
-    - https://discuss.dvc.org/t/dvc-support-for-the-local-storage/71/2
-
-- mlflow: log text/notes with column names of training data to see in mlflow ui
-    - https://stackoverflow.com/questions/66792575/log-text-in-mlflow
-    - https://stackoverflow.com/questions/60707372/it-is-possible-to-add-mlflow-experiences-notes-using-code-instead-of-mlflow-ui 
+Wrap model in a simple API with FastAPI
 
 - eda.py gibt keine Ergebnisse, wenn in config.yaml keine Predictors angegeben sind?
 
-- nested dataclass? For a deeper config.yaml
-    - https://www.geeksforgeeks.org/creating-nested-dataclass-objects-in-python/ 
+
 
 - need DVC? -> keep track of what data was used in each experiment
 - compare relative performance of using later lags
