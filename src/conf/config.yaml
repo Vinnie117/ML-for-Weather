@@ -1,8 +1,8 @@
 data:
   path: 'A:\Projects\ML-for-Weather\data\raw\test_simple.csv'
 date:
-  start: "2019-01-01"
-  end:  "2020-01-01"
+  start: '2019-01-01'
+  end:  '2020-01-01'
 vars_old:
   temp: 'temperature_air_mean_200'
   cloud: 'cloud_cover_total'
