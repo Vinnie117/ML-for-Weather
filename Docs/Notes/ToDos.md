@@ -3,7 +3,7 @@
 Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - https://testdriven.io/blog/fastapi-machine-learning/
 - https://towardsdatascience.com/how-to-deploy-a-machine-learning-model-with-fastapi-docker-and-github-actions-13374cbd638a
-
+- Build an inference pipeline / predict function
 
 - eda.py gibt keine Ergebnisse, wenn in config.yaml keine Predictors angegeben sind?
 
