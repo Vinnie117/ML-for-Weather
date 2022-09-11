@@ -72,16 +72,16 @@ def train_xgb(cfg: data_config):
         
         # Hyperparameter-tuning with grid search
         parameters = {
-        'n_estimators': [100, 400, 800],
-        'max_depth': [3, 6, 9],
-        'learning_rate': [0.05, 0.1, 0.20],
-        'min_child_weight': [1, 10, 100]
+        # 'n_estimators': [100, 400, 800],
+        # 'max_depth': [3, 6, 9],
+        # 'learning_rate': [0.05, 0.1, 0.20],
+        # 'min_child_weight': [1, 10, 100]
 
-        # # FOR TESTING
-        # 'n_estimators': [100],
-        # 'max_depth': [3],
-        # 'learning_rate': [0.05],
-        # 'min_child_weight': [1]
+        # FOR TESTING
+        'n_estimators': [100],
+        'max_depth': [3],
+        'learning_rate': [0.05],
+        'min_child_weight': [1]
         }
         # Specifiy splitting for Time series cross validation
         tscv = TimeSeriesSplit(n_splits = cfg.cv.n_splits)
@@ -113,8 +113,8 @@ def train_xgb(cfg: data_config):
         mlflow.log_metric("adjusted_r2", adjusted_r2)
         mlflow.log_metric('duration', duration)
         mlflow.log_metric('amount_features', amount_features)
-        mlflow.log_metric('date_start', cfg.date.start)
-        mlflow.log_metric('date_end', cfg.date.end)      
+        #mlflow.log_param('date_start', cfg.date.start)
+        #mlflow.log_param('date_end', cfg.date.end)      
         mlflow.log_artifact("artifacts/features/data_features.yaml")
 
     # save model
