@@ -1,14 +1,55 @@
 cloud_cover:
-  acc_2:
+  acc_1:
+  - lag_1
   - lag_2
-temperature:
+  - lag_3
+  acc_2:
+  - lag_1
+  - lag_2
+  - lag_3
   velo_1:
   - lag_1
   - lag_2
+  - lag_3
   velo_2:
+  - lag_1
   - lag_2
+  - lag_3
+temperature:
+  acc_1:
+  - lag_1
+  - lag_2
+  - lag_3
+  acc_2:
+  - lag_1
+  - lag_2
+  - lag_3
+  velo_1:
+  - lag_1
+  - lag_2
+  - lag_3
+  velo_2:
+  - lag_1
+  - lag_2
+  - lag_3
 time:
 - month
 - day
 - hour
-wind_speed: {}
+wind_speed:
+  acc_1:
+  - lag_1
+  - lag_2
+  - lag_3
+  acc_2:
+  - lag_1
+  - lag_2
+  - lag_3
+  velo_1:
+  - lag_1
+  - lag_2
+  - lag_3
+  velo_2:
+  - lag_1
+  - lag_2
+  - lag_3

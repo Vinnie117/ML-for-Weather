@@ -76,6 +76,8 @@ def train_xgb(cfg: data_config):
         'max_depth': [3, 6, 9],
         'learning_rate': [0.05, 0.1, 0.20],
         'min_child_weight': [1, 10, 100]
+
+        # # FOR TESTING
         # 'n_estimators': [100],
         # 'max_depth': [3],
         # 'learning_rate': [0.05],
