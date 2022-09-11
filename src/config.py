@@ -7,6 +7,11 @@ class vars_old:
     cloud: str
 
 @dataclass
+class date:
+    start: str
+    end: str
+
+@dataclass
 class vars_new:
     temp: str
     cloud: str
@@ -46,6 +51,7 @@ class svm:
 
 @dataclass
 class data_config:
+    date: date
     vars_old: vars_old
     vars_new: vars_new
     data: data
