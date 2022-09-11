@@ -113,6 +113,8 @@ def train_xgb(cfg: data_config):
         mlflow.log_metric("adjusted_r2", adjusted_r2)
         mlflow.log_metric('duration', duration)
         mlflow.log_metric('amount_features', amount_features)
+        mlflow.log_metric('date_start', cfg.date.start)
+        mlflow.log_metric('date_end', cfg.date.end)      
         mlflow.log_artifact("artifacts/features/data_features.yaml")
 
     # save model
