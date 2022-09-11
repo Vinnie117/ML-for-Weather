@@ -16,9 +16,9 @@ model:
   target: temperature
   # if no predictors are provided (i.e empty list []), all lagged vars are used
   # if predictors are given, 'month', 'day' and 'hour' always must be given. Remember to also adjust diff.lags
-  # predictors: []
-  predictors: ['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1',
-               'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2', 'temperature_velo_2_lag_2', 'cloud_cover_acc_2_lag_2']
+  predictors: []
+  #predictors: ['month', 'day', 'hour', 'temperature_lag_1', 'cloud_cover_lag_1', 'wind_speed_lag_1',
+  #             'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2', 'temperature_velo_2_lag_2', 'cloud_cover_acc_2_lag_2']
          
 cv:
   # Specifiy splitting for Time series cross validation
