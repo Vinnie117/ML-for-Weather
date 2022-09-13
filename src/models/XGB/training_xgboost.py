@@ -9,8 +9,6 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
 from config import data_config 
 from hydra import compose, initialize
-import os
-import omegaconf
 import yaml
 import joblib
 
@@ -22,23 +20,44 @@ y_train = train.iloc[:, 0]
 X_test = test.iloc[:, 1:]
 y_test = test.iloc[:, 0]
 
+print(X_train.shape)
+print(y_train.shape)
+print(X_test.shape)
+print(y_test.shape)
 
-print(X_train)
-print(len(list(X_train)))
-print(list(X_train))
-
-
-# # testing dvc import
-# import dvc.api
-# with dvc.api.open(
-#         r'data_dvc/processed/train.csv'
-#         ) as data:
-#     print(data)
-#     train2 = pd.read_csv(data, delimiter=',', header=0)
-# X_train2 = train2.iloc[:, 1:]
-# print(X_train2)
+# print(X_train)
 # print(len(list(X_train)))
-# print(list(X_train2))
+# print(list(X_train))
+
+############################################################################
+
+# training is somehow super slow -> why?
+# shape of predicted values seems weird
+
+import dvc.api
+from io import StringIO
+train_dvc = dvc.api.read(r'data_dvc\processed\train.csv', mode = 'r')
+test_dvc = dvc.api.read(r'data_dvc\processed\test.csv', mode = 'r')
+train_dvc = StringIO(train_dvc)
+test_dvc = StringIO(test_dvc)
+
+train_dvc = pd.read_csv(train_dvc, delimiter=',', header=0)
+test_dvc = pd.read_csv(test_dvc, delimiter=',', header=0)
+
+X_train2 = train_dvc.iloc[:, 1:]
+y_train2 = train_dvc.iloc[:, 0]
+X_test2 = test_dvc.iloc[:, 1:]
+y_test2 = test_dvc.iloc[:, 0]
+
+# print(X_train2.shape)
+# print(y_train2.shape)
+# print(X_test2.shape)
+# print(y_test2.shape)
+
+# print(y_test.shape)
+# print(len(list(y_test)))
+# print(list(y_test))
+
 
 # # data is the same
 # if (X_train == X_train2).all:
@@ -57,7 +76,7 @@ cfg = compose(config_name="config")
 
 
 
-def train_xgb(cfg: data_config):
+def train_xgb(cfg: data_config, X_train = X_train2):
 
     mlflow.set_experiment(experiment_name='Weather') 
 
@@ -105,8 +124,6 @@ def train_xgb(cfg: data_config):
         amount_features = len(list(X_train))
 
         # Logging model performance to mlflow -> is only done for the best model
-        mlflow.log_param("alpha", cfg.elastic_net.alpha)
-        mlflow.log_param("l1_ratio", cfg.elastic_net.l1_ratio)
         mlflow.log_metric("rmse", rmse)
         mlflow.log_metric("r2", r2)
         mlflow.log_metric("mae", mae)
