@@ -1,14 +1,16 @@
 ######## Exploratory Data Analysis ########
 import sys 
+import os
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 import matplotlib.pyplot as plt
-from features.pipeline_dataprep import pd_df, train, test
+from features.pipeline_dataprep import pd_df, train, test, cfg
 import pandas as pd
-from hydra import compose
 
+# from hydra import compose
+# cfg = compose(config_name="config")
 
-cfg = compose(config_name="config")
-
+# import omegaconf
+# cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
 
 ################################################################
 
@@ -50,10 +52,11 @@ def lag_analysis(var, target, rows, cols):
     
     return fig, bar
 
-lag_analysis(var = 'temperature', target = 'temperature', rows = 3, cols = 3)
+if __name__ == "__main__":
+    lag_analysis(var = 'temperature', target = 'temperature', rows = 3, cols = 3)
 
 
-# Lag_24 seems good -> try 25 and 26 -> might be even better than 6 or 9 though it is further away
-# also 48, 47, 49
+    # Lag_24 seems good -> try 25 and 26 -> might be even better than 6 or 9 though it is further away
+    # also 48, 47, 49
 
-print('END')
+    print('END')
