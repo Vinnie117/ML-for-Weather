@@ -5,7 +5,29 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - https://towardsdatascience.com/how-to-deploy-a-machine-learning-model-with-fastapi-docker-and-github-actions-13374cbd638a
 - Build an inference pipeline / predict function
 
-- eda.py gibt keine Ergebnisse, wenn in config.yaml keine Predictors angegeben sind?
+- how should inference work? giving time only? Or time and variables (if they exist) from download
+    - alle Features bis dahin predicten? 
+        - zu viel Rechenaufwand?
+        - nur die underlying variables predicten und den Rest transformieren / laggen?
+    - alle target values bis dahin berechnen?
+        - das Modell ist nur auf Target values trainiert
+    - nur Point Prediction möglich?
+
+Plan
+1. Mit XGBoost den subsequently den nächsten Tag predicten. Das für alle Underlyings machen
+    - der vom Model aus möglich ist?
+    - Anhand der möglichen Daten aus der DWD API?
+    - -> beides kann / sollte (?) aufeinanderfallen, sodass immer vom Model aus der nächste Punkt predicted wird.
+    - die notwendigen Trainingsdaten erstellen -> mit jedem Underlying als Target
+    - die benötigten XGBs für jedes underlying target trainieren
+    - das trainierte xgb auf pd_df anwenden -> jeweils den nächsten Datenpunkt predicten
+3. ein gejointes DF erstellen: tatsächliche + predictete Werte (nur Underlying)
+4. Alle Transformations / Lags der predicted Underlyings mithilfe der Pipeline erstellen
+    - selbe Struktur wie nach dem Download von der DWD API simulieren?
+  5. Ein finales XGBoost nutzen, um anhand dieses gejointen DFs das Target zum Zieldatum zu predicten
+    - Ziel: Man soll am Ende nur ein Datum angeben müssen!
+
+
 
 
 
