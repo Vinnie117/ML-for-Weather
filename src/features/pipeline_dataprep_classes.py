@@ -89,7 +89,7 @@ class Times(BaseEstimator, TransformerMixin):
                 cols = list(dict_data[i][k].columns)
                 cols = cols[-4:] + cols[:len(cols)-4]
                 dict_data[i][k] = dict_data[i][k][cols]
-
+                
         return dict_data
 
 
@@ -126,7 +126,7 @@ class Velocity(BaseEstimator, TransformerMixin):
     
                 # combine with master data frame
                 data[i][k] = pd.concat([data[i][k], X[i][k]], axis=1)
-
+        
         return data
 
 
@@ -211,8 +211,9 @@ class Scaler(BaseEstimator, TransformerMixin):
         - 4th point: https://scikit-learn.org/stable/whats_new/v0.20.html#id37
     https://datascience.stackexchange.com/questions/54908/data-normalization-before-or-after-train-test-split 
     """
-    def __init__(self, std_target):
+    def __init__(self, target, std_target):
         self.std_target = std_target
+        self.target = target
 
     def fit(self, dict_data):
         return self
@@ -240,7 +241,8 @@ class Scaler(BaseEstimator, TransformerMixin):
                 scaled_df = pd.DataFrame(scaled, columns = scaled_cols)
 
                 # target var is standardized but also extracted as normal value (labeled 'target_...')
-                not_scaled = dict_data[i][k].iloc[:, [0,4]]
+                target_idx = dict_data[i][k].columns.get_loc(self.target)
+                not_scaled = dict_data[i][k].iloc[:, [0,target_idx]]
                 scaled_df.index = not_scaled.index
                 df_all = pd.concat([not_scaled, scaled_df], axis = 1,)
 
@@ -272,7 +274,6 @@ class Prepare(BaseEstimator, TransformerMixin):
         # array data for sklearn
         time = ['month', 'day', 'hour']
         std_time = ['std_month', 'std_day', 'std_hour']
-
 
         for i in dict_data:
             for k in dict_data[i]:

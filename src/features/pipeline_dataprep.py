@@ -46,7 +46,7 @@ def feature_engineering(cfg: data_config):
         ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),  # diff of 1 row between 2 velos
         ('lags', InsertLags(diff=cfg.diff.lags)),
         #('debug', Debugger()),
-        ('scale', Scaler(std_target=False)),  
+        ('scale', Scaler(target = cfg.model.target, std_target=False)),  
         ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
 
