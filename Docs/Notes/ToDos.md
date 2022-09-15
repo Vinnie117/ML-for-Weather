@@ -19,12 +19,14 @@ Plan
     - Anhand der möglichen Daten aus der DWD API?
     - -> beides kann / sollte (?) aufeinanderfallen, sodass immer vom Model aus der nächste Punkt predicted wird.
     - die notwendigen Trainingsdaten erstellen -> mit jedem Underlying als Target
-    - die benötigten XGBs für jedes underlying target trainieren
-    - das trainierte xgb auf pd_df anwenden -> jeweils den nächsten Datenpunkt predicten
-3. ein gejointes DF erstellen: tatsächliche + predictete Werte (nur Underlying)
-4. Alle Transformations / Lags der predicted Underlyings mithilfe der Pipeline erstellen
+2. die benötigten XGBs für jedes underlying target trainieren
+3. das trainierte xgb auf die letzte Reihe von pd_df anwenden -> Inference für jeweils den nächsten Datenpunkt predicten. 
+    - Mit while Schleife hochzählen bis zum Enddatum
+    - Predictions sammeln
+4. ein gejointes DF erstellen: tatsächliche + predictete Werte (nur Underlying)
+5. Alle Transformations / Lags der predicted Underlyings mithilfe der Pipeline erstellen
     - selbe Struktur wie nach dem Download von der DWD API simulieren?
-  5. Ein finales XGBoost nutzen, um anhand dieses gejointen DFs das Target zum Zieldatum zu predicten
+6. Ein finales XGBoost nutzen, um anhand dieses gejointen DFs das Target zum Zieldatum zu predicten
     - Ziel: Man soll am Ende nur ein Datum angeben müssen!
 
 
