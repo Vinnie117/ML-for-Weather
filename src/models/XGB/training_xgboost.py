@@ -76,7 +76,7 @@ cfg = compose(config_name="config")
 
 
 
-def train_xgb(cfg: data_config, X_train = X_train2):
+def train_xgb(cfg: data_config, X_train):
 
     mlflow.set_experiment(experiment_name='Weather') 
 
@@ -139,7 +139,7 @@ def train_xgb(cfg: data_config, X_train = X_train2):
 
 
 if __name__ == "__main__":
-    train_xgb(cfg = cfg)
+    train_xgb(cfg = cfg, X_train = X_train2)
 
 
     print('END')
