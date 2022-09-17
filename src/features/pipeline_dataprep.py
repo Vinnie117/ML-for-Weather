@@ -1,3 +1,4 @@
+import os
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 from omegaconf import OmegaConf
@@ -49,6 +50,7 @@ def feature_engineering(cfg: data_config):
         ('scale', Scaler(target = cfg.model.target, std_target=False)),  
         ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
         ])
+        
 
     return pipe
 
@@ -108,8 +110,9 @@ train_std = data['train_std'][last_train_key]
 test_std = data['test_std'][last_test_key]
 pd_df = data['pd_df'] # train + test
 
-check = data['train_std']['train_fold_2']
+check = data['train']['train_fold_2']
 print(check)
+print(list(check))
 
 print(type(train))
 #print(train.dtypes)
@@ -124,14 +127,44 @@ print(train_std.iloc[0:15,0:9])
 print(test_std.iloc[0:15,0:9])
 ####
 
-if __name__ == "__main__":
-    # index = False -> no row names
-    train.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\train.csv', 
-                header=True, index=False)
-    test.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test.csv', 
-                header=True, index=False)
-    train_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\train_std.csv', 
-                header=True, index=False)
-    test_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test_std.csv', 
-                header=True, index=False)
+def save(target):
+
+    dir_name = os.path.join(os.getcwd(), 'data_dvc', 'processed') 
+    base_filename_train = 'train_' + target
+    base_filename_test = 'test_' + target
+    base_filename_train_std = 'train_std_' + target
+    base_filename_test_std = 'test_std_' + target
+    format = 'csv'
+
+    file_train = os.path.join(dir_name, base_filename_train + '.' + format)
+    file_test = os.path.join(dir_name, base_filename_test + '.' + format)
+    file_train_std = os.path.join(dir_name, base_filename_train_std + '.' + format)
+    file_test_std = os.path.join(dir_name, base_filename_test_std + '.' + format)
+
+    train.to_csv(file_train, header=True, index=False)
+    test.to_csv(file_test, header=True, index=False)
+    train_std.to_csv(file_train_std, header=True, index=False)
+    test_std.to_csv(file_test_std, header=True, index=False)
+
+    # train.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\' + target + '.csv'), 
+    #             header=True, index=False)
+    # test.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test.csv', 
+    #             header=True, index=False)
+    # train_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\train_std.csv', 
+    #             header=True, index=False)
+    # test_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test_std.csv', 
+    #             header=True, index=False)
+
+save(target = cfg.model.target)
+
+# if __name__ == "__main__":
+#     # index = False -> no row names
+#     train.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\train.csv', 
+#                 header=True, index=False)
+#     test.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test.csv', 
+#                 header=True, index=False)
+#     train_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\train_std.csv', 
+#                 header=True, index=False)
+#     test_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test_std.csv', 
+#                 header=True, index=False)
 
