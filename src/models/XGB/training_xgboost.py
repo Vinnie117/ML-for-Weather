@@ -60,8 +60,8 @@ def model_data_loader(target):
     return X_train, y_train, X_test, y_test
 
 
-model_data_loader(target = 'cloud_cover')
-
+X_train, y_train, X_test, y_test = model_data_loader(target = 'temperature')
+print(y_train)
 
 #### Train a model
 
