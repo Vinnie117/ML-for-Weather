@@ -127,6 +127,12 @@ print(train_std.iloc[0:15,0:9])
 print(test_std.iloc[0:15,0:9])
 ####
 
+# dir_name = os.path.join(os.getcwd(), 'data_dvc', 'processed') 
+# base_filename_train = r'\train_' + 'temperature'
+# format = '.csv'
+# path = dir_name + base_filename_train + format
+# print(path)
+
 def save(target):
 
     dir_name = os.path.join(os.getcwd(), 'data_dvc', 'processed') 
