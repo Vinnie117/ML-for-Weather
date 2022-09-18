@@ -1,0 +1,4 @@
+outs:
+- md5: 1d2b837f438bed66ff755ad0f9f4087d
+  size: 6631977
+  path: train_std_temperature.csv

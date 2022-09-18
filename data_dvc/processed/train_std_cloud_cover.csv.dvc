@@ -1,0 +1,4 @@
+outs:
+- md5: 80f550bf7da0204e7940b5eb7fdad99c
+  size: 6627254
+  path: train_std_cloud_cover.csv

@@ -1,0 +1,4 @@
+outs:
+- md5: 48524c7440327765ddb61295f173f58b
+  size: 1325255
+  path: test_std_wind_speed.csv

@@ -2,3 +2,15 @@
 /train_std.csv
 /test_std.csv
 /test.csv
+/train_wind_speed.csv
+/train_temperature.csv
+/train_std_temperature.csv
+/train_std_wind_speed.csv
+/train_std_cloud_cover.csv
+/train_cloud_cover.csv
+/test_cloud_cover.csv
+/test_std_cloud_cover.csv
+/test_std_wind_speed.csv
+/test_std_temperature.csv
+/test_temperature.csv
+/test_wind_speed.csv

@@ -1,0 +1,4 @@
+outs:
+- md5: d6965cbed551d87c771b861a3b87dab8
+  size: 3667959
+  path: train_wind_speed.csv

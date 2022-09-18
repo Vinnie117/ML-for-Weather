@@ -1,0 +1,4 @@
+outs:
+- md5: a8547b890e7269b42e82d96cc6ba3124
+  size: 1325272
+  path: test_std_cloud_cover.csv
