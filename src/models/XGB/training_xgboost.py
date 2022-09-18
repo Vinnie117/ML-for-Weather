@@ -11,59 +11,56 @@ from config import data_config
 from hydra import compose, initialize
 import yaml
 import joblib
+import os
 
 # get data
-train = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\train.csv', delimiter=',', header=0)
-test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test.csv', delimiter=',', header=0)
-X_train = train.iloc[:, 1:]
-y_train = train.iloc[:, 0]
-X_test = test.iloc[:, 1:]
-y_test = test.iloc[:, 0]
-
-print(X_train.shape)
-print(y_train.shape)
-print(X_test.shape)
-print(y_test.shape)
-
-# print(X_train)
-# print(len(list(X_train)))
-# print(list(X_train))
-
-############################################################################
-
-# training is somehow super slow -> why?
-# shape of predicted values seems weird
-
 import dvc.api
 from io import StringIO
-train_dvc = dvc.api.read(r'data_dvc\processed\train.csv', mode = 'r')
-test_dvc = dvc.api.read(r'data_dvc\processed\test.csv', mode = 'r')
-train_dvc = StringIO(train_dvc)
-test_dvc = StringIO(test_dvc)
 
-train_dvc = pd.read_csv(train_dvc, delimiter=',', header=0)
-test_dvc = pd.read_csv(test_dvc, delimiter=',', header=0)
+# dir_name = os.path.join('data_dvc', 'processed') 
+# # os.path.join(dir_name, 'train.csv')
 
-X_train2 = train_dvc.iloc[:, 1:]
-y_train2 = train_dvc.iloc[:, 0]
-X_test2 = test_dvc.iloc[:, 1:]
-y_test2 = test_dvc.iloc[:, 0]
+# train_dvc = dvc.api.read(os.path.join(dir_name, 'train.csv'), mode = 'r')
+# test_dvc = dvc.api.read(r'data_dvc\processed\test.csv', mode = 'r')
+# train_dvc = StringIO(train_dvc)
+# test_dvc = StringIO(test_dvc)
 
-# print(X_train2.shape)
-# print(y_train2.shape)
-# print(X_test2.shape)
-# print(y_test2.shape)
+# train_dvc = pd.read_csv(train_dvc, delimiter=',', header=0)
+# test_dvc = pd.read_csv(test_dvc, delimiter=',', header=0)
 
-# print(y_test.shape)
-# print(len(list(y_test)))
-# print(list(y_test))
+# X_train = train_dvc.iloc[:, 1:]
+# y_train = train_dvc.iloc[:, 0]
+# X_test = test_dvc.iloc[:, 1:]
+# y_test = test_dvc.iloc[:, 0]
+
+# print(X_train.head(5))
+
+# function to load data
+def model_data_loader(target):
+
+    dir_name = os.path.join('data_dvc', 'processed') 
+    format = 'csv'
+
+    # read data to pandas df
+    file_train = 'train_' + target
+    train_dvc = dvc.api.read(os.path.join(dir_name, file_train + '.' + format), mode = 'r')
+    train_dvc = StringIO(train_dvc)
+    train_dvc = pd.read_csv(train_dvc, delimiter=',', header=0)
+
+    file_test = 'test_' + target
+    test_dvc = dvc.api.read(os.path.join(dir_name, file_test + '.' + format), mode = 'r')
+    test_dvc = StringIO(test_dvc)
+    test_dvc = pd.read_csv(test_dvc, delimiter=',', header=0)
+
+    X_train = train_dvc.iloc[:, 1:]
+    y_train = train_dvc.iloc[:, 0]
+    X_test = test_dvc.iloc[:, 1:]
+    y_test = test_dvc.iloc[:, 0]
+
+    return X_train, y_train, X_test, y_test
 
 
-# # data is the same
-# if (X_train == X_train2).all:
-#     print("ES IST GLEICH!!!111!1!1!!11")
-
-
+model_data_loader(target = 'cloud_cover')
 
 
 #### Train a model
@@ -139,7 +136,7 @@ def train_xgb(cfg: data_config, X_train):
 
 
 if __name__ == "__main__":
-    train_xgb(cfg = cfg, X_train = X_train2)
+    train_xgb(cfg = cfg, X_train = X_train)
 
 
     print('END')
