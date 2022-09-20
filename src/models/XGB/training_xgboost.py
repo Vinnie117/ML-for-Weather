@@ -60,8 +60,6 @@ def model_data_loader(target):
     return X_train, y_train, X_test, y_test
 
 
-X_train, y_train, X_test, y_test = model_data_loader(target = 'temperature')
-print(y_train)
 
 #### Train a model
 
@@ -80,7 +78,9 @@ def train_xgb(cfg: data_config, X_train):
     # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
     mlflow.sklearn.autolog(max_tuning_runs=None) 
 
-    with mlflow.start_run(run_name='XGB, dataset = [dvc id]'):
+    run_name = 'XGB, target: ' + cfg.model.target
+
+    with mlflow.start_run(run_name= run_name):
 
         # Start training the model
         t0 = time()
@@ -136,6 +136,9 @@ def train_xgb(cfg: data_config, X_train):
 
 
 if __name__ == "__main__":
+    X_train, y_train, X_test, y_test = model_data_loader(target = cfg.model.target)
+    print(y_train)
+
     train_xgb(cfg = cfg, X_train = X_train)
 
 
