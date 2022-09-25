@@ -10,6 +10,7 @@ test = pd.read_csv(r'A:\Projects\ML-for-Weather\data\processed\test.csv', delimi
 X_test = test.iloc[:, 1:]
 # single data point for inference
 inf_point = X_test.iloc[:1]
+print(inf_point)
 
 # Predict on a Pandas DataFrame.
 import pandas as pd
