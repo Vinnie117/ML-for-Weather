@@ -134,6 +134,10 @@ print(test_std.iloc[0:15,0:9])
 # print(path)
 
 def save(target):
+    ''' Save (standardized) training and test data to folder
+    @param target: The target variable of interest
+    
+    '''
 
     dir_name = os.path.join(os.getcwd(), 'data_dvc', 'processed') 
     base_filename_train = 'train_' + target
