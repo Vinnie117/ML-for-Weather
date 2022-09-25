@@ -37,7 +37,7 @@ from io import StringIO
 
 # function to load data
 def model_data_loader(target):
-    ''' Loads the data with the right target variable
+    ''' Loads the data with the right target variable for the model
 
     @param target: the target variable of the model, i.e. what to predict
     @return: X_train, y_train, X_test, y_test
