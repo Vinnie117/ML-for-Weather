@@ -15,6 +15,18 @@ import pandas as pd
 ################################################################
 
 def lag_analysis(var, target, rows, cols):
+    ''' EDA function to explore relationship of an underlying with its lags
+
+    - config.yaml -> cfg.model.predictors set? Must not be empty!
+    - config.yaml -> cfg.model.target set? Must not be empty and in line with func args
+    - config.yaml -> cfg.model.predictors lags must also be available in .csv data!
+
+    @param var: the lags of the underlying to compare with
+    @param target: the underlying to be compared with its lags
+    @param rows: number of rows with subplots
+    @param cols: number of cols with subplots 
+    @return fig, bar: scatterplot and barplot with correlations
+    '''
 
     # create dict with data for lag analysis
     lags = {}
