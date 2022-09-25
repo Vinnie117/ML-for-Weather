@@ -156,25 +156,8 @@ def save(target):
     train_std.to_csv(file_train_std, header=True, index=False)
     test_std.to_csv(file_test_std, header=True, index=False)
 
-    # train.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\' + target + '.csv'), 
-    #             header=True, index=False)
-    # test.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test.csv', 
-    #             header=True, index=False)
-    # train_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\train_std.csv', 
-    #             header=True, index=False)
-    # test_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test_std.csv', 
-    #             header=True, index=False)
 
-save(target = cfg.model.target)
 
-# if __name__ == "__main__":
-#     # index = False -> no row names
-#     train.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\train.csv', 
-#                 header=True, index=False)
-#     test.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test.csv', 
-#                 header=True, index=False)
-#     train_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\train_std.csv', 
-#                 header=True, index=False)
-#     test_std.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\processed\test_std.csv', 
-#                 header=True, index=False)
+if __name__ == "__main__":
+    save(target = cfg.model.target)
 
