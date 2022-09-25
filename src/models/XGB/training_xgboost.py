@@ -37,6 +37,12 @@ from io import StringIO
 
 # function to load data
 def model_data_loader(target):
+    ''' Loads the data with the right target variable
+
+    @param target: the target variable of the model, i.e. what to predict
+    @return: X_train, y_train, X_test, y_test
+    
+    '''
 
     dir_name = os.path.join('data_dvc', 'processed') 
     format = 'csv'
@@ -71,14 +77,19 @@ cfg = compose(config_name="config")
 
 
 
-def train_xgb(cfg: data_config, X_train):
+def train_xgb(cfg: data_config, target, X_train):
+    ''' Model training with XGBoost
+
+    @param target: the target variable to predict
+    @param X_train: the training data to be used
+    '''
 
     mlflow.set_experiment(experiment_name='Weather') 
 
     # max_tuning_runs: the maximum number of child Mlflow runs created for hyperparameter search estimators
     mlflow.sklearn.autolog(max_tuning_runs=None) 
 
-    run_name = 'XGB, target: ' + cfg.model.target
+    run_name = 'XGB, target: ' + target
 
     with mlflow.start_run(run_name= run_name):
 
@@ -139,7 +150,7 @@ if __name__ == "__main__":
     X_train, y_train, X_test, y_test = model_data_loader(target = cfg.model.target)
     print(y_train)
 
-    train_xgb(cfg = cfg, X_train = X_train)
+    train_xgb(cfg = cfg, target = cfg.model.target, X_train = X_train)
 
 
     print('END')
