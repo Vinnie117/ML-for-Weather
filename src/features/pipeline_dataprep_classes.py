@@ -80,6 +80,7 @@ class Times(BaseEstimator, TransformerMixin):
         for i in dict_data:
             for k in dict_data[i]:
                 dict_data[i][k]['timestamp'] = pd.to_datetime(dict_data[i][k]['date']).dt.tz_convert('Europe/Berlin').dt.tz_localize(None)
+                dict_data[i][k]['year'] =  dict_data[i][k]['timestamp'].dt.year
                 dict_data[i][k]['month'] =  dict_data[i][k]['timestamp'].dt.month
                 dict_data[i][k]['day'] =  dict_data[i][k]['timestamp'].dt.day 
                 dict_data[i][k]['hour'] =  dict_data[i][k]['timestamp'].dt.hour
@@ -87,7 +88,7 @@ class Times(BaseEstimator, TransformerMixin):
 
                 #reorder columns
                 cols = list(dict_data[i][k].columns)
-                cols = cols[-4:] + cols[:len(cols)-4]
+                cols = cols[-5:] + cols[:len(cols)-5]
                 dict_data[i][k] = dict_data[i][k][cols]
                 
         return dict_data
@@ -182,7 +183,7 @@ class InsertLags(BaseEstimator, TransformerMixin):
 
         # create column names
         cols = data['train']['train_fold_0'].columns.tolist()
-        cols = cols[4:] # 4 to start from columns without time vars
+        cols = cols[5:] # 5 to start from columns without time vars
         lags = []
         for i in self.diff:
             for j in cols:
@@ -259,9 +260,10 @@ class Prepare(BaseEstimator, TransformerMixin):
     '''
     Prepare data for scikit-learn: drop NaN, convert to np.array -> and select vars for prediction
     '''
-    def __init__(self, vars, target):
-        self.vars = vars
+    def __init__(self, predictors, target, vars):
+        self.predictors = predictors
         self.target = target
+        self.vars = vars
 
     def fit(self, dict_data):
         return self
@@ -272,38 +274,51 @@ class Prepare(BaseEstimator, TransformerMixin):
         folds = len(dict_data['train']) - 1
 
         # array data for sklearn
-        time = ['month', 'day', 'hour']
-        std_time = ['std_month', 'std_day', 'std_hour']
+        time = ['year', 'month', 'day', 'hour']
+        std_time = ['std_year', 'std_month', 'std_day', 'std_hour']
 
         for i in dict_data:
             for k in dict_data[i]:
-                if self.vars:
+                if self.predictors:
                     if i == 'train' or i == 'test':
-                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][self.vars]], axis=1)
+                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][self.predictors]], axis=1)
                         dict_data[i][k] = dict_data[i][k].dropna()
                     if  i =='train_std' or i =='test_std':
-                        cols = ['std_' + x for x in self.vars if x not in time]
+                        cols = ['std_' + x for x in self.predictors if x not in time]
                         cols = std_time + cols
                         dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][cols]], axis=1)
                         dict_data[i][k] = dict_data[i][k].dropna()
-                if not self.vars:
+                if not self.predictors:
                 # if no predictors are provided in config file, use all lagged variables for train and test set
                     if i == 'train' or i == 'test':
-                        all_vars = [x for x in dict_data[i][k] if "lag" in x]
+                        all_predictors = [x for x in dict_data[i][k] if "lag" in x]
                         dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
                                                     dict_data[i][k][time], 
-                                                    dict_data[i][k][all_vars]], axis=1)
+                                                    dict_data[i][k][all_predictors]], axis=1)
                         dict_data[i][k] = dict_data[i][k].dropna()
                     if i == 'train_std' or i == 'test_std':
-                        all_vars = [x for x in dict_data[i][k] if "lag" in x]
+                        all_predictors = [x for x in dict_data[i][k] if "lag" in x]
                         dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
                                                     dict_data[i][k][std_time], 
-                                                    dict_data[i][k][all_vars]], axis=1)
+                                                    dict_data[i][k][all_predictors]], axis=1)
                         dict_data[i][k] = dict_data[i][k].dropna()
 
         # complete dataframe for further use, e.g. evaluation
         dict_data['pd_df'] = pd.concat([dict_data['train']["train_fold_{}".format(folds)],
                                         dict_data['test']["test_fold_{}".format(folds)]], 
                                         axis=0)
+
+        # get the underlying time series of a variable back. Needed to append data for inference     
+        vars = [x for x in self.vars if x not in self.target]
+        for i in vars:
+            shift_back = i + '_lag_1'
+            value = dict_data['pd_df'][shift_back].shift(-1, axis = 0)
+            dict_data['pd_df'].insert(loc=5, column=i, value=value) # loc=1 inserts new column at index 5
+
+        dict_data['pd_df'] = dict_data['pd_df'].dropna() # using lags to retain underlying time series results in NaN of last row
+
+        # print(dict_data['pd_df'][["temperature", "year", "month", "day", "hour", "temperature_lag_1",
+        #                          "wind_speed", "wind_speed_lag_1"]])
+        # print(list(dict_data['pd_df']))
 
         return dict_data

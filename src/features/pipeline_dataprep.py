@@ -48,7 +48,7 @@ def feature_engineering(cfg: data_config):
         ('lags', InsertLags(diff=cfg.diff.lags)),
         #('debug', Debugger()),
         ('scale', Scaler(target = cfg.model.target, std_target=False)),  
-        ('cleanup', Prepare(target = cfg.model.target, vars=cfg.model.predictors))
+        ('cleanup', Prepare(target = cfg.model.target, predictors=cfg.model.predictors, vars = cfg.transform.vars))
         ])
         
 
@@ -119,7 +119,7 @@ print(type(train))
 print(train.head(15))
 print(test)
 print(pd_df)
-#print(list(pd_df))
+print(list(pd_df))
 
 print(list(train_std))
 print(train_std.iloc[0:15,0:9])
@@ -160,4 +160,6 @@ def save(target):
 
 if __name__ == "__main__":
     save(target = cfg.model.target)
+
+    print("END")
 

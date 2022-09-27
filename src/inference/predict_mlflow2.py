@@ -33,9 +33,11 @@ print(pred_wind_speed)
 test = pd_df.append({'temperature':pred_temperature, 
                     'cloud_cover':pred_cloud_cover, 
                     'wind_speed':pred_wind_speed}, ignore_index=True)
-print(test.tail(5))
+print(test.iloc[-10:,0:10])
 
 
-# Not all underlyings are in pd_df -> adjust pd_df in pipline_data_prep_classes to contain all?
+# Not all underlyings are in pd_df -> 
+# adjust pd_df in pipline_data_prep_classes or config.yaml to contain all?
+# add timestamp column to pd_df -> need to count new rows
 
 print("END")
