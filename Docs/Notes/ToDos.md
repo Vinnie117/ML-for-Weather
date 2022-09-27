@@ -13,21 +13,17 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
         - das Modell ist nur auf Target values trainiert
     - nur Point Prediction möglich?
 
-Plan
-1. Mit XGBoost den subsequently den nächsten Tag predicten. Das für alle Underlyings machen
-    - der vom Model aus möglich ist?
-    - Anhand der möglichen Daten aus der DWD API?
-    - -> beides kann / sollte (?) aufeinanderfallen, sodass immer vom Model aus der nächste Punkt predicted wird.
-    - die notwendigen Trainingsdaten erstellen -> mit jedem Underlying als Target
-2. die benötigten XGBs für jedes underlying target trainieren
-3. das trainierte xgb auf die letzte Reihe von pd_df anwenden -> Inference für jeweils den nächsten Datenpunkt predicten. 
-    - Mit while Schleife hochzählen bis zum Enddatum
-    - Predictions sammeln
-4. ein gejointes DF erstellen: tatsächliche + predictete Werte (nur Underlying)
-5. Alle Transformations / Lags der predicted Underlyings mithilfe der Pipeline erstellen
-    - selbe Struktur wie nach dem Download von der DWD API simulieren?
-6. Ein finales XGBoost nutzen, um anhand dieses gejointen DFs das Target zum Zieldatum zu predicten
-    - Ziel: Man soll am Ende nur ein Datum angeben müssen!
+Plan Inference
+1. 1 Model pro Target trainieren
+2. Jedes Model (pro Target) sein Target für die NÄCHSTE Zeile in pd_df predicten lassen
+    - pd_df muss alle Underlyings, statt 1 Target beinhalten
+3. Nachdem die predicted Underlyings da sind, die Transforms davon in pd_df erstellen
+    - mit einer eigenen Pipeline?
+4. Schritte 2. und 3. so lange bis zum Zielzeitpunkt durchführen
+5. Inference am Ende soll nur Zeit als Input entgegenehmen
+    - -> bis zu diesem Timestamp wird trainiert und appended. Dann nochmal komplett trainiert.
+
+Dieser Ansatz ist auch gut für ein potenzielles Retraining der Modelle
 
 
 

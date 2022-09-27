@@ -36,8 +36,19 @@ test = pd_df.append({'temperature':pred_temperature,
 print(test.iloc[-10:,0:12])
 
 
-# Not all underlyings are in pd_df -> 
-# adjust pd_df in pipline_data_prep_classes or config.yaml to contain all?
-# add timestamp column to pd_df -> need to count new rows
+#############################################################################
+######## transform data for next (row of) inference
+
+# increment timestamp
+test.loc[test.index[-1], "timestamp"] = test.loc[test.index[-2], "timestamp"]+ pd.to_timedelta(1,unit='h')
+print(test.iloc[-10:,0:12])
+
+# Split timestamp to year, month, day, hour
+test.loc[test.index[-1], "hour"]  =  test.loc[test.index[-1], "timestamp"].hour
+print(test.iloc[-10:,0:12])
+
+# collect steps in pipeline
+
+# add pipeline step for lags
 
 print("END")
