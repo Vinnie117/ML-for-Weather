@@ -33,7 +33,7 @@ print(pred_wind_speed)
 test = pd_df.append({'temperature':pred_temperature, 
                     'cloud_cover':pred_cloud_cover, 
                     'wind_speed':pred_wind_speed}, ignore_index=True)
-print(test.iloc[-10:,0:10])
+print(test.iloc[-10:,0:12])
 
 
 # Not all underlyings are in pd_df -> 

@@ -317,7 +317,10 @@ class Prepare(BaseEstimator, TransformerMixin):
 
         dict_data['pd_df'] = dict_data['pd_df'].dropna() # using lags to retain underlying time series results in NaN of last row
 
-        # print(dict_data['pd_df'][["temperature", "year", "month", "day", "hour", "temperature_lag_1",
+        timestamp= pd.to_datetime(dict_data['pd_df'][['year', 'month', 'day', 'hour']])
+        dict_data['pd_df'].insert(loc=1, column='timestamp', value=timestamp)
+
+        # print(dict_data['pd_df'][["temperature", "timestamp" ,"year", "month", "day", "hour", "temperature_lag_1",
         #                          "wind_speed", "wind_speed_lag_1"]])
         # print(list(dict_data['pd_df']))
 
