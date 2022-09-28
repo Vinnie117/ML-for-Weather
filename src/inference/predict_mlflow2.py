@@ -1,10 +1,11 @@
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
+from config import data_config
 import mlflow
 import pandas as pd
-from features.pipeline_dataprep import pd_df
+from features.pipeline_dataprep import pd_df, cfg
 from sklearn.pipeline import Pipeline
-from inference_classes import IncrementTime, SplitTimestamp
+from inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedUnderlyings
 
 # manual look-up and copying -> automating possible?
 model_temperature = 'runs:/c8e2ca3172b64f1999116b4a8b290e7e/best_estimator'
@@ -41,27 +42,30 @@ print(test.iloc[-10:,0:12])
 #############################################################################
 ######## transform data for next (row of) inference
 
-# # increment timestamp
-# test.loc[test.index[-1], "timestamp"] = test.loc[test.index[-2], "timestamp"]+ pd.to_timedelta(1,unit='h')
-# print(test.iloc[-10:,0:12])
-
-# # Split timestamp to year, month, day, hour
-# test.loc[test.index[-1], "hour"]  =  test.loc[test.index[-1], "timestamp"].hour
-# test.loc[test.index[-1], "day"]  =  test.loc[test.index[-1], "timestamp"].day
-# test.loc[test.index[-1], "month"]  =  test.loc[test.index[-1], "timestamp"].month
-# test.loc[test.index[-1], "year"]  =  test.loc[test.index[-1], "timestamp"].year
-# print(test.iloc[-10:,0:12])
 
 # collect steps in pipeline
-walking_inference_dataprep = Pipeline([
-    ("increment time", IncrementTime()), 
-    ("split timestamp", SplitTimestamp())
-    ])
+def walking_inference_dataprep(cfg: data_config):
 
-test = walking_inference_dataprep.fit_transform(test)
+    pipe = Pipeline([
+        ("increment time", IncrementTime()), 
+        ("split timestamp", SplitTimestamp()),
+        ("increment lagged underlyings", IncrementLaggedUnderlyings(vars = cfg.transform.vars, lags = cfg.diff.lags))
+        ])
+
+    return pipe
+
+walking_inference = walking_inference_dataprep(cfg = cfg)
+test = walking_inference.fit_transform(test)
 
 print(test.iloc[-10:,0:12])
+#print(list(test))
 
 # add pipeline step for lags
+print(test[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1', 'temperature_velo_1_lag_1', 'temperature_lag_2',
+             'wind_speed', 'wind_speed_lag_1', 'wind_speed_lag_2']])
+
+# These cols still need to be incremented
+na = test.columns[test.isna().any()].tolist()
+print(na)
 
 print("END")
