@@ -36,6 +36,7 @@ class SplitTimestamp(BaseEstimator, TransformerMixin):
 class IncrementLaggedUnderlyings(BaseEstimator, TransformerMixin):
     """
     Increment lags of underlying variables (base vars without transforms)
+    by looking at column with base variable
     """
 
     def __init__(self, vars, lags):
