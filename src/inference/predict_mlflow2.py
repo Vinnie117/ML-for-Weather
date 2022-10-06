@@ -5,7 +5,8 @@ import mlflow
 import pandas as pd
 from features.pipeline_dataprep import pd_df, cfg
 from sklearn.pipeline import Pipeline
-from inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedUnderlyings
+from inference_classes import IncrementTime, SplitTimestamp
+from inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
 
 # manual look-up and copying -> automating possible?
 model_temperature = 'runs:/c8e2ca3172b64f1999116b4a8b290e7e/best_estimator'
@@ -42,6 +43,12 @@ print(test.iloc[-10:,0:12])
 #############################################################################
 ######## transform data for next (row of) inference
 
+'''
+Reason for walking inference (add this to documentation later): Inference in a distant point in time
+requires all features of the previous row to be present! So we predict the row for row from the last
+known row, i.e. the end of the test data
+
+'''
 
 # collect steps in pipeline
 def walking_inference_dataprep(cfg: data_config):
@@ -49,7 +56,8 @@ def walking_inference_dataprep(cfg: data_config):
     pipe = Pipeline([
         ("increment time", IncrementTime()), 
         ("split timestamp", SplitTimestamp()),
-        ("increment lagged underlyings", IncrementLaggedUnderlyings(vars = cfg.transform.vars, lags = cfg.diff.lags))
+        ("increment lagged underlyings", IncrementLaggedUnderlyings(vars = cfg.transform.vars, lags = cfg.diff.lags)),
+        ("increment lagged velos", IncrementLaggedVelocities())
         ])
 
     return pipe
@@ -57,12 +65,14 @@ def walking_inference_dataprep(cfg: data_config):
 walking_inference = walking_inference_dataprep(cfg = cfg)
 test = walking_inference.fit_transform(test)
 
-print(test.iloc[-10:,0:12])
+print(test[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+                  'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
+                  'temperature_velo_2_lag_1','temperature_velo_2_lag_3']].tail(10))
 #print(list(test))
 
 # add pipeline step for lags
-print(test[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1', 'temperature_velo_1_lag_1', 'temperature_lag_2',
-             'wind_speed', 'wind_speed_lag_1', 'wind_speed_lag_2']])
+# print(test[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1', 'temperature_velo_1_lag_1', 'temperature_lag_2',
+#              'wind_speed', 'wind_speed_lag_1', 'wind_speed_lag_2']])
 
 # These cols still need to be incremented
 na = test.columns[test.isna().any()].tolist()

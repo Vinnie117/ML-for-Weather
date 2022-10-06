@@ -115,7 +115,6 @@ class Velocity(BaseEstimator, TransformerMixin):
                 cols.append(j + '_velo_' + str(i))
 
         # create data (velocities) for each data set k (train/test) in dict X
-
         for i in X:
             for k in X[i]:
                 col_indices = [data[i][k].columns.get_loc(c) for c in self.vars if c in data[i][k]]
