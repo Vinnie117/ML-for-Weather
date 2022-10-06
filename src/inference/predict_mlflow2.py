@@ -21,16 +21,16 @@ model_wind_speed = mlflow.pyfunc.load_model(model_wind_speed)
 # single and latest data point for inference
 latest = pd_df.iloc[-1:]
 print(latest)
-
+print(latest.dtypes)
 
 # Predict on a Pandas DataFrame.
 pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
 pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
 pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
 
-print(pred_temperature)
-print(pred_cloud_cover)
-print(pred_wind_speed)
+# print(pred_temperature)
+# print(pred_cloud_cover)
+# print(pred_wind_speed)
 
 
 # append data
@@ -64,15 +64,49 @@ def walking_inference_dataprep(cfg: data_config):
 
 walking_inference = walking_inference_dataprep(cfg = cfg)
 test = walking_inference.fit_transform(test)
-
 print(test[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
                   'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
                   'temperature_velo_2_lag_1','temperature_velo_2_lag_3']].tail(10))
-#print(list(test))
 
-# add pipeline step for lags
-# print(test[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1', 'temperature_velo_1_lag_1', 'temperature_lag_2',
-#              'wind_speed', 'wind_speed_lag_1', 'wind_speed_lag_2']])
+latest = test.iloc[-1:]
+print(latest)
+print(latest.dtypes)
+print(list(latest))
+pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
+pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
+pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
+
+test2 = test.append({'temperature':pred_temperature, 
+                    'cloud_cover':pred_cloud_cover, 
+                    'wind_speed':pred_wind_speed}, ignore_index=True)
+print(test2.iloc[-10:,0:12])
+
+test2 = walking_inference.fit_transform(test2)
+print(test2[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+                  'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
+                  'temperature_velo_2_lag_1','temperature_velo_2_lag_3']].tail(10))
+
+
+latest = test2.iloc[-1:]
+pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
+pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
+pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
+test3 = test2.append({'temperature':pred_temperature, 
+                    'cloud_cover':pred_cloud_cover, 
+                    'wind_speed':pred_wind_speed}, ignore_index=True)
+print(test2.iloc[-10:,0:12])
+
+test3 = walking_inference.fit_transform(test2)
+print(test3[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+                  'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
+                  'temperature_velo_2_lag_1','temperature_velo_2_lag_3']].tail(10))
+
+
+# Convert time variables to int64
+
+
+
+
 
 # These cols still need to be incremented
 na = test.columns[test.isna().any()].tolist()

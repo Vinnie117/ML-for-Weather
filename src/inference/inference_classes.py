@@ -1,6 +1,6 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 import pandas as pd
-
+import numpy as np
 
 class IncrementTime(BaseEstimator, TransformerMixin):
     """
@@ -28,7 +28,12 @@ class SplitTimestamp(BaseEstimator, TransformerMixin):
         df.loc[df.index[-1], "day"]  =  df.loc[df.index[-1], "timestamp"].day
         df.loc[df.index[-1], "month"]  =  df.loc[df.index[-1], "timestamp"].month
         df.loc[df.index[-1], "year"]  =  df.loc[df.index[-1], "timestamp"].year
-            
+        
+        df['hour'] = np.int64(df['hour'])
+        df['day'] = np.int64(df['day'])
+        df['month'] = np.int64(df['month'])
+        df['year'] = np.int64(df['year'])
+        
         return df
 
 
@@ -66,7 +71,7 @@ class IncrementLaggedUnderlyings(BaseEstimator, TransformerMixin):
 
 class IncrementLaggedVelocities(BaseEstimator, TransformerMixin):
     """
-    Increment lags of velocities (differences)  by looking at column with base variable
+    Increment lags of velocities (differences) by looking at column with base variable
     """
 
     # def __init__(self, diff):
@@ -79,8 +84,7 @@ class IncrementLaggedVelocities(BaseEstimator, TransformerMixin):
 
         # collect all velos of base variables
         all_velos = [x for x in list(df) if '_velo_' in x]
-        print(all_velos)
-
+        
         for i in all_velos:
             diff = i.split('_velo_')[1][0] # the diff, i.e. '1' in 'temperature_velo_1_lag_2'
             past = -int(i[-1])-1 # how far to look into the past, i.e. rows up in underlying var
