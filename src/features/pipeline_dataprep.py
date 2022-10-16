@@ -60,7 +60,7 @@ variable explanation
 velo_1: t_1 - t_0 der Variable
 velo_2: t_2 - t_0 der Variable
 acc_1: Differenz von 2 aufeinander folgenden velo_1
-acc_2: Differenz von t_2 - t_0 von velo_2
+acc_2: Differenz von t_1 - t_0 von velo_2 (auch 2 aufeinander folgenden velos, aber hier: velo_2)
 (-> es fehlen Differenzen! z.B. Diff t_1 - t_0 von velo_2)
     Grund:
     - dummy.append(pd.DataFrame(data[k].iloc[:,col_indices].diff(periods = i).diff(periods = i)))
