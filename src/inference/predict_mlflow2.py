@@ -28,9 +28,6 @@ pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
 pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
 pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
 
-# print(pred_temperature)
-# print(pred_cloud_cover)
-# print(pred_wind_speed)
 
 
 # append data
@@ -51,7 +48,7 @@ known row, i.e. the end of the test data
 '''
 
 # collect steps in pipeline
-def walking_inference_dataprep(cfg: data_config):
+def pipeline_inference_prep(cfg: data_config):
 
     pipe = Pipeline([
         ("increment time", IncrementTime()), 
@@ -62,47 +59,43 @@ def walking_inference_dataprep(cfg: data_config):
 
     return pipe
 
-walking_inference = walking_inference_dataprep(cfg = cfg)
-test = walking_inference.fit_transform(test)
-print(test[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+# Apply pipeline (inference_prep) on dataframe
+df_walking_inference = pipeline_inference_prep(cfg = cfg).fit_transform(test)
+
+# Check if new row is appended
+print(df_walking_inference[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
                   'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
                   'temperature_velo_2_lag_1','temperature_velo_2_lag_3']].tail(10))
 
-latest = test.iloc[-1:]
-print(latest)
-print(latest.dtypes)
-print(list(latest))
+
+#### START of inference procedure
+# get newest point of dataframe
+latest = df_walking_inference.iloc[-1:]
+
+# predict on latest row of dataframe
 pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
 pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
 pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
 
-test2 = test.append({'temperature':pred_temperature, 
-                    'cloud_cover':pred_cloud_cover, 
-                    'wind_speed':pred_wind_speed}, ignore_index=True)
-print(test2.iloc[-10:,0:12])
+# append predictions on dataframe
+df_walking_inference2 = df_walking_inference.append({'temperature':pred_temperature, 
+                                                     'cloud_cover':pred_cloud_cover, 
+                                                     'wind_speed':pred_wind_speed}, ignore_index=True)
+print(df_walking_inference2.iloc[-10:,0:12])
 
-test2 = walking_inference.fit_transform(test2)
-print(test2[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+# Apply pipeline (inference_prep) on dataframe
+df_walking_inference2 = pipeline_inference_prep(cfg = cfg).fit_transform(df_walking_inference2)
+
+# Check if new row is appended
+print(df_walking_inference2[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
                   'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
-                  'temperature_velo_2_lag_1','temperature_velo_2_lag_3']].tail(10))
+                  'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
+
+# get newest point of dataframe
+latest = df_walking_inference2.iloc[-1:]
 
 
-latest = test2.iloc[-1:]
-pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
-pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
-pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
-test3 = test2.append({'temperature':pred_temperature, 
-                    'cloud_cover':pred_cloud_cover, 
-                    'wind_speed':pred_wind_speed}, ignore_index=True)
-print(test2.iloc[-10:,0:12])
-
-test3 = walking_inference.fit_transform(test2)
-print(test3[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
-                  'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
-                  'temperature_velo_2_lag_1','temperature_velo_2_lag_3']].tail(10))
-
-
-# Convert time variables to int64
+# ...
 
 
 
