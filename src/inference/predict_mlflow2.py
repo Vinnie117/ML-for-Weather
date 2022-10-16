@@ -18,27 +18,7 @@ model_temperature = mlflow.pyfunc.load_model(model_temperature)
 model_cloud_cover = mlflow.pyfunc.load_model(model_cloud_cover)
 model_wind_speed = mlflow.pyfunc.load_model(model_wind_speed)
 
-# single and latest data point for inference
-latest = pd_df.iloc[-1:]
-print(latest)
-print(latest.dtypes)
-
-# Predict on a Pandas DataFrame.
-pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
-pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
-pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
-
-
-
-# append data
-test = pd_df.append({'temperature':pred_temperature, 
-                    'cloud_cover':pred_cloud_cover, 
-                    'wind_speed':pred_wind_speed}, ignore_index=True)
-print(test.iloc[-10:,0:12])
-
-
-#############################################################################
-######## transform data for next (row of) inference
+#################################################################################
 
 '''
 Reason for walking inference (add this to documentation later): Inference in a distant point in time
@@ -46,7 +26,6 @@ requires all features of the previous row to be present! So we predict the row f
 known row, i.e. the end of the test data
 
 '''
-
 # collect steps in pipeline
 def pipeline_inference_prep(cfg: data_config):
 
@@ -60,50 +39,40 @@ def pipeline_inference_prep(cfg: data_config):
 
     return pipe
 
-# Apply pipeline (inference_prep) on dataframe
-df_walking_inference = pipeline_inference_prep(cfg = cfg).fit_transform(test)
 
-# Check if new row is appended
-print(df_walking_inference[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
-                  'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
-                  'temperature_velo_2_lag_1','temperature_velo_2_lag_3']].tail(10))
+def inference(data):
 
+    # get newest point of dataframe
+    latest = data.iloc[-1:]
 
-#### START of inference procedure
-# get newest point of dataframe
-latest = df_walking_inference.iloc[-1:]
+    # predict on latest row of dataframe
+    pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
+    pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
+    pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
 
-# predict on latest row of dataframe
-pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
-pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
-pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
+    # append predictions on dataframe
+    df_walking_inference = data.append(
+        {'temperature':pred_temperature, 
+        'cloud_cover':pred_cloud_cover, 
+        'wind_speed':pred_wind_speed}, ignore_index=True)
 
-# append predictions on dataframe
-df_walking_inference2 = df_walking_inference.append({'temperature':pred_temperature, 
-                                                     'cloud_cover':pred_cloud_cover, 
-                                                     'wind_speed':pred_wind_speed}, ignore_index=True)
-print(df_walking_inference2.iloc[-10:,0:12])
+    # Apply pipeline (inference_prep) on dataframe
+    df_walking_inference = pipeline_inference_prep(cfg = cfg).fit_transform(df_walking_inference)
 
-# Apply pipeline (inference_prep) on dataframe
-df_walking_inference2 = pipeline_inference_prep(cfg = cfg).fit_transform(df_walking_inference2)
+    return df_walking_inference
 
-# Check if new row is appended
-print(df_walking_inference2[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
-                  'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
-                  'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
-
-# get newest point of dataframe
-latest = df_walking_inference2.iloc[-1:]
+test = inference(pd_df)
+print(test[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+            'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
+            'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
 
 
-# ...
+test2 = inference(test)
+print(test2[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+             'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
+             'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
 
 
 
-
-
-# These cols still need to be incremented
-na = test.columns[test.isna().any()].tolist()
-print(na)
 
 print("END")
