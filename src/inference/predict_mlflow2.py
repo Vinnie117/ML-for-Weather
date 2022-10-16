@@ -5,7 +5,7 @@ import mlflow
 import pandas as pd
 from features.pipeline_dataprep import pd_df, cfg
 from sklearn.pipeline import Pipeline
-from inference_classes import IncrementTime, SplitTimestamp
+from inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
 from inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
 
 # manual look-up and copying -> automating possible?
@@ -54,7 +54,8 @@ def pipeline_inference_prep(cfg: data_config):
         ("increment time", IncrementTime()), 
         ("split timestamp", SplitTimestamp()),
         ("increment lagged underlyings", IncrementLaggedUnderlyings(vars = cfg.transform.vars, lags = cfg.diff.lags)),
-        ("increment lagged velos", IncrementLaggedVelocities())
+        ("increment lagged velos", IncrementLaggedVelocities()),
+        ("increment lagged accs", IncrementLaggedAccelerations())
         ])
 
     return pipe

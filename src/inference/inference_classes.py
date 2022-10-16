@@ -74,9 +74,6 @@ class IncrementLaggedVelocities(BaseEstimator, TransformerMixin):
     Increment lags of velocities (differences) by looking at column with base variable
     """
 
-    # def __init__(self, diff):
-    #     self.diff = diff
-
     def fit(self, data):
         return self
 
@@ -93,5 +90,29 @@ class IncrementLaggedVelocities(BaseEstimator, TransformerMixin):
         # print(df[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
         #           'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
         #           'temperature_velo_2_lag_1','temperature_velo_2_lag_3']].tail(10))
+
+        return df
+
+class IncrementLaggedAccelerations(BaseEstimator, TransformerMixin):
+    """
+    Increment lags of accelerations (diff of diffs) by looking at column with base variable
+    """
+
+    def fit(self, data):
+        return self
+
+    def transform(self, df):
+
+        # collect all accelerations of base variables
+        all_accs = [x for x in list(df) if '_acc_' in x]
+        
+        for i in all_accs:
+            diff = i.split('_acc_')[1][0] # the diff, i.e. '2' in 'temperature_acc_2_lag_2'
+            past = -int(i[-1])-1 # how far to look into the past, i.e. rows up in underlying var
+            df.loc[df.index[-1], i]  = df['temperature'].diff(diff).diff(periods = 1).iloc[past]
+
+        print(df[['day', 'hour', 'temperature', 'temperature_lag_1',
+                  'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2', 'temperature_velo_2_lag_2',
+                  'temperature_velo_2_lag_1', 'temperature_acc_1_lag_1','temperature_acc_2_lag_1']].tail(10))
 
         return df
