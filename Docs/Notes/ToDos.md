@@ -5,39 +5,20 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - https://towardsdatascience.com/how-to-deploy-a-machine-learning-model-with-fastapi-docker-and-github-actions-13374cbd638a
 - Build an inference pipeline / predict function
 
-- how should inference work? giving time only? Or time and variables (if they exist) from download
-    - alle Features bis dahin predicten? 
-        - zu viel Rechenaufwand?
-        - nur die underlying variables predicten und den Rest transformieren / laggen?
-    - alle target values bis dahin berechnen?
-        - das Modell ist nur auf Target values trainiert
-    - nur Point Prediction möglich?
 
-Plan Inference
-1. 1 Model pro Target trainieren
-2. Jedes Model (pro Target) sein Target für die NÄCHSTE Zeile in pd_df predicten lassen
-    - pd_df muss alle Underlyings, statt 1 Target beinhalten
-3. Nachdem die predicted Underlyings da sind, die Transforms davon in pd_df erstellen
-    - mit einer eigenen Pipeline?
-4. Schritte 2. und 3. so lange bis zum Zielzeitpunkt durchführen
-5. Inference am Ende soll nur Zeit als Input entgegenehmen
-    - -> bis zu diesem Timestamp wird trainiert und appended. Dann nochmal komplett trainiert.
+-> write a main file
+-> Complete the docs!
 
-Dieser Ansatz ist auch gut für ein potenzielles Retraining der Modelle
+- do this instead of manual lookup of MLflow models
+    - https://medium.com/analytics-vidhya/retrieving-the-best-model-using-python-api-for-mlflow-7f76bf503692
 
 
 
 
-
-- need DVC? -> keep track of what data was used in each experiment
+- give confidence of one single inference point - how?
 - compare relative performance of using later lags
     - plot -> x: latest lag used, y: score on test data
 - UserWarning: Hint: Inferred schema contains integer column(s). Integer columns in Python cannot represent missing values. If your input data contains missing values at inference time, it will be encoded as floats and will cause a schema enforcement error.
-
-- Implement a multiple models
-    -> main motivation: establish a structure to track and log multiple models (e.g. performance, data used etc.)
-    - crucial aspect to be able to track experiments
-    - MLFlow. DVC -> research and compare! https://www.youtube.com/watch?v=W2DvpCYw22o 
 - plot learning / loss curves?
     - https://scikit-learn.org/stable/modules/learning_curve.html
     - error curves by number of training data -> in order to see im performance increases!
@@ -46,6 +27,7 @@ Dieser Ansatz ist auch gut für ein potenzielles Retraining der Modelle
     - 6h MA? 3h MA?
 - create z-score variables?
     - https://twitter.com/mattrowsboats/status/1514293331278372876 
+- config management? What about multiple config files (in hydra)?
 
 
 
