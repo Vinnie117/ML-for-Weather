@@ -51,10 +51,9 @@ def inference(data):
     pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
 
     # append predictions on dataframe
-    df_walking_inference = data.append(
-        {'temperature':pred_temperature, 
-        'cloud_cover':pred_cloud_cover, 
-        'wind_speed':pred_wind_speed}, ignore_index=True)
+    df_walking_inference = pd.concat([data, pd.DataFrame.from_records([{'temperature':pred_temperature, 
+                                             'cloud_cover':pred_cloud_cover, 
+                                             'wind_speed':pred_wind_speed}])])
 
     # Apply pipeline (inference_prep) on dataframe
     df_walking_inference = pipeline_inference_prep(cfg = cfg).fit_transform(df_walking_inference)
@@ -73,6 +72,53 @@ print(test2[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
              'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
 
 
+##################################################################################################
+# While loop to make inference until certain point in future time
+# function within while loop or while loop within function? -> Alles in Functions packen, damit kein Code rumfliegt
 
+
+# # End-Datum der Inference als function argument
+# print(test2.iloc[0:6,1])
+# time = test2.iloc[:,1]
+
+# print(time[0])
+# print(type(time[0]))
+
+# test = pd.Timestamp('2017-01-01 12:00:00')
+# print(test)
+# print(type(test))
+# test2 = pd.Timestamp('2017-01-01 12') # this als works
+# print(test2)
+
+
+# necessary to convert datetime64 to pd.Timestamp? Or can it match anyways? -> it is already a timestamp?
+
+def inference_test(data, end_date):
+
+    while data['timestamp'].iloc[-1] < pd.Timestamp(end_date):
+
+        # get newest point of dataframe
+        latest = data.iloc[-1:]
+
+        # predict on latest row of dataframe
+        pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
+        pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
+        pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
+
+        # append predictions on dataframe
+        df_walking_inference = data.concat(
+            {'temperature':pred_temperature, 
+            'cloud_cover':pred_cloud_cover, 
+            'wind_speed':pred_wind_speed}, ignore_index=True)
+
+        # Apply pipeline (inference_prep) on dataframe
+        df_walking_inference = pipeline_inference_prep(cfg = cfg).fit_transform(df_walking_inference)
+
+    return df_walking_inference
+
+test3 = inference_test(pd_df, "2020-01-01 03:00:00")
+print(test3[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+            'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
+            'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
 
 print("END")
