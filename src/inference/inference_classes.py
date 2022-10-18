@@ -10,8 +10,18 @@ class IncrementTime(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, df):
+
+        print(df.iloc[:,0:7])
+
+        print(df.loc[df.index[-2], "timestamp"])
+        print(type(df.loc[df.index[-2], "timestamp"] ))
+       
         df.loc[df.index[-1], "timestamp"] = df.loc[df.index[-2], "timestamp"] + pd.to_timedelta(1,unit='h') 
-            
+        df = df.reset_index(drop=True)
+        
+        print(df.loc[df.index[-1], "timestamp"])
+
+        print(df.iloc[:,0:7])
         return df
 
 
@@ -23,6 +33,9 @@ class SplitTimestamp(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, df):
+
+        # print(df.iloc[:,0:7])
+        # print(df.loc[df.index[-1], "timestamp"])
 
         df.loc[df.index[-1], "hour"]  =  df.loc[df.index[-1], "timestamp"].hour
         df.loc[df.index[-1], "day"]  =  df.loc[df.index[-1], "timestamp"].day
