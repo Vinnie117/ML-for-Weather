@@ -3,7 +3,7 @@ sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent director
 from config import data_config
 import mlflow
 import pandas as pd
-from features.pipeline_dataprep import pd_df, cfg
+from features.pipeline_dataprep import pd_df, cfg, data_loader
 from sklearn.pipeline import Pipeline
 from inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
 from inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
@@ -14,6 +14,7 @@ from sympy import false
 from time import time
 from wetterdienst import Resolution, Period
 from wetterdienst.provider.dwd.observation import DwdObservationDataset
+from inference.pipeline_inference_features_classes import Times, Velocity, Acceleration, InsertLags, Scaler
 
 
 # manual look-up and copying -> automating possible?
@@ -28,17 +29,18 @@ model_wind_speed = mlflow.pyfunc.load_model(model_wind_speed)
 
 #################################################################################
 #### Shorten inference
-Settings.si_units = false
-API = Wetterdienst(provider="dwd", network="observation")
 
+#################################################################################
+# Settings.si_units = false
+# API = Wetterdienst(provider="dwd", network="observation")
 
-#print(pd_df.tail())
+# #print(pd_df.tail())
 
-inference_data = DwdObservationRequest(parameter=["TEMPERATURE_AIR_MEAN_200","WIND_SPEED", "CLOUD_COVER_TOTAL"],
-                            resolution="hourly",
-                            start_date='2019-12-31',
-                            end_date='2020-01-01',
-                            ).filter_by_station_id(station_id=(1766))
+# inference_data = DwdObservationRequest(parameter=["TEMPERATURE_AIR_MEAN_200","WIND_SPEED", "CLOUD_COVER_TOTAL"],
+#                             resolution="hourly",
+#                             start_date='2019-12-31',
+#                             end_date='2020-01-01',
+#                             ).filter_by_station_id(station_id=(1766))
 
 
 '''
@@ -49,21 +51,47 @@ Why does it take so long? around 30 seconds!
 - inference_data.values is of type DwdObservationValues
 - run cron job to get latest available data for inference in cloud?
 
-For now: save pseudo inference data locally
+For now: save pseudo inference data locally and call it to test inference
 '''
 
 
-t0 = time()
-inference_data = inference_data.values.all().df
-duration = time() - t0
-print(type(inference_data))
-print(inference_data)
-print(duration)
+# t0 = time()
+# inference_data = inference_data.values.all().df
+# duration = time() - t0
+# print(type(inference_data))
+# print(inference_data)
+# print(duration)
 
-inference_data.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\raw\pseudo_inference.csv', header=True, index=False)
+# inference_data.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\raw\pseudo_inference.csv', header=True, index=False)
+#################################################################################
+
+df_inference = data_loader('inference',cfg=cfg)
+print(df_inference)
 
 
+def pipeline_features_inference(cfg: data_config):
 
+    pipe = Pipeline([
+
+        ("times", Times()),
+        ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
+        ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),  # diff of 1 row between 2 velos
+        ('lags', InsertLags(diff=cfg.diff.lags)),
+        # Standardization works fine but exclude for now
+        # ('scale', Scaler(target = cfg.model.target, std_target=False)),  
+        # ('cleanup', Prepare(target = cfg.model.target, predictors=cfg.model.predictors, vars = cfg.transform.vars))
+        ])
+        
+
+    return pipe
+
+df = pipeline_features_inference(cfg=cfg).fit_transform(df_inference)
+
+print(df.iloc[0:10,0:10])
+
+# To do: achieve same column names as in pd_df! -> only lags and base and time
+print(list(df))
+print(list(pd_df))
 
 #################################################################################
 
@@ -71,6 +99,10 @@ inference_data.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\raw\pseudo_inference
 Reason for walking inference (add this to documentation later): Inference in a distant point in time
 requires all features of the previous row to be present! So we predict the row for row from the last
 known row, i.e. the end of the test data
+
+-> Explain why we predict each base variable!
+-> do not need lagged data? Information leakage is relevant for training, not for inference
+    -> we need lagged data bc the model was trained on it and expects these inputs
 
 '''
 # collect steps in pipeline

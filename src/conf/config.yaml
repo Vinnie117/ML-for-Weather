@@ -1,5 +1,6 @@
 data:
-  path: 'A:\Projects\ML-for-Weather\data\raw\test_simple.csv'
+  train: 'A:\Projects\ML-for-Weather\data\raw\test_simple.csv'
+  inference: 'A:\Projects\ML-for-Weather\data_dvc\raw\pseudo_inference.csv'
 date:
   start: '2019-01-01'
   end:  '2020-01-01'

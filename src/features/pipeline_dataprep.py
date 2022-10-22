@@ -18,10 +18,15 @@ from hydra.core.config_store import ConfigStore
 from hydra import compose, initialize
 
 
-def data_loader(cfg: data_config):
+def data_loader(data, cfg: data_config):
     
-    # load data
-    df_raw = pd.read_csv(cfg.data.path)
+    # load data (make this better! function arg should directly reference cfg)
+    if data == 'train':
+        df_raw = pd.read_csv(cfg.data.train)
+    if data == 'inference':
+        df_raw = pd.read_csv(cfg.data.inference)
+    else:
+        print("Argument 'data' must be 'train' or 'inference")
     
     # clean up and prepare
     data = df_raw.drop(columns=['station_id', 'dataset'])
@@ -87,7 +92,7 @@ cfg = compose(config_name="config")
 cs = ConfigStore.instance()
 cs.store(name = 'data_config', node = data_config)
 
-df = data_loader(cfg=cfg)
+df = data_loader('train', cfg=cfg)
 
 pipeline = feature_engineering(cfg = cfg)
 data = pipeline.fit_transform(df) 
