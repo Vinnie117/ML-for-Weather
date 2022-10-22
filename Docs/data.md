@@ -17,6 +17,7 @@ TABLE for variable description
 
 - A full list of available variables: https://wetterdienst.readthedocs.io/en/latest/data/parameters.html
 - A list of available weather station: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/kl/recent/KL_Tageswerte_Beschreibung_Stationen.txt 
+
 Note that downloaded variable names differ from variable names for model training as they
 will be altered during *[data preprocessing](https://github.com/Vinnie117/ML-for-Weather/blob/main/Docs/preprocessing.md)*.
 
