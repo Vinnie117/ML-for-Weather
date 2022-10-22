@@ -1,3 +1,4 @@
+from ast import walk
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 from config import data_config
@@ -14,7 +15,7 @@ from sympy import false
 from time import time
 from wetterdienst import Resolution, Period
 from wetterdienst.provider.dwd.observation import DwdObservationDataset
-from inference.pipeline_inference_features_classes import Times, Velocity, Acceleration, InsertLags, Scaler
+from inference.pipeline_inference_features_classes import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
 
 
 # manual look-up and copying -> automating possible?
@@ -77,9 +78,11 @@ def pipeline_features_inference(cfg: data_config):
         ('velocity', Velocity(vars=cfg.transform.vars, diff=cfg.diff.diff)),   
         ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),  # diff of 1 row between 2 velos
         ('lags', InsertLags(diff=cfg.diff.lags)),
+
         # Standardization works fine but exclude for now
-        # ('scale', Scaler(target = cfg.model.target, std_target=False)),  
-        # ('cleanup', Prepare(target = cfg.model.target, predictors=cfg.model.predictors, vars = cfg.transform.vars))
+        # ('scale', Scaler(target = cfg.model.target, std_target=False)),
+         
+        ('cleanup', Prepare(target = cfg.model.target, predictors=cfg.model.predictors, vars = cfg.transform.vars))
         ])
         
 
@@ -90,6 +93,7 @@ df = pipeline_features_inference(cfg=cfg).fit_transform(df_inference)
 print(df.iloc[0:10,0:10])
 
 # To do: achieve same column names as in pd_df! -> only lags and base and time
+# -> Prepare() is decisive here!
 print(list(df))
 print(list(pd_df))
 
@@ -154,5 +158,12 @@ df_walking_inference = walking_inference(pd_df, "2020-01-01 03:00:00")
 print(df_walking_inference[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
                             'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
                             'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
+
+# Without loading whole pd_df and calling the training pipelines
+df = walking_inference(df,  "2020-01-01 03:00:00")
+print(df[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+                            'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
+                            'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
+
 
 print("END")

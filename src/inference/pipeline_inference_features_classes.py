@@ -187,57 +187,35 @@ class Prepare(BaseEstimator, TransformerMixin):
     def fit(self, dict_data):
         return self
 
-    def transform(self, dict_data):
+    def transform(self, data):
         
-        # count number of folds in train/test key (-1 bc indexing starts at 0)
-        folds = len(dict_data['train']) - 1
-
         # array data for sklearn
         time = ['year', 'month', 'day', 'hour']
-        std_time = ['std_year', 'std_month', 'std_day', 'std_hour']
+        
 
-        for i in dict_data:
-            for k in dict_data[i]:
-                if self.predictors:
-                    if i == 'train' or i == 'test':
-                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][self.predictors]], axis=1)
-                        dict_data[i][k] = dict_data[i][k].dropna()
-                    if  i =='train_std' or i =='test_std':
-                        cols = ['std_' + x for x in self.predictors if x not in time]
-                        cols = std_time + cols
-                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], dict_data[i][k][cols]], axis=1)
-                        dict_data[i][k] = dict_data[i][k].dropna()
-                if not self.predictors:
-                # if no predictors are provided in config file, use all lagged variables for train and test set
-                    if i == 'train' or i == 'test':
-                        all_predictors = [x for x in dict_data[i][k] if "lag" in x]
-                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
-                                                    dict_data[i][k][time], 
-                                                    dict_data[i][k][all_predictors]], axis=1)
-                        dict_data[i][k] = dict_data[i][k].dropna()
-                    if i == 'train_std' or i == 'test_std':
-                        all_predictors = [x for x in dict_data[i][k] if "lag" in x]
-                        dict_data[i][k] = pd.concat([dict_data[i][k][self.target], 
-                                                    dict_data[i][k][std_time], 
-                                                    dict_data[i][k][all_predictors]], axis=1)
-                        dict_data[i][k] = dict_data[i][k].dropna()
+        if self.predictors:
+            data = pd.concat([data[self.target], data[self.predictors]], axis=1)
+            data = data.dropna()
+        if not self.predictors:
+        # if no predictors are provided in config file, use all lagged variables for train and test set
+            all_predictors = [x for x in data if "lag" in x]
+            data = pd.concat([data[self.target], 
+                                        data[time], 
+                                        data[all_predictors]], axis=1)
+            data = data.dropna()
 
-        # complete dataframe for further use, e.g. evaluation
-        dict_data['pd_df'] = pd.concat([dict_data['train']["train_fold_{}".format(folds)],
-                                        dict_data['test']["test_fold_{}".format(folds)]], 
-                                        axis=0)
-
-        # get the underlying time series of a variable back. Needed to append data for inference     
+ 
+        # get the underlying time series of base variables back. Needed to append data for inference     
         vars = [x for x in self.vars if x not in self.target]
         for i in vars:
             shift_back = i + '_lag_1'
-            value = dict_data['pd_df'][shift_back].shift(-1, axis = 0)
-            dict_data['pd_df'].insert(loc=5, column=i, value=value) # loc=1 inserts new column at index 5
+            value = data[shift_back].shift(-1, axis = 0)
+            data.insert(loc=5, column=i, value=value) # loc=1 inserts new column at index 5
 
-        dict_data['pd_df'] = dict_data['pd_df'].dropna() # using lags to retain underlying time series results in NaN of last row
+        data = data.dropna() # using lags to retain underlying time series results in NaN of last row
 
-        timestamp= pd.to_datetime(dict_data['pd_df'][['year', 'month', 'day', 'hour']])
-        dict_data['pd_df'].insert(loc=1, column='timestamp', value=timestamp)
+        timestamp= pd.to_datetime(data[['year', 'month', 'day', 'hour']])
+        data.insert(loc=1, column='timestamp', value=timestamp)
 
 
-        return dict_data
+        return data

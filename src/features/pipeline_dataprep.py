@@ -21,13 +21,11 @@ from hydra import compose, initialize
 def data_loader(data, cfg: data_config):
     
     # load data (make this better! function arg should directly reference cfg)
-    if data == 'train':
-        df_raw = pd.read_csv(cfg.data.train)
-    if data == 'inference':
-        df_raw = pd.read_csv(cfg.data.inference)
-    else:
-        print("Argument 'data' must be 'train' or 'inference")
-    
+    try:
+        df_raw = pd.read_csv(cfg['data'][data])
+    except:
+        print("Function argument type must be of available type in config -> data")
+
     # clean up and prepare
     data = df_raw.drop(columns=['station_id', 'dataset'])
     data = data.pivot(index='date', columns='parameter', values='value').reset_index()
@@ -92,7 +90,7 @@ cfg = compose(config_name="config")
 cs = ConfigStore.instance()
 cs.store(name = 'data_config', node = data_config)
 
-df = data_loader('train', cfg=cfg)
+df = data_loader('training', cfg=cfg)
 
 pipeline = feature_engineering(cfg = cfg)
 data = pipeline.fit_transform(df) 
