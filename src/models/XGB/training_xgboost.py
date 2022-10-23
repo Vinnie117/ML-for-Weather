@@ -17,23 +17,6 @@ import os
 import dvc.api
 from io import StringIO
 
-# dir_name = os.path.join('data_dvc', 'processed') 
-# # os.path.join(dir_name, 'train.csv')
-
-# train_dvc = dvc.api.read(os.path.join(dir_name, 'train.csv'), mode = 'r')
-# test_dvc = dvc.api.read(r'data_dvc\processed\test.csv', mode = 'r')
-# train_dvc = StringIO(train_dvc)
-# test_dvc = StringIO(test_dvc)
-
-# train_dvc = pd.read_csv(train_dvc, delimiter=',', header=0)
-# test_dvc = pd.read_csv(test_dvc, delimiter=',', header=0)
-
-# X_train = train_dvc.iloc[:, 1:]
-# y_train = train_dvc.iloc[:, 0]
-# X_test = test_dvc.iloc[:, 1:]
-# y_test = test_dvc.iloc[:, 0]
-
-# print(X_train.head(5))
 
 # function to load data
 def model_data_loader(target):
@@ -69,15 +52,8 @@ def model_data_loader(target):
 
 #### Train a model
 
-initialize(config_path="..\..\conf", job_name="config")
-cfg = compose(config_name="config")
 
-# This would also work:
-# cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
-
-
-
-def train_xgb(cfg: data_config, target, X_train):
+def train_xgb(cfg: data_config, target, X_train, y_train, X_test, y_test):
     ''' Model training with XGBoost
 
     @param target: the target variable to predict
@@ -147,6 +123,14 @@ def train_xgb(cfg: data_config, target, X_train):
 
 
 if __name__ == "__main__":
+
+    initialize(config_path="..\..\conf", job_name="config")
+    cfg = compose(config_name="config")
+
+    # This would also work:
+    # cfg = omegaconf.OmegaConf.load(os.path.join(os.getcwd(), "src\conf\config.yaml")) 
+
+    #### Train a model
     X_train, y_train, X_test, y_test = model_data_loader(target = cfg.model.target)
     print(y_train)
 
