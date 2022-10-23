@@ -41,7 +41,7 @@ def data_loader(data, cfg: data_config):
 
 
 # Feature engineering
-def feature_engineering(cfg: data_config):
+def pipeline_feature_engineering(cfg: data_config):
 
     pipe = Pipeline([
         ("split", Split(n_splits = cfg.cv.n_splits)), 
@@ -81,54 +81,7 @@ acc_2: Differenz von t_1 - t_0 von velo_2 (auch 2 aufeinander folgenden velos, a
 Lags: um wieviele Reihen die vars verschoben wurden
 '''
 
-# Use Compose API of hydra 
-initialize(config_path="..\conf", job_name="config")
-cfg = compose(config_name="config")
-#print(OmegaConf.to_yaml(cfg))
 
-# Use instance of config dataclass
-cs = ConfigStore.instance()
-cs.store(name = 'data_config', node = data_config)
-
-df = data_loader('training', cfg=cfg)
-
-pipeline = feature_engineering(cfg = cfg)
-dict_data = pipeline.fit_transform(df) 
-
-
-# All folds are here
-train_folds = dict_data['train']
-test_folds = dict_data['test']
-train_std_folds = dict_data['train_std']
-test_std_folds = dict_data['test_std']
-
-# the last fold -> complete data. Last key is same for raw and std. data
-last_train_key = list(dict_data['train'])[-1]
-last_test_key = list(dict_data['test'])[-1] 
-
-# full dataframes
-train = dict_data['train'][last_train_key]
-test = dict_data['test'][last_test_key]
-train_std = dict_data['train_std'][last_train_key]
-test_std = dict_data['test_std'][last_test_key]
-pd_df = dict_data['pd_df'] # train + test
-
-check = dict_data['train']['train_fold_2']
-print(check)
-print(list(check))
-
-print(type(train))
-#print(train.dtypes)
-print(train.head(15))
-print(test)
-print(pd_df)
-print(list(pd_df))
-
-print(list(train_std))
-print(train_std.iloc[0:15,0:9])
-
-print(test_std.iloc[0:15,0:9])
-####
 
 def save(target):
     ''' Save (standardized) training and test data to folder ./data_dvc/processed
@@ -156,7 +109,59 @@ def save(target):
 
 
 if __name__ == "__main__":
+
+    # Use Compose API of hydra 
+    initialize(config_path="..\conf", job_name="config")
+    cfg = compose(config_name="config")
+    #print(OmegaConf.to_yaml(cfg))
+
+    # Use instance of config dataclass
+    cs = ConfigStore.instance()
+    cs.store(name = 'data_config', node = data_config)
+
+    df = data_loader('training', cfg=cfg)
+
+    pipeline = pipeline_feature_engineering(cfg = cfg)
+    dict_data = pipeline.fit_transform(df) 
+
+
+    # All folds are here
+    train_folds = dict_data['train']
+    test_folds = dict_data['test']
+    train_std_folds = dict_data['train_std']
+    test_std_folds = dict_data['test_std']
+
+    # the last fold -> complete data. Last key is same for raw and std. data
+    last_train_key = list(dict_data['train'])[-1]
+    last_test_key = list(dict_data['test'])[-1] 
+
+    # full dataframes
+    train = dict_data['train'][last_train_key]
+    test = dict_data['test'][last_test_key]
+    train_std = dict_data['train_std'][last_train_key]
+    test_std = dict_data['test_std'][last_test_key]
+    pd_df = dict_data['pd_df'] # train + test
+
+    check = dict_data['train']['train_fold_2']
+
+
     save(target = cfg.model.target)
+
+    # # Some prints for inspection
+    # print(check)
+    # print(list(check))
+
+    # print(type(train))
+    # print(train.dtypes)
+    # print(train.head(15))
+    # print(test)
+    # print(pd_df)
+    # print(list(pd_df))
+
+    # print(list(train_std))
+    # print(train_std.iloc[0:15,0:9])
+    # print(test_std.iloc[0:15,0:9])
+
 
     print("END")
 
