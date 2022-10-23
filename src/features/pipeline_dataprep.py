@@ -83,9 +83,11 @@ Lags: um wieviele Reihen die vars verschoben wurden
 
 
 
-def save(target):
+def save(target, train, test, train_std, test_std):
     ''' Save (standardized) training and test data to folder ./data_dvc/processed
     @param target: The target variable of interest
+    @param train: the training data to be saved
+    @param test: the test data to be saved
     
     '''
 
