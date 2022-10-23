@@ -13,6 +13,8 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - do this instead of manual lookup of MLflow models
     - https://medium.com/analytics-vidhya/retrieving-the-best-model-using-python-api-for-mlflow-7f76bf503692
     - also achieve automatic retrieval of all models in waling_inference()
+- implement downloading data from dwd api in main() -> enable through argument
+- use tqdm to show process
 
 
 
