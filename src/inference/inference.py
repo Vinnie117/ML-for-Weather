@@ -1,8 +1,8 @@
 from config import data_config
 from sklearn.pipeline import Pipeline
 import pandas as pd
-from inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
-from inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
+from src.inference.inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
+from src.inference.inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
 from inference.pipeline_inference_features_classes import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
 
 
