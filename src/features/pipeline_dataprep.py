@@ -93,27 +93,27 @@ cs.store(name = 'data_config', node = data_config)
 df = data_loader('training', cfg=cfg)
 
 pipeline = feature_engineering(cfg = cfg)
-data = pipeline.fit_transform(df) 
+dict_data = pipeline.fit_transform(df) 
 
 
 # All folds are here
-train_folds = data['train']
-test_folds = data['test']
-train_std_folds = data['train_std']
-test_std_folds = data['test_std']
+train_folds = dict_data['train']
+test_folds = dict_data['test']
+train_std_folds = dict_data['train_std']
+test_std_folds = dict_data['test_std']
 
 # the last fold -> complete data. Last key is same for raw and std. data
-last_train_key = list(data['train'])[-1]
-last_test_key = list(data['test'])[-1] 
+last_train_key = list(dict_data['train'])[-1]
+last_test_key = list(dict_data['test'])[-1] 
 
 # full dataframes
-train = data['train'][last_train_key]
-test = data['test'][last_test_key]
-train_std = data['train_std'][last_train_key]
-test_std = data['test_std'][last_test_key]
-pd_df = data['pd_df'] # train + test
+train = dict_data['train'][last_train_key]
+test = dict_data['test'][last_test_key]
+train_std = dict_data['train_std'][last_train_key]
+test_std = dict_data['test_std'][last_test_key]
+pd_df = dict_data['pd_df'] # train + test
 
-check = data['train']['train_fold_2']
+check = dict_data['train']['train_fold_2']
 print(check)
 print(list(check))
 
@@ -130,14 +130,8 @@ print(train_std.iloc[0:15,0:9])
 print(test_std.iloc[0:15,0:9])
 ####
 
-# dir_name = os.path.join(os.getcwd(), 'data_dvc', 'processed') 
-# base_filename_train = r'\train_' + 'temperature'
-# format = '.csv'
-# path = dir_name + base_filename_train + format
-# print(path)
-
 def save(target):
-    ''' Save (standardized) training and test data to folder
+    ''' Save (standardized) training and test data to folder ./data_dvc/processed
     @param target: The target variable of interest
     
     '''
