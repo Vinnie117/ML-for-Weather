@@ -32,8 +32,8 @@ When the pipeline has finished, the resulting data frame looks like this:
 ![grafik](https://user-images.githubusercontent.com/52510339/175814437-8152c8bd-b0b3-4e79-9f51-ec09337d31fb.png)
 
 
-The resulting object that holds all information is a dictionary called data and structured as follows:
-- data
+The resulting object that holds all information is a dictionary called 'dict_data' and structured as follows:
+- dict_data
   - train
     - train_fold_0
     - ...
@@ -53,16 +53,3 @@ The resulting object that holds all information is a dictionary called data and 
   - pd_df
 
 Note that each subsequent fold contains data of all the prior folds due to the nature of time series, i.e. random shuffling of slices is not appropriate. That means "..._fold_K" contains all prior K folds.
-
-
-
-
-
-
-
-
-
-
-
-
-
