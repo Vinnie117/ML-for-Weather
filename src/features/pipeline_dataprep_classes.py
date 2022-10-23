@@ -59,9 +59,9 @@ class Split(BaseEstimator, TransformerMixin):
 
         # create indices and train/test folds for time series data
         for fold, (train_index, test_index) in enumerate(tscv.split(indices)):
-            print("Fold: {}".format(fold))
-            print("TRAIN indices:", train_index, "\n", "TEST indices:", test_index)
-            print("\n")
+            # print("Fold: {}".format(fold))
+            # print("TRAIN indices:", train_index, "\n", "TEST indices:", test_index)
+            # print("\n")
             train, test = data.iloc[train_index], data.iloc[test_index]
             dict_data['train']["train_fold_{}".format(fold)] = train
             dict_data['test']["test_fold_{}".format(fold)] = test
