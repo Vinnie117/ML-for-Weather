@@ -9,6 +9,7 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 -> write a main file
 -> Complete the docs!
 
+- save() should loop through all cfg.transform.vars instead of manual approach
 - do this instead of manual lookup of MLflow models
     - https://medium.com/analytics-vidhya/retrieving-the-best-model-using-python-api-for-mlflow-7f76bf503692
 
