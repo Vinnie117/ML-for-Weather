@@ -1,20 +1,12 @@
-from ast import walk
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 from config import data_config
 import mlflow
 import pandas as pd
-from features.pipeline_dataprep import pd_df, cfg, data_loader
+from features.pipeline_dataprep import cfg, data_loader
 from sklearn.pipeline import Pipeline
 from inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
 from inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
-from wetterdienst.provider.dwd.observation import DwdObservationRequest
-from wetterdienst import Settings
-from wetterdienst import Wetterdienst
-from sympy import false
-from time import time
-from wetterdienst import Resolution, Period
-from wetterdienst.provider.dwd.observation import DwdObservationDataset
 from inference.pipeline_inference_features_classes import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
 
 
@@ -30,9 +22,8 @@ model_wind_speed = mlflow.pyfunc.load_model(model_wind_speed)
 
 #################################################################################
 #### Shorten inference
-
-#################################################################################
-# Settings.si_units = false
+####
+## Settings.si_units = false
 # API = Wetterdienst(provider="dwd", network="observation")
 
 # #print(pd_df.tail())
@@ -66,10 +57,6 @@ For now: save pseudo inference data locally and call it to test inference
 # inference_data.to_csv(r'A:\Projects\ML-for-Weather\data_dvc\raw\pseudo_inference.csv', header=True, index=False)
 #################################################################################
 
-df_inference = data_loader('inference',cfg=cfg)
-print(df_inference)
-
-
 def pipeline_features_inference(cfg: data_config):
 
     pipe = Pipeline([
@@ -87,15 +74,6 @@ def pipeline_features_inference(cfg: data_config):
         
 
     return pipe
-
-df = pipeline_features_inference(cfg=cfg).fit_transform(df_inference)
-
-print(df.iloc[0:10,0:10])
-
-# To do: achieve same column names as in pd_df! -> only lags and base and time
-# -> Prepare() is decisive here!
-print(list(df))
-print(list(pd_df))
 
 #################################################################################
 
@@ -154,16 +132,15 @@ def walking_inference(walking_df, end_date):
 
     return walking_df
 
-df_walking_inference = walking_inference(pd_df, "2020-01-01 03:00:00")
-print(df_walking_inference[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
-                            'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
-                            'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
 
-# Without loading whole pd_df and calling the training pipelines
-df = walking_inference(df,  "2020-01-01 03:00:00")
-print(df[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
-                            'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
-                            'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
+if __name__ == "main":
+    # Without loading whole pd_df and calling the training pipelines
+    df_inference = data_loader('inference',cfg=cfg)
+    df = pipeline_features_inference(cfg=cfg).fit_transform(df_inference)
+    df = walking_inference(df,  "2020-01-01 03:00:00")
+    print(df[['year', 'month', 'day', 'hour', 'temperature', 'temperature_lag_1',
+                                'temperature_velo_1_lag_1', 'temperature_velo_1_lag_2',
+                                'temperature_velo_2_lag_1','temperature_velo_2_lag_3','temperature_acc_1_lag_3']].tail(10))
 
 
-print("END")
+    print("END")
