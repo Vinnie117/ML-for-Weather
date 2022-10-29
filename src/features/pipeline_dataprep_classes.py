@@ -319,8 +319,4 @@ class Prepare(BaseEstimator, TransformerMixin):
         timestamp= pd.to_datetime(dict_data['pd_df'][['year', 'month', 'day', 'hour']])
         dict_data['pd_df'].insert(loc=1, column='timestamp', value=timestamp)
 
-        # print(dict_data['pd_df'][["temperature", "timestamp" ,"year", "month", "day", "hour", "temperature_lag_1",
-        #                          "wind_speed", "wind_speed_lag_1"]])
-        # print(list(dict_data['pd_df']))
-
         return dict_data
