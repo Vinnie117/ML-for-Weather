@@ -50,6 +50,11 @@ class svm:
     kernel: string
 
 @dataclass
+class inference:
+    end_date: str
+
+
+@dataclass
 class data_config:
     date: date
     vars_old: vars_old
@@ -61,5 +66,6 @@ class data_config:
     cv: cv
     elastic_net: elastic_net
     svm: svm
+    inference: inference
 
 

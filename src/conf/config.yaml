@@ -38,7 +38,7 @@ svm:
   kernel: ['rbf']
 xgb:
 inference:
-  end_date:
+  end_date: "2020-01-02 21:00:00"
   models:
     
 
