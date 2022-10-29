@@ -5,7 +5,7 @@ from hydra.core.config_store import ConfigStore
 from src.config import data_config
 from src.models.XGB.training_xgboost import model_data_loader, train_xgb
 import mlflow
-from src.inference.inference import pipeline_features_inference, walking_inference
+from src.inference.inference import pipeline_features_inference, walking_inference, model_loader
 
 
 # # start app in venv: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8008
@@ -45,23 +45,12 @@ def main_training():
 def main_inference():
     ''' Function for model inference '''
 
-    # manual look-up and copying -> automating possible?
-    model_temperature = 'runs:/c8e2ca3172b64f1999116b4a8b290e7e/best_estimator'
-    model_cloud_cover = 'runs:/144c1be3dab346a19c95605c46c675f9/best_estimator'
-    model_wind_speed = 'runs:/fa8aed07ece5402f923ea24776d5b405/best_estimator'
-
-    # load all models as a PyFuncModel.
-    model_temperature = mlflow.pyfunc.load_model(model_temperature)
-    model_cloud_cover = mlflow.pyfunc.load_model(model_cloud_cover)
-    model_wind_speed = mlflow.pyfunc.load_model(model_wind_speed)
-
     # load data for inference
     df_inference = data_loader('inference',cfg=cfg)
 
     # make inference
     df = pipeline_features_inference(cfg=cfg).fit_transform(df_inference)
-    df = walking_inference(cfg=cfg, walking_df=df, end_date="2020-01-02 21:00:00", 
-                           model_temperature=model_temperature, model_cloud_cover=model_cloud_cover, model_wind_speed=model_wind_speed)
+    df = walking_inference(cfg=cfg, walking_df=df, end_date="2020-01-02 21:00:00")
 
     return df
 

@@ -4,7 +4,7 @@ import pandas as pd
 from src.inference.inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
 from src.inference.inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
 from inference.pipeline_inference_features_classes import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
-
+import mlflow
 
 def pipeline_features_inference(cfg: data_config):
     '''
@@ -28,8 +28,10 @@ def pipeline_features_inference(cfg: data_config):
     return pipe
 
 
-# collect steps in pipeline
 def pipeline_inference_prep(cfg: data_config):
+    '''
+    Used by walking_inference()
+    '''
 
     pipe = Pipeline([
         ("increment time", IncrementTime()), 
@@ -42,27 +44,53 @@ def pipeline_inference_prep(cfg: data_config):
     return pipe
 
 
+def model_loader():
+    '''
+    This function automatically returns the best models (run from e.g. GridSearchCV) in a dict
+    '''
 
-def walking_inference(cfg: data_config, walking_df, end_date, model_temperature, model_cloud_cover, model_wind_speed):
+    # search mlflow experiments by tag runName
+    df = mlflow.search_runs(['3'], filter_string="tags.mlflow.runName ILIKE '%XGB, target:%'")
+
+    # sort by adjusted_r2,  then take  first element ( = minimum) in each runName group:
+    df = df.sort_values("metrics.adjusted_r2").groupby("tags.mlflow.runName", as_index=False).first()
+
+    # now load all different models into a dict
+    models = {}
+    for i, j in zip(df['run_id'], df['tags.mlflow.runName']):
+        
+        # construct model_name
+        var = j.split('target: ')[1]
+        model_name = "model_" + var 
+
+        # load and assign all models as a PyFuncModel
+        models[model_name] = mlflow.pyfunc.load_model('runs:/' + i + '/best_estimator')
+
+    return models
+
+
+
+def walking_inference(cfg: data_config, walking_df, end_date):
     '''
     Function for incremental inference (row by row)
     '''
-
+    models = model_loader()
+    print('THE MODEL IDs USED ARE: \n', models)
+    predictions = {}
     while walking_df['timestamp'].iloc[-1] < pd.Timestamp(end_date):
 
-        # get newest point of dataframe
+        # get newest point of dataframe (i.e. latest complete row)
         latest = walking_df.iloc[-1:]
 
-        # predict on latest row of dataframe
-        pred_temperature = model_temperature.predict(pd.DataFrame(latest))[0]
-        pred_cloud_cover = model_cloud_cover.predict(pd.DataFrame(latest))[0]
-        pred_wind_speed = model_wind_speed.predict(pd.DataFrame(latest))[0]
+        # get models and collect predictions in dict
+        for i in models:
 
-        # append predictions on dataframe
-        walking_df = pd.concat([walking_df, pd.DataFrame.from_records([{
-            'temperature':pred_temperature, 
-            'cloud_cover':pred_cloud_cover, 
-            'wind_speed':pred_wind_speed}])])
+            pred_name = i.split('model_')[1]
+            # predict with each model on latest row of dataframe
+            predictions[pred_name] = models[i].predict(pd.DataFrame(latest))[0]
+            
+        # append dict of predictions to dataframe
+        walking_df = pd.concat([walking_df, pd.DataFrame.from_records([predictions])])
 
         # Apply pipeline (inference_prep) on dataframe
         walking_df = pipeline_inference_prep(cfg=cfg).fit_transform(walking_df)
@@ -72,3 +100,19 @@ def walking_inference(cfg: data_config, walking_df, end_date, model_temperature,
             break
 
     return walking_df
+
+
+# ###########################################################################
+
+
+# # df = walking_inference(cfg=cfg, walking_df=df, end_date="2020-01-02 21:00:00", 
+# #                         model_temperature=model_temperature, model_cloud_cover=model_cloud_cover, model_wind_speed=model_wind_speed)
+
+# models = model_loader()
+
+# for i in models:
+#     print(i)
+
+
+# print('END')
+
