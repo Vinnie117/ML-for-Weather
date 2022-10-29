@@ -74,6 +74,7 @@ def walking_inference(cfg: data_config, walking_df, end_date):
     '''
     Function for incremental inference (row by row)
     '''
+    
     models = model_loader()
     print('THE MODEL IDs USED ARE: \n', models)
     predictions = {}
