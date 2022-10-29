@@ -60,7 +60,7 @@ def main_inference():
 
     # make inference
     df = pipeline_features_inference(cfg=cfg).fit_transform(df_inference)
-    df = walking_inference(cfg=cfg, walking_df=df, end_date="2020-01-01 03:00:00", 
+    df = walking_inference(cfg=cfg, walking_df=df, end_date="2020-01-02 21:00:00", 
                            model_temperature=model_temperature, model_cloud_cover=model_cloud_cover, model_wind_speed=model_wind_speed)
 
     return df
