@@ -41,7 +41,7 @@ def data_loader(data, cfg: data_config):
 
 
 # Feature engineering
-def pipeline_feature_engineering(cfg: data_config):
+def pipeline_feature_engineering(cfg: data_config, target):
 
     pipe = Pipeline([
         ("split", Split(n_splits = cfg.cv.n_splits)), 
@@ -50,8 +50,8 @@ def pipeline_feature_engineering(cfg: data_config):
         ('acceleration', Acceleration(vars=cfg.transform.vars, diff=cfg.diff.diff)),  # diff of 1 row between 2 velos
         ('lags', InsertLags(diff=cfg.diff.lags)),
         #('debug', Debugger()),
-        ('scale', Scaler(target = cfg.model.target, std_target=False)),  
-        ('cleanup', Prepare(target = cfg.model.target, predictors=cfg.model.predictors, vars = cfg.transform.vars))
+        ('scale', Scaler(target = target, std_target=False)),  
+        ('cleanup', Prepare(target = target, predictors=cfg.model.predictors, vars = cfg.transform.vars))
         ])
         
 

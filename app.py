@@ -17,12 +17,12 @@ from src.inference.inference import pipeline_features_inference, walking_inferen
 #     return {"ping": "pong!"}
 
 
-def main_training():
+def main_training(target):
     ''' Function for model training'''
 
     # load and prepare training data
     df = data_loader('training', cfg=cfg)
-    dict_data = pipeline_feature_engineering(cfg = cfg).fit_transform(df) 
+    dict_data = pipeline_feature_engineering(cfg = cfg, target = target).fit_transform(df) 
 
     # the last fold is complete data
     last_train_key = list(dict_data['train'])[-1]
@@ -35,11 +35,11 @@ def main_training():
     test_std = dict_data['test_std'][last_test_key]
 
     # save to database
-    save(var=cfg.model.target, train=train, test=test, train_std=train_std, test_std=test_std)
+    save(var=target, train=train, test=test, train_std=train_std, test_std=test_std)
 
     # model training with mlflow
-    X_train, y_train, X_test, y_test = model_data_loader(target = cfg.model.target)
-    train_xgb(cfg = cfg, target = cfg.model.target, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test)
+    X_train, y_train, X_test, y_test = model_data_loader(target = target)
+    train_xgb(cfg = cfg, target = target, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test)
 
 
 def main_inference(cfg: data_config):
@@ -55,12 +55,13 @@ def main_inference(cfg: data_config):
     return df
 
 
-def main(training, inference):
+def main(cfg: data_config, training, inference):
     if training:
-        main_training()
+        for i in cfg.transform.vars:
+            main_training(target = i)
     if inference:
         df = main_inference(cfg=cfg)
-    return df
+        return df
 
 
 if __name__ == "__main__":
@@ -72,8 +73,8 @@ if __name__ == "__main__":
     cs.store(name = 'data_config', node = data_config)
 
     # start program
-    df = main(training = False, inference = True )
+    df = main(cfg = cfg, training = True, inference = False )
 
-    print(df[['year', 'month', 'day', 'hour', 'temperature']].tail(10))
+    #print(df[['year', 'month', 'day', 'hour', 'temperature']].tail(10))
 
     print('END')
