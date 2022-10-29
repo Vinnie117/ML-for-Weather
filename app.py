@@ -35,7 +35,7 @@ def main_training():
     test_std = dict_data['test_std'][last_test_key]
 
     # save to database
-    save(target=cfg.model.target, train=train, test=test, train_std=train_std, test_std=test_std)
+    save(var=cfg.transform.vars, train=train, test=test, train_std=train_std, test_std=test_std)
 
     # model training with mlflow
     X_train, y_train, X_test, y_test = model_data_loader(target = cfg.model.target)
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     cs.store(name = 'data_config', node = data_config)
 
     # start program
-    df = main(training = False, inference = True )
+    df = main(training = True, inference = True )
 
     print(df[['year', 'month', 'day', 'hour', 'temperature']].tail(10))
 
