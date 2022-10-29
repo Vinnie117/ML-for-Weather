@@ -10,11 +10,14 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 -> Complete the docs!
 
 - save() should loop through all cfg.transform.vars instead of manual approach
+    - could be an aditional data pipeline step
 - do this instead of manual lookup of MLflow models
     - https://medium.com/analytics-vidhya/retrieving-the-best-model-using-python-api-for-mlflow-7f76bf503692
     - also achieve automatic retrieval of all models in waling_inference()
 - implement downloading data from dwd api in main() -> enable through argument
+- end date of inference should be specified in config.yaml
 - use tqdm to show process
+- think about keys and df folds from dict_data in main_training() -> do assignment somewhere else
 
 
 
