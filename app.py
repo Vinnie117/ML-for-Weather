@@ -35,14 +35,14 @@ def main_training():
     test_std = dict_data['test_std'][last_test_key]
 
     # save to database
-    save(var=cfg.transform.vars, train=train, test=test, train_std=train_std, test_std=test_std)
+    save(var=cfg.model.target, train=train, test=test, train_std=train_std, test_std=test_std)
 
     # model training with mlflow
     X_train, y_train, X_test, y_test = model_data_loader(target = cfg.model.target)
     train_xgb(cfg = cfg, target = cfg.model.target, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test)
 
 
-def main_inference():
+def main_inference(cfg: data_config):
     ''' Function for model inference '''
 
     # load data for inference
@@ -50,7 +50,7 @@ def main_inference():
 
     # make inference
     df = pipeline_features_inference(cfg=cfg).fit_transform(df_inference)
-    df = walking_inference(cfg=cfg, walking_df=df, end_date="2020-01-02 21:00:00")
+    df = walking_inference(cfg=cfg, walking_df=df, end_date=cfg.inference.end_date)
 
     return df
 
@@ -59,7 +59,7 @@ def main(training, inference):
     if training:
         main_training()
     if inference:
-        df = main_inference()
+        df = main_inference(cfg=cfg)
     return df
 
 
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     cs.store(name = 'data_config', node = data_config)
 
     # start program
-    df = main(training = True, inference = True )
+    df = main(training = False, inference = True )
 
     print(df[['year', 'month', 'day', 'hour', 'temperature']].tail(10))
 

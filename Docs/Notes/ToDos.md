@@ -1,4 +1,9 @@
 # To do - short term
+- implement downloading data from dwd api in main() -> enable through argument
+- use tqdm to show process
+- think about keys and df folds from dict_data in main_training() -> do assignment somewhere else
+  - could be an aditional data pipeline step
+
 
 Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - https://testdriven.io/blog/fastapi-machine-learning/
@@ -6,15 +11,8 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - Build an inference pipeline / predict function
 
 
--> write a main file
 -> Complete the docs!
 
-
-- implement downloading data from dwd api in main() -> enable through argument
-- end date of inference should be specified in config.yaml
-- use tqdm to show process
-- think about keys and df folds from dict_data in main_training() -> do assignment somewhere else
-  - could be an aditional data pipeline step
 
 
 
