@@ -100,19 +100,3 @@ def walking_inference(cfg: data_config, walking_df, end_date):
             break
 
     return walking_df
-
-
-# ###########################################################################
-
-
-# # df = walking_inference(cfg=cfg, walking_df=df, end_date="2020-01-02 21:00:00", 
-# #                         model_temperature=model_temperature, model_cloud_cover=model_cloud_cover, model_wind_speed=model_wind_speed)
-
-# models = model_loader()
-
-# for i in models:
-#     print(i)
-
-
-# print('END')
-
