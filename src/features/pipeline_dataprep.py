@@ -109,6 +109,25 @@ def save(var, train, test, train_std, test_std):
     test_std.to_csv(file_test_std, header=True, index=False)
 
 
+def dict_to_df(dict_data):
+    '''
+    This function creates the complete dataframes after preprocessing. It specifically
+    works with a dict of dicts containing data folds
+    '''
+
+    # the last fold is complete data
+    last_train_key = list(dict_data['train'])[-1]
+    last_test_key = list(dict_data['test'])[-1] 
+
+    # full dataframes
+    train = dict_data['train'][last_train_key]
+    test = dict_data['test'][last_test_key]
+    train_std = dict_data['train_std'][last_train_key]
+    test_std = dict_data['test_std'][last_test_key]
+
+    return train, test, train_std, test_std
+
+
 
 if __name__ == "__main__":
 

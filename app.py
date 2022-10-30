@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.features.pipeline_dataprep import data_loader, pipeline_feature_engineering, save
+from src.features.pipeline_dataprep import data_loader, pipeline_feature_engineering, save, dict_to_df
 from hydra import initialize, compose
 from hydra.core.config_store import ConfigStore
 from src.config import data_config
@@ -18,21 +18,14 @@ from src.inference.inference import pipeline_features_inference, walking_inferen
 
 
 def main_training(target):
-    ''' Function for model training'''
+    ''' Function for model training of a single target variable'''
 
     # load and prepare training data
     df = data_loader('training', cfg=cfg)
     dict_data = pipeline_feature_engineering(cfg = cfg, target = target).fit_transform(df) 
 
-    # the last fold is complete data
-    last_train_key = list(dict_data['train'])[-1]
-    last_test_key = list(dict_data['test'])[-1] 
-
-    # full dataframes
-    train = dict_data['train'][last_train_key]
-    test = dict_data['test'][last_test_key]
-    train_std = dict_data['train_std'][last_train_key]
-    test_std = dict_data['test_std'][last_test_key]
+    # create dataframes
+    train, test, train_std, test_std = dict_to_df(dict_data = dict_data)
 
     # save to database
     save(var=target, train=train, test=test, train_std=train_std, test_std=test_std)
@@ -73,7 +66,7 @@ if __name__ == "__main__":
     cs.store(name = 'data_config', node = data_config)
 
     # start program
-    df = main(cfg = cfg, training = True, inference = False )
+    df = main(cfg = cfg, training = False, inference = True )
 
     #print(df[['year', 'month', 'day', 'hour', 'temperature']].tail(10))
 
