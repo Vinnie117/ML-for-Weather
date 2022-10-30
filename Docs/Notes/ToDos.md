@@ -1,9 +1,6 @@
 # To do - short term
 - implement downloading data from dwd api in main() -> enable through argument
 - use tqdm to show process
-- think about keys and df folds from dict_data in main_training() -> do assignment somewhere else
-  - could be an aditional data pipeline step
-
 
 
 Wrap model in a simple API with FastAPI (inference, inference pipeline?)
