@@ -5,6 +5,9 @@ from src.inference.inference_classes import IncrementTime, SplitTimestamp, Incre
 from src.inference.inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
 from inference.pipeline_inference_features_classes import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
 import mlflow
+from tqdm import tqdm
+import numpy as np
+import logging
 
 def pipeline_features_inference(cfg: data_config):
     '''
@@ -75,9 +78,16 @@ def walking_inference(cfg: data_config, walking_df, end_date):
     Function for incremental inference (row by row)
     '''
     
+    logging.info('FETCHING MODELS FROM MLFLOW DIRECTORY...')
     models = model_loader()
-    print('THE MODEL IDs USED ARE: \n', models)
+    logging.info('THE MODEL IDs USED ARE: \n {models}'.format(models = models))
     predictions = {}
+
+    # calculate inference period in hours (for progress bar)
+    diff = pd.Timestamp(end_date) - walking_df['timestamp'].iloc[-1]
+    hours = (diff / np.timedelta64(1, 'h')) - 1
+    pbar = tqdm(total = 100 )
+
     while walking_df['timestamp'].iloc[-1] < pd.Timestamp(end_date):
 
         # get newest point of dataframe (i.e. latest complete row)
@@ -96,8 +106,14 @@ def walking_inference(cfg: data_config, walking_df, end_date):
         # Apply pipeline (inference_prep) on dataframe
         walking_df = pipeline_inference_prep(cfg=cfg).fit_transform(walking_df)
 
+        # progress bar 
+        pbar.update(100/hours)
+        pbar.set_description('Predict weather for: ' + str(walking_df['timestamp'].iloc[-1]))
+
         # exit while loop once end date of incremental inference is reached
         if walking_df['timestamp'].iloc[-1] == end_date:
             break
+
+    pbar.close()
 
     return walking_df

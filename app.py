@@ -4,9 +4,8 @@ from hydra import initialize, compose
 from hydra.core.config_store import ConfigStore
 from src.config import data_config
 from src.models.XGB.training_xgboost import model_data_loader, train_xgb
-import mlflow
-from src.inference.inference import pipeline_features_inference, walking_inference, model_loader
-
+from src.inference.inference import pipeline_features_inference, walking_inference
+import logging
 
 # # start app in venv: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8008
 # app = FastAPI()
@@ -64,6 +63,8 @@ if __name__ == "__main__":
     cfg = compose(config_name="config")
     cs = ConfigStore.instance()
     cs.store(name = 'data_config', node = data_config)
+
+    logging.basicConfig(level=logging.INFO)
 
     # start program
     df = main(cfg = cfg, training = False, inference = True )
