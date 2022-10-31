@@ -1,7 +1,4 @@
 # To do - short term
-- implement downloading data from dwd api in main() -> enable through argument
-- use tqdm to show process
-
 
 Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - https://testdriven.io/blog/fastapi-machine-learning/

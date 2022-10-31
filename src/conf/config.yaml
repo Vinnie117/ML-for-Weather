@@ -1,5 +1,5 @@
 data:
-  training: 'A:\Projects\ML-for-Weather\data\raw\test_simple.csv'
+  training: 'A:\Projects\ML-for-Weather\data_dvc\raw\training\data_1766_from_2019-01-01_to_2020-01-01'
   inference: 'A:\Projects\ML-for-Weather\data_dvc\raw\inference\pseudo_inference.csv'
 weather:
   start_date: '2019-01-01'

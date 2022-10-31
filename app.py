@@ -5,6 +5,7 @@ from hydra.core.config_store import ConfigStore
 from src.config import data_config
 from src.models.XGB.training_xgboost import model_data_loader, train_xgb
 from src.inference.inference import pipeline_features_inference, walking_inference
+from src.data.download import download
 import logging
 
 # # start app in venv: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8008
@@ -47,7 +48,9 @@ def main_inference(cfg: data_config):
     return df
 
 
-def main(cfg: data_config, training, inference):
+def main(cfg: data_config, api_download, training, inference):
+    if api_download:
+        download(cfg = cfg)
     if training:
         for i in cfg.transform.vars:
             main_training(target = i)
@@ -68,7 +71,7 @@ if __name__ == "__main__":
     cs.store(name = 'data_config', node = data_config)
 
     # start program
-    df = main(cfg = cfg, training = False, inference = True )
+    df = main(cfg = cfg, api_download = True , training = False, inference = False )
 
     #print(df[['year', 'month', 'day', 'hour', 'temperature']].tail(10))
 
