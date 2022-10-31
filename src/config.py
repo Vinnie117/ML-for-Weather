@@ -50,9 +50,15 @@ class svm:
     kernel: string
 
 @dataclass
+class xgb:
+    n_estimators: int
+    max_depth: int
+    learning_rate: float
+    min_child_weight: int
+
+@dataclass
 class inference:
     end_date: str
-
 
 @dataclass
 class data_config:
@@ -66,6 +72,7 @@ class data_config:
     cv: cv
     elastic_net: elastic_net
     svm: svm
+    xgb: xgb
     inference: inference
 
 

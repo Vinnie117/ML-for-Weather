@@ -37,6 +37,10 @@ svm:
   gamma: [1, 0.1, 0.01, 0.001, 0.0001]
   kernel: ['rbf']
 xgb:
+  n_estimators: [100, 400, 800]
+  max_depth: [3, 6, 9]
+  learning_rate: [0.05, 0.1, 0.20]
+  min_child_weight: [1, 10, 100]
 inference:
   end_date: "2020-01-02 21:00:00"
   models:

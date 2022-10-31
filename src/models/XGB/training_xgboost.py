@@ -78,23 +78,17 @@ def train_xgb(cfg: data_config, target, X_train, y_train, X_test, y_test):
         model = xgb.XGBRegressor()
         
         # Hyperparameter-tuning with grid search
-        parameters = {
-        'n_estimators': [100, 400, 800],
-        'max_depth': [3, 6, 9],
-        'learning_rate': [0.05, 0.1, 0.20],
-        'min_child_weight': [1, 10, 100]
-
-        # # FOR TESTING
-        # 'n_estimators': [100],
-        # 'max_depth': [3],
-        # 'learning_rate': [0.05],
-        # 'min_child_weight': [1]
+        parameter_grid = {
+        'n_estimators': cfg.xgb.n_estimators,
+        'max_depth': cfg.xgb.max_depth,
+        'learning_rate': cfg.xgb.learning_rate,
+        'min_child_weight': cfg.xgb.min_child_weight
         }
         # Specifiy splitting for Time series cross validation
         tscv = TimeSeriesSplit(n_splits = cfg.cv.n_splits)
 
         # scoring: Strategy to evaluate the performance of the cross-validated model on the test set; = None -> sklearn.metrics.r2_score 
-        lr= GridSearchCV(model, parameters, cv=tscv, scoring=None, verbose=2)
+        lr= GridSearchCV(model, parameter_grid, cv=tscv, scoring=None, verbose=2)
         lr.fit(X_train, y_train)
         duration = time() - t0
 
