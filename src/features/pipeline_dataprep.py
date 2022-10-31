@@ -21,7 +21,7 @@ import logging
 def data_loader(data, cfg: data_config):
 
     use = list(cfg['data'].keys())[list(cfg['data'].values()).index(cfg['data'][data])]   
-    logging.info('LOAD DATA FOR {use}'.format(use = use.upper()))
+    logging.info('LOAD DATA FOR {use} FROM DIRECTORY'.format(use = use.upper()))
 
     # load data (make this better! function arg should directly reference cfg)
     try:
@@ -45,6 +45,11 @@ def data_loader(data, cfg: data_config):
 
 # Feature engineering
 def pipeline_feature_engineering(cfg: data_config, target):
+    '''
+    Pipeline for feature engineering of training data
+    '''
+
+    logging.info('PREPARE DATA FOR TRAINING')
 
     pipe = Pipeline([
         ("split", Split(n_splits = cfg.cv.n_splits)), 
@@ -119,6 +124,7 @@ def dict_to_df(dict_data):
     This function creates the complete dataframes after preprocessing. It specifically
     works with a dict of dicts containing data folds
     '''
+    logging.info('FETCH DATAFRAMES FROM DICTIONARY')
 
     # the last fold is complete data
     last_train_key = list(dict_data['train'])[-1]

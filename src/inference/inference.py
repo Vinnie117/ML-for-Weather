@@ -54,7 +54,7 @@ def model_loader():
     This function automatically returns the best models (run from e.g. GridSearchCV) in a dict
     '''
 
-    logging.info('FETCHING MODELS FROM MLFLOW DIRECTORY')
+    logging.info('FETCH MODELS FROM MLFLOW DIRECTORY')
 
     # search mlflow experiments by tag runName
     df = mlflow.search_runs(['3'], filter_string="tags.mlflow.runName ILIKE '%XGB, target:%'")

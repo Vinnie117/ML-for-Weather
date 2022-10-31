@@ -12,6 +12,7 @@ from hydra import compose, initialize
 import yaml
 import joblib
 import os
+import logging
 
 # get data
 import dvc.api
@@ -26,7 +27,8 @@ def model_data_loader(target):
     @return: X_train, y_train, X_test, y_test
     
     '''
-
+    logging.info('LOAD DATA FOR MODEL')
+    
     dir_name = os.path.join('data_dvc', 'processed') 
     format = 'csv'
 
@@ -59,6 +61,8 @@ def train_xgb(cfg: data_config, target, X_train, y_train, X_test, y_test):
     @param target: the target variable to predict
     @param X_train: the training data to be used
     '''
+
+    logging.info('START TRAINING')
 
     mlflow.set_experiment(experiment_name='Weather') 
 
