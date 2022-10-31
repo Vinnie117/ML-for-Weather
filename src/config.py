@@ -7,9 +7,11 @@ class vars_old:
     cloud: str
 
 @dataclass
-class date:
-    start: str
-    end: str
+class weather:
+    start_date: str
+    end_date: str
+    resolution: str
+    station: int
 
 @dataclass
 class vars_new:
@@ -18,7 +20,8 @@ class vars_new:
 
 @dataclass
 class data:
-    path: str
+    training: str
+    inference: str
 
 @dataclass
 class diff:
@@ -62,7 +65,7 @@ class inference:
 
 @dataclass
 class data_config:
-    date: date
+    weather: weather
     vars_old: vars_old
     vars_new: vars_new
     data: data

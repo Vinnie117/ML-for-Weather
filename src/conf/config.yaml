@@ -1,9 +1,11 @@
 data:
   training: 'A:\Projects\ML-for-Weather\data\raw\test_simple.csv'
-  inference: 'A:\Projects\ML-for-Weather\data_dvc\raw\pseudo_inference.csv'
-date:
-  start: '2019-01-01'
-  end:  '2020-01-01'
+  inference: 'A:\Projects\ML-for-Weather\data_dvc\raw\inference\pseudo_inference.csv'
+weather:
+  start_date: '2019-01-01'
+  end_date:  '2020-01-01'
+  resolution: 'hourly'
+  station: 1766
 vars_old:
   temp: 'temperature_air_mean_200'
   cloud: 'cloud_cover_total'
