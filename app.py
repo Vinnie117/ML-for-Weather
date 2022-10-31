@@ -72,4 +72,4 @@ if __name__ == "__main__":
 
     #print(df[['year', 'month', 'day', 'hour', 'temperature']].tail(10))
 
-    print('END')
+    logging.info('END OF APP')
