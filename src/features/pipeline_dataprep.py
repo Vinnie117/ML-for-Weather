@@ -16,10 +16,13 @@ from features.pipeline_dataprep_classes import Split
 from features.pipeline_dataprep_classes import Scaler
 from hydra.core.config_store import ConfigStore
 from hydra import compose, initialize
-
+import logging
 
 def data_loader(data, cfg: data_config):
-    
+
+    use = list(cfg['data'].keys())[list(cfg['data'].values()).index(cfg['data'][data])]   
+    logging.info('LOAD DATA FOR {use}'.format(use = use.upper()))
+
     # load data (make this better! function arg should directly reference cfg)
     try:
         df_raw = pd.read_csv(cfg['data'][data])
@@ -90,6 +93,8 @@ def save(var, train, test, train_std, test_std):
     @param test: the test data to be saved
     
     '''
+
+    logging.info('SAVING DATA TO DIRECTORY')
 
     dir_name = os.path.join(os.getcwd(), 'data_dvc', 'processed') 
     base_filename_train = 'train_' + var

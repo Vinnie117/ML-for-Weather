@@ -57,14 +57,15 @@ def main(cfg: data_config, training, inference):
 
 
 if __name__ == "__main__":
+
+    logging.basicConfig(level=logging.INFO)
     
     # use configs
+    logging.info('INITIALIZE CONFIGS')
     initialize(config_path="src/conf", job_name="config")
     cfg = compose(config_name="config")
     cs = ConfigStore.instance()
     cs.store(name = 'data_config', node = data_config)
-
-    logging.basicConfig(level=logging.INFO)
 
     # start program
     df = main(cfg = cfg, training = False, inference = True )

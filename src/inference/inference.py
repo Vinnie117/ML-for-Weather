@@ -14,6 +14,8 @@ def pipeline_features_inference(cfg: data_config):
     Pipeline to prepare downloaded data (AFTER data_loader()) for inference pipeline
     '''
 
+    logging.info('PREPARE DATA FOR INFERENCE')
+
     pipe = Pipeline([
 
         ("times", Times()),
@@ -52,6 +54,8 @@ def model_loader():
     This function automatically returns the best models (run from e.g. GridSearchCV) in a dict
     '''
 
+    logging.info('FETCHING MODELS FROM MLFLOW DIRECTORY')
+
     # search mlflow experiments by tag runName
     df = mlflow.search_runs(['3'], filter_string="tags.mlflow.runName ILIKE '%XGB, target:%'")
 
@@ -69,6 +73,7 @@ def model_loader():
         # load and assign all models as a PyFuncModel
         models[model_name] = mlflow.pyfunc.load_model('runs:/' + i + '/best_estimator')
 
+    logging.info('THE MODEL IDs USED ARE: \n {models}'.format(models = models))
     return models
 
 
@@ -78,9 +83,7 @@ def walking_inference(cfg: data_config, walking_df, end_date):
     Function for incremental inference (row by row)
     '''
     
-    logging.info('FETCHING MODELS FROM MLFLOW DIRECTORY...')
     models = model_loader()
-    logging.info('THE MODEL IDs USED ARE: \n {models}'.format(models = models))
     predictions = {}
 
     # calculate inference period in hours (for progress bar)
