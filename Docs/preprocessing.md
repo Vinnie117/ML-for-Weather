@@ -19,7 +19,7 @@ The following (custom) transformers are applied to the data for feature engineer
 | Debugger | This class does nothing but provide a look into the processed data frames. The position of this class can be adjusted  arbitrarily within the pipeline to show the data frames after prior transformations. |  |
 | Split | This transformer splits data into train and test sets. It is to be called at the beginning of the pipeline in order to  prevent information leakage. The transformer also splits train/test data into chronological folds. Due to the nature of time series, each subsequent split contains data from the prior fold(s), i.e. shuffling single observed rows for time  series data is not appropriate. | - n_splits: the number of folds to create |
 | Time | The transformer takes a hourly timestamp and splits it into 3 variables: month, day and hour. |  |
-| Velocity | This transformer class builds differences between two observations of one feature X, i.e. Velocity<sub>t</sub> = X<sub>t</sub> - X <sub>t-k</sub> where t is some point in time and k is the length of a time period | - diff: size of the differenz (see parameter k in description) |
+| Velocity | This transformer class builds differences between two observations of one feature X, i.e. Velocity<sub>t</sub> = X<sub>t</sub> - X <sub>t-k</sub> where t is some point in time and k is the length of a time period | - diff: size of the difference (see parameter k in description) |
 | Acceleration |  |  |
 | BollingerBand | - not implemented yet - |  |
 | MovingAverage | - not implemented yet - |  |
