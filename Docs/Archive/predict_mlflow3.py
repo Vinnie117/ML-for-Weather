@@ -3,10 +3,10 @@ sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent director
 from config import data_config
 import mlflow
 import pandas as pd
-from features.pipeline_dataprep import cfg, data_loader
+from src.utils.functions import cfg, data_loader
 from sklearn.pipeline import Pipeline
-from inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
-from inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
+from src.inference.classes_inference_complete import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
+from src.inference.classes_inference_complete import IncrementLaggedUnderlyings, IncrementLaggedVelocities
 from inference.classes_inference_preproc import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
 
 
@@ -134,6 +134,7 @@ def walking_inference(walking_df, end_date):
 
 
 if __name__ == "main":
+    
     # Without loading whole pd_df and calling the training pipelines
     df_inference = data_loader('inference',cfg=cfg)
     df = pipeline_features_inference(cfg=cfg).fit_transform(df_inference)
