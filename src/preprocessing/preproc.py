@@ -3,19 +3,19 @@ import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 from sklearn.pipeline import Pipeline
 from config import data_config
-from training.classes_training_features import Prepare
-from training.classes_training_features import Acceleration
-from training.classes_training_features import Velocity
-from training.classes_training_features import InsertLags
-from training.classes_training_features import Debugger
-from training.classes_training_features import Times
-from training.classes_training_features import Split
-from training.classes_training_features import Scaler
+from preprocessing.classes_training_preproc  import Prepare
+from preprocessing.classes_training_preproc import Acceleration
+from preprocessing.classes_training_preproc import Velocity
+from preprocessing.classes_training_preproc import InsertLags
+from preprocessing.classes_training_preproc import Debugger
+from preprocessing.classes_training_preproc import Times
+from preprocessing.classes_training_preproc import Split
+from preprocessing.classes_training_preproc import Scaler
 import logging
 
 
 # Feature engineering
-def pipeline_training_features(cfg: data_config, target):
+def pipeline_training_preproc(cfg: data_config, target):
     '''
     Pipeline for feature engineering of training data
     '''

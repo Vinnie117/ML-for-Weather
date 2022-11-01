@@ -6,7 +6,15 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - Build an inference pipeline / predict function
 
 
--> Complete the docs!
+- Complete the docs!
+    - Overall approach: describe main() and examine which function invokes another function
+        - here, also give a description of functions
+        also make a new Excalidraw
+    - Write about the reason for the walking inference
+    - write about procedure to do, when adding a new feature -> what pipelines / classes are affected
+    - description of directories
+- Refactor into training and inference module?
+    - functions used by both into utils
 
 
 
@@ -14,7 +22,6 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - give confidence of one single inference point - how?
 - compare relative performance of using later lags
     - plot -> x: latest lag used, y: score on test data
-- UserWarning: Hint: Inferred schema contains integer column(s). Integer columns in Python cannot represent missing values. If your input data contains missing values at inference time, it will be encoded as floats and will cause a schema enforcement error.
 - plot learning / loss curves?
     - https://scikit-learn.org/stable/modules/learning_curve.html
     - error curves by number of training data -> in order to see im performance increases!
@@ -43,7 +50,6 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
     - https://towardsdatascience.com/deploying-machine-learning-models-into-a-website-using-flask-8582b7ce8802
     - https://www.natasshaselvaraj.com/ml-model-deployment/
     - https://www.kdnuggets.com/2020/05/build-deploy-machine-learning-web-app.html
-- MLFlow / DVC
 - Incorporate Explainable AI
     - LIME
     -SHaP
@@ -56,5 +62,3 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
 - https://github.com/jweyn/DLWP 
 - https://courses.nvidia.com/courses/course-v1:DLI+S-ES-01+V1/
 
-# chain multiple functions
-- https://stackoverflow.com/questions/20454118/better-way-to-call-a-chain-of-functions-in-python
