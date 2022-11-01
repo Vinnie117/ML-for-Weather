@@ -1,11 +1,12 @@
 from fastapi import FastAPI
-from src.features.pipeline_dataprep import pipeline_feature_engineering, save, dict_to_df
+from src.training.training_prep import pipeline_training_features
 from hydra import initialize, compose
 from hydra.core.config_store import ConfigStore
 from src.config import data_config
 from src.models.XGB.training_xgboost import model_data_loader, train_xgb
 from src.inference.inference import pipeline_features_inference, walking_inference
 from utils.functions import download, data_loader
+from training.functions import save, dict_to_df
 import logging
 
 # # start app in venv: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8008
@@ -22,7 +23,7 @@ def main_training(target):
 
     # load and prepare training data
     df = data_loader('training', cfg=cfg)
-    dict_data = pipeline_feature_engineering(cfg = cfg, target = target).fit_transform(df) 
+    dict_data = pipeline_training_features(cfg = cfg, target = target).fit_transform(df) 
 
     # create dataframes
     train, test, train_std, test_std = dict_to_df(dict_data = dict_data)
