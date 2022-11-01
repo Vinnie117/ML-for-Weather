@@ -1,11 +1,11 @@
 from fastapi import FastAPI
-from src.features.pipeline_dataprep import data_loader, pipeline_feature_engineering, save, dict_to_df
+from src.features.pipeline_dataprep import pipeline_feature_engineering, save, dict_to_df
 from hydra import initialize, compose
 from hydra.core.config_store import ConfigStore
 from src.config import data_config
 from src.models.XGB.training_xgboost import model_data_loader, train_xgb
 from src.inference.inference import pipeline_features_inference, walking_inference
-from src.data.download import download
+from utils.functions import download, data_loader
 import logging
 
 # # start app in venv: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8008
