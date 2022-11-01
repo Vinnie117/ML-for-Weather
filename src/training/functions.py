@@ -1,9 +1,44 @@
 ############ File for custom functions ############
-
+import logging
 import numpy as np
 import re
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from config import data_config 
+import os
+import dvc.api
+from io import StringIO
+import pandas as pd
+
+
+def model_data_loader(target):
+    ''' Loads the data with the right target variable for the model
+
+    @param target: the target variable of the model, i.e. what to predict
+    @return: X_train, y_train, X_test, y_test
+    
+    '''
+    logging.info('LOAD DATA FOR MODEL')
+    
+    dir_name = os.path.join('data_dvc', 'processed') 
+    format = 'csv'
+
+    # read data to pandas df
+    file_train = 'train_' + target
+    train_dvc = dvc.api.read(os.path.join(dir_name, file_train + '.' + format), mode = 'r')
+    train_dvc = StringIO(train_dvc)
+    train_dvc = pd.read_csv(train_dvc, delimiter=',', header=0)
+
+    file_test = 'test_' + target
+    test_dvc = dvc.api.read(os.path.join(dir_name, file_test + '.' + format), mode = 'r')
+    test_dvc = StringIO(test_dvc)
+    test_dvc = pd.read_csv(test_dvc, delimiter=',', header=0)
+
+    X_train = train_dvc.iloc[:, 1:]
+    y_train = train_dvc.iloc[:, 0]
+    X_test = test_dvc.iloc[:, 1:]
+    y_test = test_dvc.iloc[:, 0]
+
+    return X_train, y_train, X_test, y_test
 
 
 def adjustedR2(r2, test_data):

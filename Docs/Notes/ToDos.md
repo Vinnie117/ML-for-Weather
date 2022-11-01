@@ -13,8 +13,6 @@ Wrap model in a simple API with FastAPI (inference, inference pipeline?)
     - Write about the reason for the walking inference
     - write about procedure to do, when adding a new feature -> what pipelines / classes are affected
     - description of directories
-- Refactor into training and inference module?
-    - functions used by both into utils
 
 
 

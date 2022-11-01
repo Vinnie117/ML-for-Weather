@@ -1,9 +1,8 @@
-import pandas as pd
 from time import time
 import xgboost as xgb
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
-from models.functions import eval_metrics, track_features
+from training.functions import eval_metrics, track_features, model_data_loader
 import mlflow
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
@@ -11,48 +10,7 @@ from config import data_config
 from hydra import compose, initialize
 import yaml
 import joblib
-import os
 import logging
-
-# get data
-import dvc.api
-from io import StringIO
-
-
-# function to load data
-def model_data_loader(target):
-    ''' Loads the data with the right target variable for the model
-
-    @param target: the target variable of the model, i.e. what to predict
-    @return: X_train, y_train, X_test, y_test
-    
-    '''
-    logging.info('LOAD DATA FOR MODEL')
-    
-    dir_name = os.path.join('data_dvc', 'processed') 
-    format = 'csv'
-
-    # read data to pandas df
-    file_train = 'train_' + target
-    train_dvc = dvc.api.read(os.path.join(dir_name, file_train + '.' + format), mode = 'r')
-    train_dvc = StringIO(train_dvc)
-    train_dvc = pd.read_csv(train_dvc, delimiter=',', header=0)
-
-    file_test = 'test_' + target
-    test_dvc = dvc.api.read(os.path.join(dir_name, file_test + '.' + format), mode = 'r')
-    test_dvc = StringIO(test_dvc)
-    test_dvc = pd.read_csv(test_dvc, delimiter=',', header=0)
-
-    X_train = train_dvc.iloc[:, 1:]
-    y_train = train_dvc.iloc[:, 0]
-    X_test = test_dvc.iloc[:, 1:]
-    y_test = test_dvc.iloc[:, 0]
-
-    return X_train, y_train, X_test, y_test
-
-
-
-#### Train a model
 
 
 def train_xgb(cfg: data_config, target, X_train, y_train, X_test, y_test):

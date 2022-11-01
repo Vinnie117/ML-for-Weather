@@ -1,4 +1,3 @@
-import os
 import sys
 sys.path.append('A:\Projects\ML-for-Weather\src')  # import from parent directory
 from sklearn.pipeline import Pipeline

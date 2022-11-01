@@ -3,7 +3,8 @@ from src.preprocessing.preproc import pipeline_training_preproc
 from hydra import initialize, compose
 from hydra.core.config_store import ConfigStore
 from src.config import data_config
-from src.models.XGB.training_xgboost import model_data_loader, train_xgb
+from src.training.XGB.training_xgboost import train_xgb
+from src.training.functions import model_data_loader
 from src.inference.inference import pipeline_features_inference, walking_inference
 from utils.functions import download, data_loader
 from src.preprocessing.functions import save, dict_to_df
