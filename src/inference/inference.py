@@ -1,15 +1,16 @@
 from config import data_config
 from sklearn.pipeline import Pipeline
 import pandas as pd
-from src.inference.inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
-from src.inference.inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
-from inference.pipeline_inference_features_classes import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
-import mlflow
+from inference.classes_inference_complete import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
+from inference.classes_inference_complete import IncrementLaggedUnderlyings, IncrementLaggedVelocities
+from inference.classes_inference_preproc import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
+from inference.functions import model_loader
 from tqdm import tqdm
 import numpy as np
 import logging
 
-def pipeline_features_inference(cfg: data_config):
+
+def pipeline_inference_preproc(cfg: data_config):
     '''
     Pipeline to prepare downloaded data (AFTER data_loader()) for inference pipeline
     '''
@@ -33,7 +34,7 @@ def pipeline_features_inference(cfg: data_config):
     return pipe
 
 
-def pipeline_inference_prep(cfg: data_config):
+def pipeline_inference_complete(cfg: data_config):
     '''
     Used by walking_inference()
     '''
@@ -47,35 +48,6 @@ def pipeline_inference_prep(cfg: data_config):
         ])
 
     return pipe
-
-
-def model_loader():
-    '''
-    This function automatically returns the best models (run from e.g. GridSearchCV) in a dict
-    '''
-
-    logging.info('FETCH MODELS FROM MLFLOW DIRECTORY')
-
-    # search mlflow experiments by tag runName
-    df = mlflow.search_runs(['3'], filter_string="tags.mlflow.runName ILIKE '%XGB, target:%'")
-
-    # sort by adjusted_r2,  then take  first element ( = minimum) in each runName group:
-    df = df.sort_values("metrics.adjusted_r2").groupby("tags.mlflow.runName", as_index=False).first()
-
-    # now load all different models into a dict
-    models = {}
-    for i, j in zip(df['run_id'], df['tags.mlflow.runName']):
-        
-        # construct model_name
-        var = j.split('target: ')[1]
-        model_name = "model_" + var 
-
-        # load and assign all models as a PyFuncModel
-        models[model_name] = mlflow.pyfunc.load_model('runs:/' + i + '/best_estimator')
-
-    logging.info('THE MODEL IDs USED ARE: \n {models}'.format(models = models))
-    return models
-
 
 
 def walking_inference(cfg: data_config, walking_df, end_date):
@@ -107,7 +79,7 @@ def walking_inference(cfg: data_config, walking_df, end_date):
         walking_df = pd.concat([walking_df, pd.DataFrame.from_records([predictions])])
 
         # Apply pipeline (inference_prep) on dataframe
-        walking_df = pipeline_inference_prep(cfg=cfg).fit_transform(walking_df)
+        walking_df = pipeline_inference_complete(cfg=cfg).fit_transform(walking_df)
 
         # progress bar 
         pbar.update(100/hours)

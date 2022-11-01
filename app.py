@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.preprocessing.preproc import pipeline_training_preproc
+from preprocessing.training_preproc import pipeline_training_preproc
 from hydra import initialize, compose
 from hydra.core.config_store import ConfigStore
 from src.config import data_config

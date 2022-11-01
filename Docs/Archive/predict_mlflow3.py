@@ -7,7 +7,7 @@ from features.pipeline_dataprep import cfg, data_loader
 from sklearn.pipeline import Pipeline
 from inference_classes import IncrementTime, SplitTimestamp, IncrementLaggedAccelerations
 from inference_classes import IncrementLaggedUnderlyings, IncrementLaggedVelocities
-from inference.pipeline_inference_features_classes import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
+from inference.classes_inference_preproc import Times, Velocity, Acceleration, InsertLags, Scaler, Prepare
 
 
 # manual look-up and copying -> automating possible?
