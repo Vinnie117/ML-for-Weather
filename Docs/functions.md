@@ -121,9 +121,14 @@ Description of available functions and an overview of the function landscape:
     - cfg: data_config
     - X_train: pandas dataframe
   - invokes: no user-defined functions
-  - description
+  - description: This function tracks all features used during model training. It creates and returns a nested dictionary with base variables and their transformations that are stored in a lower level of the nested dict. Since the training of a time-series model can only use past data, the lags of each transformation used for training are stored in the 3rd level of the nested dict. The nested dictionary of features used for training is logged in MLFlow and can also be inspected with MLFlow UI.
 
+<br/>
 
-
-
+- pipeline_training_preproc()
+  - location: src/inference/inference.py
+  - arguments:
+    - cfg: data_config
+  - invokes: various custom classes from src/inference/classes_inference_preproc.py
+  - description: This is a sklearn pipeline which handles all data preparation and feature engineering prior to model inference. For this purpose, various custom classes are used that create new features such as velocity or acceleration of base variables. Moreover, time variables and lags are created here. The output of this pipeline is a dataframe ready for inference
 
