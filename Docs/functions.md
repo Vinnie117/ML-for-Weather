@@ -79,6 +79,15 @@ Description of available functions and an overview of the function landscape:
   - invokes: no user-defined functions
   - descriptions: This function saves dataframes with 'var' being the target variable to the directory data_dvc/processed
 
+<br/>
+
+- model_data_loader()
+  - location: src/training/functions.py
+  - arguments: 
+    - target: str -> the target variable of the model training, which is also an element of the list cfg.transform.vars
+  - invokes: no user-defined functions
+  - descriptions: Loads training and test data for model training from the directory data_dvc/processed with the respective target variable
+
 
 
 
