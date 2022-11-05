@@ -158,4 +158,4 @@ Description of available functions and an overview of the function landscape:
   - location: src/inerence/functions.py
   - arguments: None
   - invokes: no user-defined functions
-  - description: 
+  - description: This function retrieves the best model (by lowest adjusted R2) for each target base variable from the 'mlruns' directory. It scans the 'mlruns" directory by searching for all runs with the tag 'XGB, target' which is set during model training. Then, in a dataframe those models are sorted by their adjusted R2 and grouped by their respective target base variable. The first model in each group of target base variables (lowest adjusted R2 of the group) is fetched together with its 'run_id' and put into a dictionary. That dict is returned.
