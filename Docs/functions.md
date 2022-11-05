@@ -100,8 +100,28 @@ Description of available functions and an overview of the function landscape:
     - X_test: pandas dataframe
     - y_test: pandas dataframe
   - invokes: eval_metrics(), track_features(); from sklearn.model_selection: TimeSeriesSplit(), GridSearchCV()
-  - description: This function executes the model training of an XGBoost model and logs the results in an MLFLow experiment. The incoming training data is split using sklearn's TimeSeriesSplit() and a grid search approach with GridSearchCV() is applied when training multiple models in order to find the best hyperparameters. We use eval_metrics() to calculate different performance metrics on the test data and track_features() to track the features that have been used in order to train the model. Tracked features are stored in 'artifacts/features/data_features.yaml'. Additionally, the duration of model training is measured. Results of the experiment can be checked in the MLFlow UI. The model is saved in 'artifacts/models/xgb.joblib' but it is better to retrieve them from 'mlruns' directory.
+  - description: This function executes the model training of an XGBoost model and logs the results in an MLFLow experiment. The incoming training data is split using sklearn's TimeSeriesSplit() and a grid search approach with GridSearchCV() is applied when training multiple models in order to find the best hyperparameters. We use eval_metrics() to calculate different performance metrics on the test data and track_features() to track the features that have been used in order to train the model. Tracked features are stored in 'artifacts/features/data_features.yaml'. Additionally, various other info is measured such as the duration of model training. Results of the experiment can be checked in the MLFlow UI. The model is saved in 'artifacts/models/xgb.joblib' but it is better to retrieve them from 'mlruns' directory.
 
+<br/>
+
+- eval_metrics()
+  - location: src/training/functions.py
+  - arguments:
+    - actual: pandas series -> actual y-values from test data
+    - pred: pandas series -> predicted y-values from model
+    - X_test: pandas dataframe -> test data not seen during model training
+  - invokes: adjusted_R2() -> a custom function to calculate adjusted R2
+  - description: This function calculates and returns various performance metrics of the trained model: root mean-squared error, mean absolute error, R2 and adjusted R2.
+
+<br/>
+
+- track_features()
+  - lcoation: src/training/functions.py
+  - arguments:
+    - cfg: data_config
+    - X_train: pandas dataframe
+  - invokes: no user-defined functions
+  - description
 
 
 
