@@ -19,12 +19,16 @@ Description of available functions and an overview of the function landscape:
   - invokes: DwdObservationRequest()
   - description: This function downloads the raw data from the DWD weather api.
 
+<br/>
+
 - main_training()
   - location: app.py
   - arguments:
     - target: str -> the target variable of the model training, which is also an element of the list cfg.transform.vars
   - invokes: data_loader(), pipeline_training_preproc(), dict_to_df(), save(), model_data_loader(), train_xgb()
   - description: This function wraps all functions in the process from data sourcing to model training.
+
+<br/>
 
 - main_inference()
   - description: This function is responbile for the inference procedure. We follwo a 'walking inference' approach which means that we predict ...
