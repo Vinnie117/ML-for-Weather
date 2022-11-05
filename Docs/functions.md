@@ -141,7 +141,7 @@ Description of available functions and an overview of the function landscape:
     - walking_df: pandas dataframe -> the inference-ready dataframe to apply row-wise inference on
     - end_date: pandas TimeStamp -> predictions are made until this point in time
   - invokes: pipeline_inference_complete(), model_loader()
-  - description:
+  - description: This function calculates the predicted weather by applying the models on complete rows of data. First, it loads the best model for each base variable from the 'mlruns' directory with model_loader(). Then, it reads the last (i.e. latest) row (which is complete) of 'walking_df' and subsequently predicts and appends a new row until the 'end_date' is reached. Hence, the name 'walking_inference' because the inference 'walks forward' in the dataframe row by row. The model predictions of target base variables are collected in a dictionary and then appended as the new row. Still, that new row lacks the values from the transformations of the base variables. These missing values are to be filled by pipeline_inference_complete(). For informational purposes, a progress bar is also provided.
 
 <br/>
 
