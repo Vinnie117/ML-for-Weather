@@ -47,8 +47,24 @@ Description of available functions and an overview of the function landscape:
   - invokes: no user-defined functions
   - description: This function reads the raw data that has been downloaded by download() from the DWD api and prepares the data for further usage by the preprocessing pipeline. Here, the dataframe is pivoted from long to wide format, unnecessary variables are discarded and variables are renamed.
 
+<br/>
 
+- pipeline_training_preproc()
+  - location: src/preprocessing/training_prepoc.py
+  - arguments:
+    - cfg: data_config
+    - target: str -> the target variable of the model training, which is also an element of the list cfg.transform.vars
+  - invokes: various custom classes from src/preprocessing/classes_training_preproc.py
+  - description: This is a sklearn pipeline which handles all data preparation and feature engineering prior to model training. For this purpose, various custom classes are used that create new features such as velocity or acceleration of base variables. Moreover, time variables and lags are created here. The output of this pipeline is an artefact called 'dict_data' containing multiple folds of training and test data.
 
+<br/>
+
+- dict_to_df()
+  - location: src/preprocessing/functions.py
+  - arguments:
+    - dict_data: dict -> a nested dictionary with training/test data
+  - invokes: no user-defined functions
+  - description: This function reads a nested dictionary object (the one from pipeline_training_preproc()) and returns the last fold of (standardized) training and test data
 
 
 
