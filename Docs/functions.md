@@ -17,7 +17,7 @@ Description of available functions and an overview of the function landscape:
   - arguments:
     - cfg: data_config -> used to control parameters for downloading data: start, end, resolution etc.
   - invokes: DwdObservationRequest()
-  - description: This function downloads the raw data from the DWD weather api.
+  - description: This function downloads the raw data from the DWD weather api and writes the data to the directory data_dvc/raw/training.
 
 <br/>
 
@@ -35,11 +35,17 @@ Description of available functions and an overview of the function landscape:
   - arguments:
     - cfg: data_config
   - invokes: data_loader(), pipeline_inference_preproc(), walking_inference()
-  - description: This function is responsible for the inference procedure. We follwo a 'walking inference' approach which means that we predict ...
+  - description: This function is responsible for the inference procedure. We follow a 'walking inference' approach which means that we subsequently predict new rows of data. Each row, i.e. data for weather at time t requires a complete row of data (with all engineered features) at time t-1.
 
 <br/>
 
-data_loader()
+- data_loader()
+  - location: src/utils/functions.py
+  - arguments:
+    - data: str -> indicate purpose of data, e.g. 'training' or 'inference' (see cfg.data)
+    - cfg: data_config
+  - invokes: no user-defined functions
+  - description: This function reads the raw data that has been downloaded by download() from the DWD api and prepares the data for further usage by the preprocessing pipeline. Here, the dataframe is pivoted from long to wide format, unnecessary variables are discarded and variables are renamed.
 
 
 
