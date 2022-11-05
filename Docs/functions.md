@@ -150,7 +150,7 @@ Description of available functions and an overview of the function landscape:
   - arguments:
     - cfg: data_config
   - invokes: various custom classes from src/inference/classes_inference_complete.py
-  - description: 
+  - description: During walking_inference(), base variables are predicted for the next new row t. However, all other transformations of those base variables are missing but required for predicting the next row t+1 since the models have been trained on all engineered features. This pipeline fills those data gaps in the latest row by incrementing the transformations.
 
 <br/>
 
