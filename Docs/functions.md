@@ -125,10 +125,37 @@ Description of available functions and an overview of the function landscape:
 
 <br/>
 
-- pipeline_training_preproc()
+- pipeline_inference_preproc()
   - location: src/inference/inference.py
   - arguments:
     - cfg: data_config
   - invokes: various custom classes from src/inference/classes_inference_preproc.py
   - description: This is a sklearn pipeline which handles all data preparation and feature engineering prior to model inference. For this purpose, various custom classes are used that create new features such as velocity or acceleration of base variables. Moreover, time variables and lags are created here. The output of this pipeline is a dataframe ready for inference
 
+<br/>
+
+- walking_inference()
+  - location: src/inerence/inference.py
+  - arguments:
+    - cfg: data_config
+    - walking_df: pandas dataframe -> the inference-ready dataframe to apply row-wise inference on
+    - end_date: pandas TimeStamp -> predictions are made until this point in time
+  - invokes: pipeline_inference_complete(), model_loader()
+  - description:
+
+<br/>
+
+- pipeline_inference_complete()
+  - location: src/inerence/inference.py
+  - arguments:
+    - cfg: data_config
+  - invokes: various custom classes from src/inference/classes_inference_complete.py
+  - description: 
+
+<br/>
+
+- model_loader()
+  - location: src/inerence/functions.py
+  - arguments: None
+  - invokes: no user-defined functions
+  - description: 
