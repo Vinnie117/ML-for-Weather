@@ -1,6 +1,12 @@
 Description of available functions and an overview of the function landscape:
 
 - main()
+  - download()
+  - main_training()
+      - data_loader()
+  - main_inference()
+
+- main()
   - location: app.py
   - arguments: 
   - x
