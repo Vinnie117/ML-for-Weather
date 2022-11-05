@@ -26,9 +26,24 @@ Description of available functions and an overview of the function landscape:
   - arguments:
     - target: str -> the target variable of the model training, which is also an element of the list cfg.transform.vars
   - invokes: data_loader(), pipeline_training_preproc(), dict_to_df(), save(), model_data_loader(), train_xgb()
-  - description: This function wraps all functions in the process from data sourcing to model training.
+  - description: This function wraps all functions in the process from data sourcing, data preprocessing and feature engineering to model training. However, it can only do so for a single target variable.
 
 <br/>
 
 - main_inference()
-  - description: This function is responbile for the inference procedure. We follwo a 'walking inference' approach which means that we predict ...
+  - location: app.py
+  - arguments:
+    - cfg: data_config
+  - invokes: data_loader(), pipeline_inference_preproc(), walking_inference()
+  - description: This function is responsible for the inference procedure. We follwo a 'walking inference' approach which means that we predict ...
+
+<br/>
+
+data_loader()
+
+
+
+
+
+
+
