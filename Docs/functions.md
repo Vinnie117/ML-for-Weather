@@ -86,11 +86,21 @@ Description of available functions and an overview of the function landscape:
   - arguments: 
     - target: str -> the target variable of the model training, which is also an element of the list cfg.transform.vars
   - invokes: no user-defined functions
-  - descriptions: Loads training and test data for model training from the directory data_dvc/processed with the respective target variable
+  - descriptions: Loads and returns training and test data for model training from the directory data_dvc/processed with the respective target variable.
 
+<br/>
 
-
-
+- train_xgb()
+  - location: src/training/XGB/training_xgboost.py
+  - arguments:
+    - cfg: data_config -> used for hyperparameter-tuning of model training
+    - target: str -> the target variable of the model training, which is also an element of the list cfg.transform.vars
+    - X_train: pandas dataframe
+    - y_train: pandas dataframe
+    - X_test: pandas dataframe
+    - y_test: pandas dataframe
+  - invokes: eval_metrics(), track_features(); from sklearn.model_selection: TimeSeriesSplit(), GridSearchCV()
+  - description: This function executes the model training of an XGBoost model and logs the results in an MLFLow experiment. The incoming training data is split using sklearn's TimeSeriesSplit() and a grid search approach with GridSearchCV() is applied when training multiple models in order to find the best hyperparameters. We use eval_metrics() to calculate different performance metrics on the test data and track_features() to track the features that have been used in order to train the model. Tracked features are stored in 'artifacts/features/data_features.yaml'. Additionally, the duration of model training is measured. Results of the experiment can be checked in the MLFlow UI. The model is saved in 'artifacts/models/xgb.joblib' but it is better to retrieve them from 'mlruns' directory.
 
 
 
