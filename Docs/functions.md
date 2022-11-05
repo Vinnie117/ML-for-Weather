@@ -66,6 +66,25 @@ Description of available functions and an overview of the function landscape:
   - invokes: no user-defined functions
   - description: This function reads a nested dictionary object (the one from pipeline_training_preproc()) and returns the last fold of (standardized) training and test data
 
+<br/>
+
+- save()
+  - location: src/preprocessing/functions.py
+  - arguments:
+    - var: str -> the target variable of the model training, which is also an element of the list cfg.transform.vars
+    - train: pandas dataframe
+    - test: pandas dataframe
+    - train_std: pandas dataframe
+    - test_std: pandas dataframe
+  - invokes: no user-defined functions
+  - descriptions: This function saves dataframes with 'var' being the target variable to the directory data_dvc/processed
+
+
+
+
+
+
+
 
 
 
