@@ -79,7 +79,7 @@ def track_features(cfg: data_config, X_train):
     '''
     features = list(X_train)
     d = {} 
-    d['time'] = ['month', 'day', 'hour']
+    d['time'] = ['year' ,'month', 'day', 'hour']
     for i in cfg.transform.vars:
         d[i] = {}
 
@@ -103,19 +103,3 @@ def track_features(cfg: data_config, X_train):
                 d[i][transform] = sorted(list(set(list_lags)))
 
     return d
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
