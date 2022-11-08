@@ -1,7 +1,5 @@
 import logging
 from sympy import false
-import sys
-sys.path.append('A:\Projects\ML-for-Weather\src') 
 from wetterdienst.provider.dwd.observation import DwdObservationRequest
 from wetterdienst import Settings
 from config import data_config

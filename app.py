@@ -6,7 +6,7 @@ from src.config import data_config
 from src.training.XGB.training_xgboost import train_xgb
 from src.training.functions import model_data_loader
 from src.inference.inference import pipeline_inference_preproc, walking_inference
-from utils.functions import download, data_loader
+from src.utils.functions import download, data_loader
 from src.preprocessing.functions import save, dict_to_df
 import logging
 
