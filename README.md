@@ -7,7 +7,8 @@ This is a playground project for ML models to explore weather prediction. There 
 
 
 Currently, the project architecture is as follows:
-![excalidraw new(1)](https://user-images.githubusercontent.com/52510339/200659432-31f3e459-0bcd-4c31-8dc0-e5cbaaeeb83e.png)
+![excalidraw new(2)](https://user-images.githubusercontent.com/52510339/200659666-da297f72-d25f-404b-a002-ba2642deef80.png)
+
 
 
 
