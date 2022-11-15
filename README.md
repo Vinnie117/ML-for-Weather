@@ -14,3 +14,17 @@ Currently, the project architecture is as follows:
 ## Usage
 The central entrypoint to use this project is "src\conf\config.yaml" where parameters for feature engineering and model training can be set.
 More documenation is here: https://github.com/Vinnie117/ML-for-Weather/tree/main/Docs
+
+
+## Roadmap
+- Wrap model in a simple API with FastAPI to get a prediction service
+    - build a simple UI for it
+- Incorporate Explainable AI (preferrably Lime over Shap)
+    - Provide confidence of accuracy for a single prediction (how?)
+- Build learning / loss curves: Error behaviour by number of training data
+- Compare relative performance of using later / more lags (x: latest lag used, y: score on test data)
+- Create more features: moving averages, bollinger bands (z-scores)
+    - document the procedure for adding new features
+- structure for multiple models (MLFlow enough?) -> config management for multiple experiment configs?
+- Think about more EDA, what plots to create besides [here] (https://github.com/Vinnie117/ML-for-Weather/tree/main/artifacts/plots/eda) 
+- Think about model monitoriing, retraining pipeline (active / passive trigger?)
