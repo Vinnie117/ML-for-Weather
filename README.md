@@ -26,6 +26,7 @@ More documenation is here: https://github.com/Vinnie117/ML-for-Weather/tree/main
 - Compare relative performance of using later / more lags (x: latest lag used, y: score on test data)
 - Create more features: moving averages, bollinger bands (z-scores)
     - document the procedure for adding new features
+    - save refined variables in a feature store
 - structure for multiple models (MLFlow enough?) -> config management for multiple experiment configs?
 - Think about more EDA, what plots to create besides [here] (https://github.com/Vinnie117/ML-for-Weather/tree/main/artifacts/plots/eda) 
 - Think about model monitoriing, retraining pipeline (active / passive trigger?)
